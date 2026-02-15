@@ -1,0 +1,129 @@
+[
+  {
+    "id": "1",
+    "slug": "high-street-retail-downtown",
+    "title": "High Street Retail – Downtown Columbus",
+    "address": "150 N High St",
+    "city": "Columbus",
+    "state": "OH",
+    "latitude": 39.9652,
+    "longitude": -83.0014,
+    "propertyType": "Retail",
+    "listingType": "For Lease",
+    "squareFeet": 8500,
+    "acreage": null,
+    "features": ["Restaurant", "Drive-Thru", "High Visibility"],
+    "heroImage": "/images/listings/high-street-retail.png",
+    "galleryImages": [
+      "/images/listings/high-street-retail.png"
+    ],
+    "description": "Prime retail space on High Street in the heart of downtown Columbus. High-traffic location with excellent visibility and pedestrian foot traffic. Ideal for restaurant, café, or flagship retail. Full build-out flexibility and on-site parking available."
+  },
+  {
+    "id": "2",
+    "slug": "polaris-industrial-warehouse",
+    "title": "Polaris Industrial Warehouse & Distribution",
+    "address": "8800 Lyra Dr",
+    "city": "Columbus",
+    "state": "OH",
+    "latitude": 40.1456,
+    "longitude": -82.9287,
+    "propertyType": "Industrial",
+    "listingType": "For Sale",
+    "squareFeet": 125000,
+    "acreage": 8.2,
+    "features": ["Dock High", "Outdoor Storage", "Expandable"],
+    "heroImage": "/images/placeholders/listing-2.jpg",
+    "galleryImages": [
+      "/images/placeholders/listing-2.jpg",
+      "/images/placeholders/listing-2b.jpg",
+      "/images/placeholders/listing-2c.jpg"
+    ],
+    "description": "Class A industrial warehouse in the Polaris submarket. 125,000 SF with 32' clear height, multiple dock positions, and drive-in doors. Excellent highway access to I-71 and I-270. Ideal for distribution, manufacturing, or last-mile logistics."
+  },
+  {
+    "id": "3",
+    "slug": "arena-district-office",
+    "title": "Arena District Class A Office",
+    "address": "300 Nationwide Blvd",
+    "city": "Columbus",
+    "state": "OH",
+    "latitude": 39.9694,
+    "longitude": -83.0062,
+    "propertyType": "Office",
+    "listingType": "Sale/Lease",
+    "squareFeet": 42000,
+    "acreage": null,
+    "features": ["Fitness Center", "Conference Center", "Parking Garage"],
+    "heroImage": "/images/placeholders/listing-3.jpg",
+    "galleryImages": [
+      "/images/placeholders/listing-3.jpg",
+      "/images/placeholders/listing-3b.jpg"
+    ],
+    "description": "Full floor or multi-floor opportunity in a premier Arena District high-rise. Stunning views, modern finishes, and walkable access to dining, entertainment, and Nationwide Arena. Building amenities include fitness center, conference facilities, and structured parking."
+  },
+  {
+    "id": "4",
+    "slug": "grandview-multifamily",
+    "title": "Grandview Heights Multifamily – 24 Units",
+    "address": "1200 W 3rd Ave",
+    "city": "Columbus",
+    "state": "OH",
+    "latitude": 40.0212,
+    "longitude": -83.0489,
+    "propertyType": "Multifamily",
+    "listingType": "For Sale",
+    "squareFeet": 28500,
+    "acreage": 1.1,
+    "features": ["Balconies", "Laundry", "Pet Friendly"],
+    "heroImage": "/images/placeholders/listing-4.jpg",
+    "galleryImages": [
+      "/images/placeholders/listing-4.jpg",
+      "/images/placeholders/listing-4b.jpg"
+    ],
+    "description": "Stabilized 24-unit multifamily asset in desirable Grandview Heights. Strong in-place rents and low turnover. Walking distance to Grandview Avenue retail and dining. Opportunity for value-add or hold for yield."
+  },
+  {
+    "id": "5",
+    "slug": "grove-city-land-development",
+    "title": "Grove City Land – Development Opportunity",
+    "address": "4500 Hoover Rd",
+    "city": "Grove City",
+    "state": "OH",
+    "latitude": 39.8681,
+    "longitude": -83.0567,
+    "propertyType": "Land",
+    "listingType": "For Sale",
+    "squareFeet": null,
+    "acreage": 15.5,
+    "features": ["Highway Frontage", "Utilities Available", "Zoned Commercial"],
+    "heroImage": "/images/placeholders/listing-5.jpg",
+    "galleryImages": [
+      "/images/placeholders/listing-5.jpg"
+    ],
+    "description": "15.5-acre development site with frontage on Hoover Road and strong visibility from I-71. Zoned for commercial/retail. Utilities at street. Ideal for retail pad development, medical office, or mixed-use. Grove City is one of the fastest-growing submarkets in Central Ohio."
+  },
+  {
+    "id": "6",
+    "slug": "sawmill-retail-investment",
+    "title": "Sawmill Road Retail – 8% Cap Rate",
+    "address": "4200 Sawmill Rd",
+    "city": "Columbus",
+    "state": "OH",
+    "latitude": 40.0589,
+    "longitude": -83.0914,
+    "propertyType": "Retail",
+    "listingType": "For Sale",
+    "squareFeet": 6500,
+    "acreage": 0.4,
+    "features": ["Investment", "Retail", "High Visibility"],
+    "heroImage": "/images/placeholders/listing-6.jpg",
+    "galleryImages": ["/images/placeholders/listing-6.jpg"],
+    "description": "Stabilized single-tenant retail building on Sawmill Road. Strong credit or established local tenant. 8% cap rate. Ideal for investors seeking yield in a high-traffic Columbus corridor. Assumable financing may be available.",
+    "investmentMetrics": {
+      "noi": 120000,
+      "price": 1500000,
+      "capRate": 0.08
+    }
+  }
+]
