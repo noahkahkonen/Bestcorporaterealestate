@@ -62,7 +62,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
               {listing.propertyType === "Land" && listing.landSubcategory ? (
                 <>
                   <PropertyTypeTag propertyType={listing.propertyType} />
-                  <span className="mx-1">–</span>
+                  <span className="mx-1" />
                   <PropertyTypeTag propertyType={listing.landSubcategory} />
                 </>
               ) : (

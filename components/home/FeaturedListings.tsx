@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import FeaturedListingCard from "@/components/home/FeaturedListingCard";
+import ListingCard from "@/components/ListingCard";
 import type { Listing } from "@/types/listing";
 
 const INITIAL_COUNT = 3;
@@ -40,7 +40,7 @@ export default function FeaturedListings({ listings }: FeaturedListingsProps) {
         </div>
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {displayed.map((listing, i) => (
-            <FeaturedListingCard key={listing.id} listing={listing} priority={i < 3} />
+            <ListingCard key={listing.id} listing={listing} priority={i < 3} />
           ))}
         </div>
         {hasMore && (

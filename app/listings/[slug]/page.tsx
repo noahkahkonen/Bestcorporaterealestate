@@ -13,7 +13,7 @@ import CashOnCashCalculator from "@/components/CashOnCashCalculator";
 import MonthlyRentCalculator from "@/components/MonthlyRentCalculator";
 import InteractiveSitePlan from "@/components/InteractiveSitePlan";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import { formatPhone } from "@/lib/format-phone";
+import BrokerContactReveal from "@/components/BrokerContactReveal";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -181,7 +181,7 @@ export default async function PropertyPage({ params }: Props) {
           </div>
 
           <aside className="mt-10 min-w-0 space-y-6 lg:sticky lg:top-24 lg:mt-0 lg:grid lg:self-start lg:grid-cols-1">
-            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-8 shadow-sm">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] px-[10px] py-5 shadow-sm">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
                 {listing.brokers && listing.brokers.length > 1 ? "Listing brokers" : "Listing broker"}
               </h3>
@@ -206,7 +206,7 @@ export default async function PropertyPage({ params }: Props) {
                         </div>
                       )}
                       <div className="min-w-0 flex-1 space-y-2">
-                        <p className="text-lg font-semibold text-[var(--charcoal)]">
+                        <p className="whitespace-nowrap text-lg font-semibold text-[var(--charcoal)]">
                           {broker.name}
                           {broker.credentials && (
                             <span className="ml-1 text-sm font-normal text-[var(--charcoal-light)]">
@@ -217,27 +217,11 @@ export default async function PropertyPage({ params }: Props) {
                         {broker.title && (
                           <p className="text-sm text-[var(--charcoal-light)]">{broker.title}</p>
                         )}
-                        <dl className="space-y-1.5">
-                          {broker.phone && (
-                            <div>
-                              <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Phone</dt>
-                              <dd>
-                                <a href={`tel:+1${broker.phone.replace(/\D/g, "").slice(-10)}`} className="text-[var(--charcoal)] hover:text-[var(--navy)]">
-                                  {formatPhone(broker.phone)}
-                                  {broker.ext && ` Ext. ${broker.ext}`}
-                                </a>
-                              </dd>
-                            </div>
-                          )}
-                          <div>
-                            <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Email</dt>
-                            <dd>
-                              <a href={`mailto:${broker.email}`} className="whitespace-nowrap text-[var(--charcoal)] hover:text-[var(--navy)]">
-                                {broker.email}
-                              </a>
-                            </dd>
-                          </div>
-                        </dl>
+                        <BrokerContactReveal
+                          phone={broker.phone}
+                          ext={broker.ext}
+                          email={broker.email}
+                        />
                       </div>
                     </div>
                   </div>
@@ -250,9 +234,12 @@ export default async function PropertyPage({ params }: Props) {
                   <dl className="mt-4 space-y-2" />
                 </>
               )}
+              {listing.brokers && listing.brokers.length > 0 && (
+                <p className="mt-6 text-center text-xs text-[var(--muted)]">Click to reveal</p>
+              )}
               <Link
                 href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing.title)}`}
-                className="mt-6 flex w-full items-center justify-center rounded-md bg-[var(--navy)] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                className={`flex w-full items-center justify-center rounded-md bg-[var(--navy)] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 ${listing.brokers && listing.brokers.length > 0 ? "mt-2" : "mt-6"}`}
               >
                 Send a message
               </Link>
