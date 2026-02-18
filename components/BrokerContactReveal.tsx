@@ -34,9 +34,9 @@ export default function BrokerContactReveal({ phone, ext, email }: BrokerContact
     "flex h-12 w-12 shrink-0 items-center justify-center rounded-lg text-[var(--navy)] transition-opacity hover:opacity-80";
 
   return (
-    <div className="mt-2 flex flex-col gap-2">
+    <div className="-ml-4 mt-2 flex flex-col gap-2">
       {phone && (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setRevealedPhone(true)}
@@ -56,7 +56,7 @@ export default function BrokerContactReveal({ phone, ext, email }: BrokerContact
           ) : null}
         </div>
       )}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <button
           type="button"
           onClick={() => setRevealedEmail(true)}
