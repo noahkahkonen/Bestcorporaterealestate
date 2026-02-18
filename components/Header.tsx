@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
 
-const SERVICE_LINKS = [
-  { href: "/services#seller-representation", label: "Seller Representation" },
-  { href: "/services#landlord-representation", label: "Landlord Representation" },
-  { href: "/services#buyer-representation", label: "Buyer Representation" },
-  { href: "/services#tenant-representation", label: "Tenant Representation" },
+const SERVICE_CATEGORIES = [
+  { href: "/services#seller-representation", label: "Commercial services" },
+  { href: "/services#residential-services", label: "Residential services" },
+  { href: "/services#property-management", label: "Property management" },
 ];
 
 export default function Header() {
@@ -28,14 +28,21 @@ export default function Header() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--surface)]/80 text-[var(--foreground)]">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--navy)]"
+          className="flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--header-logo-text)]"
         >
-          <span className="h-8 w-8 rounded bg-[var(--navy)]" aria-hidden />
-          Best Corporate Real Estate
+          <Image
+            src="/images/best-logo.png"
+            alt="Best Corporate Real Estate"
+            width={240}
+            height={80}
+            className="h-16 w-auto bg-transparent"
+            priority
+            unoptimized
+          />
         </Link>
 
         <nav className="hidden md:flex md:items-center md:gap-1">
@@ -62,32 +69,35 @@ export default function Header() {
             </button>
             {openDropdown === "listings" && (
               <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[220px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
-                  <p className="px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                    Listing type
-                  </p>
-                  {LISTING_TYPES.map((type) => (
-                    <Link
-                      key={type}
-                      href={`/listings?listingType=${encodeURIComponent(type)}`}
-                      className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-gray-50 hover:text-[var(--navy)]"
-                    >
-                      {type}
-                    </Link>
-                  ))}
-                  <div className="my-2 border-t border-[var(--border)]" />
-                  <p className="px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                    By asset type
-                  </p>
-                  {PROPERTY_TYPES.map((type) => (
-                    <Link
-                      key={type}
-                      href={`/listings?propertyType=${encodeURIComponent(type)}`}
-                      className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-gray-50 hover:text-[var(--navy)]"
-                    >
-                      {type}
-                    </Link>
-                  ))}
+                <div className="grid min-w-[280px] max-w-[min(380px,90vw)] grid-cols-2 gap-x-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-lg sm:min-w-[380px]">
+                  <div>
+                    <p className="py-1 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      Listing type
+                    </p>
+                    {LISTING_TYPES.map((type) => (
+                      <Link
+                        key={type}
+                        href={`/listings?listingType=${encodeURIComponent(type)}`}
+                        className="block py-1.5 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
+                      >
+                        {type}
+                      </Link>
+                    ))}
+                  </div>
+                  <div>
+                    <p className="py-1 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      By asset type
+                    </p>
+                    {PROPERTY_TYPES.map((type) => (
+                      <Link
+                        key={type}
+                        href={`/listings?propertyType=${encodeURIComponent(type)}`}
+                        className="block py-1.5 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
+                      >
+                        {type}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -112,12 +122,12 @@ export default function Header() {
             </button>
             {openDropdown === "services" && (
               <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[220px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
-                  {SERVICE_LINKS.map(({ href, label }) => (
+                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
+                  {SERVICE_CATEGORIES.map(({ href, label }) => (
                     <Link
                       key={href}
                       href={href}
-                      className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-gray-50 hover:text-[var(--navy)]"
+                      className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
                     >
                       {label}
                     </Link>
@@ -146,10 +156,10 @@ export default function Header() {
             </button>
             {openDropdown === "team" && (
               <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[180px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
+                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
                   <Link
                     href="/team"
-                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-gray-50 hover:text-[var(--navy)]"
+                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
                   >
                     Our Team
                   </Link>
@@ -177,10 +187,10 @@ export default function Header() {
             </button>
             {openDropdown === "news" && (
               <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[180px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
+                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
                   <Link
                     href="/news"
-                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-gray-50 hover:text-[var(--navy)]"
+                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
                   >
                     News & Insights
                   </Link>
@@ -188,26 +198,19 @@ export default function Header() {
               </div>
             )}
           </div>
-
-          <Link
-            href="/contact"
-            className={`px-3 py-2 ${linkClass(pathname === "/contact")}`}
-          >
-            Contact
-          </Link>
         </nav>
 
         <div className="flex items-center gap-4">
           <Link
             href="/contact"
-            className="hidden rounded-md bg-[var(--navy)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 md:inline-block"
+            className="hidden rounded-md bg-[var(--navy)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:text-gray-900 md:inline-block"
           >
             Contact Us
           </Link>
 
           <button
             type="button"
-            className="rounded p-2 text-[var(--charcoal)] hover:bg-gray-100 md:hidden"
+            className="rounded p-2 text-[var(--charcoal)] hover:bg-[var(--surface-hover)] md:hidden"
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
@@ -224,11 +227,11 @@ export default function Header() {
 
       {/* Mobile menu with dropdowns */}
       {mobileOpen && (
-        <div className="border-t border-[var(--border)] bg-white px-4 py-4 md:hidden">
+        <div className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-1">
             <Link
               href="/"
-              className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-gray-50"
+              className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Home
@@ -261,7 +264,7 @@ export default function Header() {
             </div>
             <div className="rounded px-3 py-2">
               <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Services</p>
-              {SERVICE_LINKS.map(({ href, label }) => (
+              {SERVICE_CATEGORIES.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
@@ -272,12 +275,11 @@ export default function Header() {
                 </Link>
               ))}
             </div>
-            <Link href="/team" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Team</Link>
-            <Link href="/news" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-gray-50" onClick={() => setMobileOpen(false)}>News</Link>
-            <Link href="/contact" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-gray-50" onClick={() => setMobileOpen(false)}>Contact</Link>
+            <Link href="/team" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]" onClick={() => setMobileOpen(false)}>Team</Link>
+            <Link href="/news" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]" onClick={() => setMobileOpen(false)}>News</Link>
             <Link
               href="/contact"
-              className="mt-2 rounded-md bg-[var(--navy)] px-4 py-2.5 text-center text-sm font-medium text-white"
+              className="mt-2 rounded-md bg-[var(--navy)] px-4 py-2.5 text-center text-sm font-medium text-white dark:text-gray-900"
               onClick={() => setMobileOpen(false)}
             >
               Contact Us

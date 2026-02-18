@@ -1,13 +1,35 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { LoadScriptNext, GoogleMap, useGoogleMap } from "@react-google-maps/api";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
+import { useMapStyles } from "@/lib/use-map-styles";
 import type { Listing } from "@/types/listing";
 
 const DEFAULT_CENTER = { lat: 39.9612, lng: -83.0007 };
 const DEFAULT_ZOOM = 10;
 const MAP_CONTAINER_STYLE = { width: "100%", height: "100%" };
+
+function getMarkerIcon() {
+  if (typeof google === "undefined" || !google.maps) return undefined;
+  return {
+    url: "/images/map-marker.svg",
+    scaledSize: new google.maps.Size(56, 56),
+    anchor: new google.maps.Point(28, 56),
+  };
+}
+
+// Columbus/Central Ohio bounds - exclude markers with invalid or out-of-region coordinates
+const VALID_LAT_MIN = 38.5;
+const VALID_LAT_MAX = 41.5;
+const VALID_LNG_MIN = -84.5;
+const VALID_LNG_MAX = -81.5;
+
+function isValidMapPosition(lat: number, lng: number): boolean {
+  if (lat == null || lng == null || Number.isNaN(lat) || Number.isNaN(lng)) return false;
+  if (lat === 0 && lng === 0) return false; // middle of ocean
+  return lat >= VALID_LAT_MIN && lat <= VALID_LAT_MAX && lng >= VALID_LNG_MIN && lng <= VALID_LNG_MAX;
+}
 
 function MapMarkers({
   listings,
@@ -27,15 +49,17 @@ function MapMarkers({
     clustererRef.current?.clearMarkers();
     clustererRef.current = null;
 
+    const validListings = listings.filter((l) => isValidMapPosition(l.latitude, l.longitude));
     const bounds = new google.maps.LatLngBounds();
     const markers: google.maps.Marker[] = [];
-    listings.forEach((listing) => {
+    validListings.forEach((listing) => {
       const position = { lat: listing.latitude, lng: listing.longitude };
       bounds.extend(position);
       const marker = new google.maps.Marker({
         map,
         position,
         title: listing.title,
+        icon: getMarkerIcon(),
       });
       marker.addListener("click", () => onSelectListing(listing));
       markers.push(marker);
@@ -49,11 +73,14 @@ function MapMarkers({
         // ignore
       }
     }
-    if (listings.length === 1) {
-      map.setCenter({ lat: listings[0].latitude, lng: listings[0].longitude });
+    if (validListings.length === 1) {
+      map.setCenter({ lat: validListings[0].latitude, lng: validListings[0].longitude });
       map.setZoom(14);
-    } else {
+    } else if (validListings.length > 1) {
       map.fitBounds(bounds, { top: 48, right: 48, bottom: 48, left: 48 });
+    } else {
+      map.setCenter(DEFAULT_CENTER);
+      map.setZoom(DEFAULT_ZOOM);
     }
     return () => {
       markers.forEach((m) => m.setMap(null));
@@ -77,6 +104,7 @@ function MapWithMarkers({
     (listing: Listing) => onSelectListing(listing),
     [onSelectListing]
   );
+  const styles = useMapStyles();
 
   return (
     <div className="relative h-full min-h-[400px] w-full">
@@ -89,21 +117,19 @@ function MapWithMarkers({
           mapTypeControl: true,
           fullscreenControl: true,
           streetViewControl: false,
-          styles: [
-            { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] },
-          ],
+          styles: styles as google.maps.MapTypeStyle[],
         }}
       >
         <MapMarkers listings={listings} onSelectListing={handleSelect} />
       </GoogleMap>
       {selectedListing && (
         <div
-          className="absolute bottom-4 left-4 right-4 z-10 max-w-md rounded-lg border border-gray-200 bg-white p-4 shadow-lg sm:left-6"
+          className="absolute bottom-4 left-4 right-4 z-10 max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-lg sm:left-6"
           role="dialog"
           aria-label="Listing info"
         >
           <div className="flex gap-3">
-            <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded bg-gray-100">
+            <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded bg-[var(--surface-muted)]">
               <div className="placeholder-img h-full w-full" />
             </div>
             <div className="min-w-0 flex-1">
@@ -124,7 +150,7 @@ function MapWithMarkers({
           </div>
           <button
             type="button"
-            className="absolute right-2 top-2 rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            className="absolute right-2 top-2 rounded p-1 text-[var(--muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--charcoal)]"
             aria-label="Close"
             onClick={() => onSelectListing(null)}
           >
@@ -155,7 +181,7 @@ export default function ListingsMap({
 
   if (!apiKey || apiKey === "your_google_maps_api_key_here") {
     return (
-      <div className="flex h-full min-h-[400px] items-center justify-center bg-gray-100 text-[var(--charcoal-light)]">
+      <div className="flex h-full min-h-[400px] items-center justify-center bg-[var(--surface-muted)] text-[var(--charcoal-light)]">
         <p className="px-4 text-center text-sm">
           Map placeholder. Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to .env.local to show the map.
         </p>

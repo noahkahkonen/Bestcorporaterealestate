@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { computeInvestmentSummary } from "@/lib/investment-metrics";
 import type { InvestmentMetrics } from "@/types/listing";
 
@@ -9,7 +10,7 @@ interface InvestmentMetricsSectionProps {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-sm text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]";
+  "w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]";
 
 export default function InvestmentMetricsSection({ metrics }: InvestmentMetricsSectionProps) {
   const [price, setPrice] = useState(stringifyNum(metrics.price));
@@ -36,7 +37,7 @@ export default function InvestmentMetricsSection({ metrics }: InvestmentMetricsS
   );
 
   return (
-    <div className="rounded-lg border border-[var(--border)] bg-white p-6 shadow-sm">
+    <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-6 shadow-sm">
       <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
         Investment calculator
       </h3>
@@ -44,48 +45,57 @@ export default function InvestmentMetricsSection({ metrics }: InvestmentMetricsS
         Adjust price, down payment, and rate. Cap rate = NOI ÷ price. 25-year amortization.
       </p>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <div className="min-w-0 flex-1 basis-[120px]">
           <label htmlFor="inv-price" className="block text-xs font-medium text-[var(--charcoal)]">
-            Price ($)
+            Price
           </label>
-          <input
-            id="inv-price"
-            type="text"
-            inputMode="numeric"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            placeholder={metrics.price.toLocaleString()}
-            className={inputClass}
-          />
+          <div className="relative mt-0.5">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]">$</span>
+            <input
+              id="inv-price"
+              type="text"
+              inputMode="numeric"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder={metrics.price.toLocaleString()}
+              className={`${inputClass} pl-7`}
+            />
+          </div>
         </div>
-        <div>
+        <div className="min-w-0 flex-1 basis-[120px]">
           <label htmlFor="inv-down" className="block text-xs font-medium text-[var(--charcoal)]">
-            Down payment ($)
+            Down payment
           </label>
-          <input
-            id="inv-down"
-            type="text"
-            inputMode="numeric"
-            value={downPayment}
-            onChange={(e) => setDownPayment(e.target.value)}
-            placeholder={defaultDown.toLocaleString()}
-            className={inputClass}
-          />
+          <div className="relative mt-0.5">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]">$</span>
+            <input
+              id="inv-down"
+              type="text"
+              inputMode="numeric"
+              value={downPayment}
+              onChange={(e) => setDownPayment(e.target.value)}
+              placeholder={defaultDown.toLocaleString()}
+              className={`${inputClass} pl-7`}
+            />
+          </div>
         </div>
-        <div className="col-span-2">
+        <div className="min-w-0 flex-[0_0_70px]">
           <label htmlFor="inv-rate" className="block text-xs font-medium text-[var(--charcoal)]">
-            Interest rate (%)
+            Interest rate
           </label>
-          <input
-            id="inv-rate"
-            type="text"
-            inputMode="decimal"
-            value={interestRate}
-            onChange={(e) => setInterestRate(e.target.value)}
-            placeholder="7"
-            className={inputClass}
-          />
+          <div className="relative mt-0.5">
+            <input
+              id="inv-rate"
+              type="text"
+              inputMode="decimal"
+              value={interestRate}
+              onChange={(e) => setInterestRate(e.target.value)}
+              placeholder="7"
+              className={`${inputClass} pr-8`}
+            />
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]">%</span>
+          </div>
         </div>
       </div>
 
@@ -127,6 +137,11 @@ export default function InvestmentMetricsSection({ metrics }: InvestmentMetricsS
           </dd>
         </div>
       </dl>
+      <p className="mt-5 border-t border-[var(--border)] pt-4 text-xs text-[var(--charcoal-light)]">
+        <Link href="/like-kind-exchange" className="text-[var(--navy)] hover:underline">
+          What is a 1031 Like-Kind Exchange?
+        </Link>
+      </p>
     </div>
   );
 }

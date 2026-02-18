@@ -17,7 +17,14 @@ interface PropertyTypeTagProps {
 export default function PropertyTypeTag({ propertyType, className = "" }: PropertyTypeTagProps) {
   const color = PROPERTY_TYPE_VARS[propertyType] ?? "var(--charcoal)";
   return (
-    <span className={className} style={{ color }}>
+    <span
+      className={`inline-block rounded-md px-2 py-0.5 ${className}`}
+      style={{
+        color: `color-mix(in srgb, ${color} 75%, white)`,
+        backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
+        textShadow: `0 0 2px color-mix(in srgb, ${color} 20%, transparent)`,
+      }}
+    >
       {propertyType}
     </span>
   );

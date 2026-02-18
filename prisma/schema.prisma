@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id        String   @id @default(cuid())
+  name      String
+  title     String?
+  email     String
+  phone     String?
+  ext       String?
+  credentials String?
+  website   String?
+  headshot  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  listings  ListingBroker[]
+}
+
+model ContactMessage {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  service      String?
+  message      String
+  listingSlug  String?  // Property user was viewing when they clicked "Send a message"
+  listingTitle String?  // Property title for display in inbox
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model FeatureOption {
+  id    String @id @default(cuid())
+  label String @unique
+}
+
+model Listing {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  nickname        String?
+  address         String
+  city            String
+  state           String   @default("OH")
+  zipCode         String?
+  latitude        Float
+  longitude       Float
+  listingType     String   // For Sale, For Lease, Sale/Lease
+  propertyType    String   // Retail, Industrial, etc.
+  landSubcategory String?  // When Land: Retail, Office, Industrial, Specialty, Residential
+  squareFeet      Int?
+  acreage         Float?
+  isMultiTenant   Boolean  @default(false)
+  unitCount       Int?
+  unitsJson       String?  // JSON: [{ name, squareFeet, acreage? }]
+  description     String
+  featuresJson    String   // JSON array of feature strings
+  heroImage       String?
+  galleryImagesJson String? // JSON array of paths
+  floorPlan       String?
+  sitePlan        String?
+  brochure        String?
+  youtubeLink     String?
+  noi             Float?
+  price           Float?
+  priceNegotiable Boolean  @default(false)
+  leaseType       String?  // NNN, MG, FSG, Modified (for For Lease / Sale/Lease)
+  leasePricePerSf  Float?   // $/SF/Y for lease listings
+  leaseNnnCharges   Float?   // $/SF for NNN charges (when lease type is NNN)
+  capRate         Float?
+  occupancy       String?  // Owner User, Investment, Owner User/Investment (For Sale & Sale/Lease only)
+  published       Boolean  @default(true)
+  featured        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  brokers         ListingBroker[]
+}
+
+model ListingBroker {
+  listingId String
+  agentId   String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  agent     Agent   @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  @@id([listingId, agentId])
+}
+
+model LeaseApplication {
+  id                    String   @id @default(cuid())
+  listingSlug           String
+  listingTitle          String
+  firstName              String
+  lastName               String
+  businessName           String?
+  use                    String?   // Intended use of property
+  dateOfBirth            String?
+  phone                  String?
+  email                  String
+  ssn                    String?   // Stored for processing; consider encryption in production
+  businessPlanPath       String?
+  financialsPathsJson    String?   // JSON array of file paths
+  creditCheckAcknowledged Boolean @default(false)
+  signatureName          String   // Typed name acting as signature
+  createdAt              DateTime @default(now())
+}

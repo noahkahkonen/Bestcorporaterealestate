@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import listingsData from "@/data/listings.json";
+import { Suspense } from "react";
+import { getListings } from "@/lib/listings";
 import type { Listing } from "@/types/listing";
 import ListingsClient from "./ListingsClient";
 
@@ -9,31 +10,23 @@ export const metadata: Metadata = {
     "Commercial real estate listings in Columbus and Central Ohio. Office, retail, industrial, multifamily, and land.",
 };
 
-type Props = { searchParams: Promise<{ listingType?: string; propertyType?: string }> };
+type Props = { searchParams: Promise<{ listingType?: string; propertyType?: string; city?: string }> };
 
 export default async function ListingsPage({ searchParams }: Props) {
-  const listings = listingsData as Listing[];
+  const listings = await getListings();
   const params = await searchParams;
   const initialFilters = {
     listingType: params.listingType ?? "",
     propertyType: params.propertyType ?? "",
-    city: "",
+    city: params.city ?? "",
     features: [] as string[],
   };
 
   return (
     <div className="pb-16">
-      <div className="border-b border-[var(--border)] bg-white py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
-            Listings
-          </h1>
-          <p className="mt-2 text-[var(--charcoal-light)]">
-            Explore commercial properties across Columbus and Central Ohio.
-          </p>
-        </div>
-      </div>
-      <ListingsClient listings={listings} initialFilters={initialFilters} />
+      <Suspense fallback={<div className="mx-auto max-w-6xl px-4 py-10 text-[var(--charcoal-light)]">Loading...</div>}>
+        <ListingsClient listings={listings} initialFilters={initialFilters} />
+      </Suspense>
     </div>
   );
 }

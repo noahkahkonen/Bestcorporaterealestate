@@ -14,16 +14,23 @@ const SERVICE_OPTIONS = [
 ];
 
 const inputClass =
-  "mt-2 w-full rounded-lg border border-[var(--border)] bg-white px-4 py-3 text-base text-[var(--charcoal)] placeholder:text-[var(--muted)] focus:border-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--navy)]/20 transition-shadow";
+  "mt-2 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-base text-[var(--charcoal)] placeholder:text-[var(--muted)] focus:border-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--navy)]/20 transition-shadow";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  listingSlug?: string;
+  listingTitle?: string;
+}
+
+export default function ContactForm({ listingSlug, listingTitle }: ContactFormProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [recaptchaError, setRecaptchaError] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setRecaptchaError(false);
+    setErrorMessage("");
 
     const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
     if (siteKey && !recaptchaToken) {
@@ -36,6 +43,8 @@ export default function ContactForm() {
     const formData = new FormData(form);
     const body: Record<string, string> = Object.fromEntries(formData.entries()) as Record<string, string>;
     if (recaptchaToken) body.recaptchaToken = recaptchaToken;
+    if (listingSlug) body.listingSlug = listingSlug;
+    if (listingTitle) body.listingTitle = listingTitle;
 
     try {
       const res = await fetch("/api/contact", {
@@ -43,15 +52,19 @@ export default function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         setStatus("success");
+        setErrorMessage("");
         form.reset();
         setRecaptchaToken(null);
       } else {
         setStatus("error");
+        setErrorMessage(data.error || "Something went wrong. Please try again.");
       }
     } catch {
       setStatus("error");
+      setErrorMessage("Network error. Please check your connection and try again.");
     }
   }
 
@@ -59,6 +72,11 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {listingTitle && (
+        <p className="rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-2 text-sm text-[var(--charcoal-light)]">
+          Inquiry about: <span className="font-medium text-[var(--charcoal)]">{listingTitle}</span>
+        </p>
+      )}
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="block text-sm font-semibold text-[var(--charcoal)]">
@@ -154,7 +172,7 @@ export default function ContactForm() {
       )}
       {status === "error" && (
         <div className="rounded-lg bg-red-50 p-4 text-sm font-medium text-red-800">
-          Something went wrong. Please try again.
+          {errorMessage}
         </div>
       )}
       <button

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
@@ -19,7 +20,7 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, service, message, recaptchaToken } = body;
+    const { name, email, phone, service, message, recaptchaToken, listingSlug, listingTitle } = body;
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: "Name, email, and message are required" },
@@ -41,10 +42,21 @@ export async function POST(request: Request) {
         );
       }
     }
-    // Placeholder: log or send to your CRM/email service later
-    console.log("Contact form submission:", { name, email, phone, service, message });
+    await prisma.contactMessage.create({
+      data: {
+        name,
+        email,
+        phone: phone || null,
+        service: service || null,
+        message,
+        listingSlug: listingSlug || null,
+        listingTitle: listingTitle || null,
+      },
+    });
     return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+  } catch (err) {
+    console.error("Contact form error:", err);
+    const msg = err instanceof Error ? err.message : "Failed to send message";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1d21;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --surface-hover: #f3f4f6;
   --navy: #047857;
   --navy-light: #059669;
   --charcoal: #2d3748;
@@ -19,6 +22,33 @@
   --property-specialty: #ea580c;
   --property-residential: #6b7280;
   --property-business: #6b7280;
+  --header-logo-text: var(--navy);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1115;
+    --foreground: #f1f5f9;
+    --surface: #1a1d24;
+    --surface-muted: #14171c;
+    --surface-hover: #252a33;
+    --navy: #34d399;
+    --navy-light: #6ee7b7;
+    --charcoal: #e2e8f0;
+    --charcoal-light: #cbd5e1;
+    --accent: #34d399;
+    --muted: #94a3b8;
+    --border: #334155;
+    --property-retail: #34d399;
+    --property-industrial: #60a5fa;
+    --property-office: #f87171;
+    --property-multifamily: #fbbf24;
+    --property-land: #a78bfa;
+    --property-specialty: #fb923c;
+    --property-residential: #94a3b8;
+    --property-business: #94a3b8;
+    --header-logo-text: #ffffff;
+  }
 }
 
 @theme inline {
@@ -29,15 +59,27 @@
 }
 
 html {
-  font-size: 16px;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: clip;
+  scrollbar-gutter: stable; /* Reserve scrollbar space so viewport units don't cause horizontal overflow */
 }
+
 @media (min-width: 1024px) {
   html {
-    font-size: 18px;
+    font-size: 15px;
   }
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -51,4 +93,17 @@ a, button {
 /* Placeholder image background for listings */
 .placeholder-img {
   background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+}
+@media (prefers-color-scheme: dark) {
+  .placeholder-img {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  }
+}
+
+/* Hero image: system dark mode detection */
+.hero-img-light { display: block !important; }
+.hero-img-dark { display: none !important; }
+@media (prefers-color-scheme: dark) {
+  .hero-img-light { display: none !important; }
+  .hero-img-dark { display: block !important; }
 }

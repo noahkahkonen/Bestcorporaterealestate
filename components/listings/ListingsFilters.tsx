@@ -53,19 +53,22 @@ export default function ListingsFilters({
   const allFeatures = useMemo(() => getAllFeatures(listings), [listings]);
 
   const update = (partial: Partial<FilterState>) => {
-    onFiltersChange({ ...filters, ...partial });
+    // When changing property type or listing type, clear features to avoid over-filtering
+    const next = { ...filters, ...partial };
+    if ("propertyType" in partial || "listingType" in partial) {
+      next.features = [];
+    }
+    onFiltersChange(next);
   };
 
   const selectedFeature = filters.features[0] ?? "";
 
   const selectBase =
-    "min-h-[48px] min-w-[180px] rounded-lg border border-[var(--border)] bg-white pl-4 pr-10 text-base text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--navy)]";
+    "min-h-[48px] min-w-[180px] rounded-lg border border-[var(--border)] bg-[var(--surface)] pl-4 pr-10 text-base text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--navy)]";
 
   return (
-    <div className="border-b border-[var(--border)] bg-white px-4 py-5 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-wrap items-end gap-5">
-          <div>
+    <div className="flex flex-wrap items-end gap-4 sm:gap-5">
+      <div>
             <label htmlFor="property-type" className="mb-2 block text-sm font-medium text-[var(--charcoal-light)]">
               Property Type
             </label>
@@ -82,8 +85,8 @@ export default function ListingsFilters({
                 </option>
               ))}
             </select>
-          </div>
-          <div>
+      </div>
+      <div>
             <label htmlFor="listing-type" className="mb-2 block text-sm font-medium text-[var(--charcoal-light)]">
               Listing Type
             </label>
@@ -100,8 +103,8 @@ export default function ListingsFilters({
                 </option>
               ))}
             </select>
-          </div>
-          <div>
+      </div>
+      <div>
             <label htmlFor="city" className="mb-2 block text-sm font-medium text-[var(--charcoal-light)]">
               City
             </label>
@@ -139,8 +142,6 @@ export default function ListingsFilters({
               </select>
             </div>
           )}
-        </div>
-      </div>
     </div>
   );
 }

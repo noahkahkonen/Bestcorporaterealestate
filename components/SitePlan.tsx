@@ -64,7 +64,7 @@ export default function SitePlan({ units, roadName = "Kings Highway Cut-Off" }: 
     <div className="relative w-full">
       <svg
         viewBox={`0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`}
-        className="w-full max-w-2xl rounded-lg border border-[var(--border)] bg-[#f8fafc] text-[var(--charcoal)]"
+        className="w-full max-w-2xl rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--charcoal)]"
         style={{ aspectRatio: `${VIEW_WIDTH} / ${VIEW_HEIGHT}` }}
       >
         {/* Road (west boundary – Kings Highway Cut-Off) */}
@@ -174,13 +174,13 @@ export default function SitePlan({ units, roadName = "Kings Highway Cut-Off" }: 
             aria-hidden
             onClick={() => setSelectedId(null)}
           />
-          <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-lg border border-[var(--border)] bg-white p-5 shadow-xl">
+          <div className="fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5 shadow-xl">
             <div className="flex justify-between">
               <h4 className="font-semibold text-[var(--charcoal)]">Unit {selectedUnit.id}</h4>
               <button
                 type="button"
                 onClick={() => setSelectedId(null)}
-                className="rounded p-1 text-[var(--muted)] hover:bg-gray-100 hover:text-[var(--charcoal)]"
+                className="rounded p-1 text-[var(--muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--charcoal)]"
                 aria-label="Close"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

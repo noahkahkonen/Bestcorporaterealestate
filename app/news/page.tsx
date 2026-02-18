@@ -18,8 +18,8 @@ const ARTICLES = [
 export default function NewsPage() {
   return (
     <div className="pb-16">
-      <div className="border-b border-[var(--border)] bg-white py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="border-b border-[var(--border)] bg-[var(--surface)] py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
             News & Insights
           </h1>
@@ -28,12 +28,12 @@ export default function NewsPage() {
           </p>
         </div>
       </div>
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="space-y-8">
           {ARTICLES.map((article) => (
             <article
               key={article.slug}
-              className="flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-white transition-shadow hover:shadow-md sm:flex-row"
+              className="flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-shadow hover:shadow-md sm:flex-row"
             >
               <div className="relative h-48 w-full flex-shrink-0 sm:h-52 sm:w-72">
                 <Image
@@ -42,6 +42,7 @@ export default function NewsPage() {
                   fill
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, 288px"
+                  quality={90}
                 />
               </div>
               <div className="flex flex-1 flex-col justify-center p-6">
