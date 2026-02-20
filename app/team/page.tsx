@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { formatPhone } from "@/lib/format-phone";
 
 export const metadata: Metadata = {
@@ -7,81 +9,11 @@ export const metadata: Metadata = {
   description: "Meet the commercial real estate professionals at Best Corporate Real Estate in Columbus, Ohio.",
 };
 
-const MAIN_PHONE = "614-559-3350";
+export const dynamic = "force-dynamic";
 
-const TEAM = [
-  {
-    name: "Valerie Tivin",
-    title: "Managing Broker",
-    image: "/images/team/valerie-tivin.png",
-    phone: MAIN_PHONE,
-    ext: "110",
-    email: "vtivin@bestcorporaterealestate.com",
-  },
-  {
-    name: "Randy Best",
-    title: "Principal Broker",
-    credentials: "CCIM, SIOR",
-    image: "/images/team/randy-best.png",
-    phone: MAIN_PHONE,
-    ext: "112",
-    email: "rbest@bestcorporaterealestate.com",
-  },
-  {
-    name: "James Mangas",
-    title: "Senior Advisor",
-    credentials: "CCIM",
-    image: "/images/team/james-mangas.png",
-    phone: MAIN_PHONE,
-    ext: "115",
-    email: "jmangas@bestcorporaterealestate.com",
-  },
-  {
-    name: "Rebecca Withrow",
-    title: "Advisor",
-    credentials: "CCIM",
-    image: "/images/team/rebecca-withrow.png",
-    phone: MAIN_PHONE,
-    ext: "111",
-    email: "rwithrow@bestcorporaterealestate.com",
-  },
-  {
-    name: "Glenn Garland",
-    title: "Advisor",
-    image: "/images/team/glenn-garland.png",
-    phone: MAIN_PHONE,
-    ext: "123",
-    email: "ggarland@bestcorporaterealestate.com",
-  },
-  {
-    name: "Jack Holstein",
-    title: "Advisor",
-    image: "/images/team/jack-holstein.png",
-    phone: MAIN_PHONE,
-    ext: "116",
-    email: "jdh@bizcorp1.com",
-  },
-  {
-    name: "Richard Barth",
-    title: "Advisor",
-    credentials: "CBI, CBC, CMEA, CSBA",
-    image: "/images/team/richard-barth.png",
-    phone: MAIN_PHONE,
-    ext: "120",
-    email: "rbarth@bestcorporaterealestate.com",
-    website: "www.jrbarth.com",
-  },
-  {
-    name: "Sandra Azeez",
-    title: "Advisor",
-    image: "/images/team/sandra-azeez.png",
-    phone: MAIN_PHONE,
-    ext: "121",
-    email: "sazeez@bestcorporaterealestate.com",
-  },
-];
+export default async function TeamPage() {
+  const agents = await prisma.agent.findMany({ orderBy: { order: "asc" } });
 
-export default function TeamPage() {
   return (
     <div className="pb-16">
       <div className="border-b border-[var(--border)] bg-[var(--surface)] py-16">
@@ -96,48 +28,61 @@ export default function TeamPage() {
       </div>
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {TEAM.map((member) => (
+          {agents.map((agent) => (
             <article
-              key={member.email}
-              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] overflow-hidden shadow-sm transition-shadow hover:shadow-md"
+              key={agent.id}
+              className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-shadow hover:shadow-md"
             >
-              <div className="relative aspect-square w-full overflow-hidden bg-[var(--surface-muted)]">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                  quality={90}
-                />
-              </div>
-              <div className="min-w-0 p-4">
-                <p className="font-semibold text-[var(--charcoal)]">
-                  {member.name}
-                  {member.credentials && (
-                    <span className="ml-1 font-normal text-[var(--charcoal-light)]">
-                      {member.credentials}
-                    </span>
+              <Link href={`/team/${agent.slug || agent.id}`} className="block">
+                <div className="relative aspect-square w-full overflow-hidden bg-[var(--surface-muted)]">
+                  {agent.headshot ? (
+                    <Image
+                      src={agent.headshot}
+                      alt={agent.name}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                      quality={90}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-4xl font-semibold text-[var(--muted)]">
+                      {agent.name.charAt(0)}
+                    </div>
                   )}
-                </p>
-                <p className="text-sm text-[var(--navy)]">{member.title}</p>
-                <p className="mt-1 text-sm text-[var(--charcoal-light)]">
-                  {formatPhone(member.phone)}{member.ext && ` Ext. ${member.ext}`}
-                </p>
+                </div>
+                <div className="min-w-0 p-4">
+                  <p className="font-semibold text-[var(--charcoal)]">
+                    {agent.name}
+                    {agent.credentials && (
+                      <span className="ml-1 font-normal text-[var(--charcoal-light)]">
+                        {agent.credentials}
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-sm text-[var(--navy)]">{agent.title || "Team Member"}</p>
+                </div>
+              </Link>
+              <div className="min-w-0 px-4 pb-4">
+                {agent.phone && (
+                  <p className="text-sm text-[var(--charcoal-light)]">
+                    {formatPhone(agent.phone)}
+                    {agent.ext && ` Ext. ${agent.ext}`}
+                  </p>
+                )}
                 <a
-                  href={`mailto:${member.email}`}
+                  href={`mailto:${agent.email}`}
                   className="mt-1 block whitespace-nowrap text-sm text-[var(--navy)] hover:underline"
                 >
-                  {member.email}
+                  {agent.email}
                 </a>
-                {member.website && (
+                {agent.website && (
                   <a
-                    href={`https://${member.website}`}
+                    href={agent.website.startsWith("http") ? agent.website : `https://${agent.website}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="mt-1 block text-sm text-[var(--navy)] hover:underline"
                   >
-                    {member.website}
+                    {agent.website.replace(/^https?:\/\//, "")}
                   </a>
                 )}
               </div>

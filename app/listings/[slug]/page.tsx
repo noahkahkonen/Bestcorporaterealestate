@@ -13,7 +13,7 @@ import CashOnCashCalculator from "@/components/CashOnCashCalculator";
 import MonthlyRentCalculator from "@/components/MonthlyRentCalculator";
 import InteractiveSitePlan from "@/components/InteractiveSitePlan";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
-import BrokerContactReveal from "@/components/BrokerContactReveal";
+import { formatPhone } from "@/lib/format-phone";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -89,8 +89,11 @@ export default async function PropertyPage({ params }: Props) {
                   {listing.title}
                 </h1>
                 <p className="mt-1 text-xl text-[var(--charcoal-light)] sm:text-2xl">
-                  {listing.address}, {listing.city}, {listing.state}
-                  {listing.zipCode && ` ${listing.zipCode}`}
+                  {listing.address},{" "}
+                  <span className="whitespace-nowrap">
+                    {listing.city}, {listing.state}
+                    {listing.zipCode && ` ${listing.zipCode}`}
+                  </span>
                 </p>
               </div>
               {headerPrice && (
@@ -101,28 +104,30 @@ export default async function PropertyPage({ params }: Props) {
             </div>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {stats.map(({ label, value }) => (
-                <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
-                    {label}
-                  </p>
-                  <p className="mt-1 font-semibold text-[var(--charcoal)]">
-                    {label === "Property Type" ? (
-                      value.includes(" – ") ? (
-                        <>
-                          <PropertyTypeTag propertyType={value.split(" – ")[0]!} />
-                          {" "}
-                          <PropertyTypeTag propertyType={value.split(" – ")[1]!} />
-                        </>
+              {stats.map(({ label, value }) => {
+                const isLandWithSub = label === "Property Type" && value.includes(" – ");
+                return (
+                  <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+                    <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                      {label}
+                    </p>
+                    <p className={`mt-1 font-semibold text-[var(--charcoal)] ${isLandWithSub ? "flex flex-nowrap items-center justify-center gap-[5px]" : ""}`}>
+                      {label === "Property Type" ? (
+                        value.includes(" – ") ? (
+                          <>
+                            <PropertyTypeTag propertyType={value.split(" – ")[0]!} className="shrink-0" />
+                            <PropertyTypeTag propertyType={value.split(" – ")[1]!} className="shrink-0" />
+                          </>
+                        ) : (
+                          <PropertyTypeTag propertyType={value} />
+                        )
                       ) : (
-                        <PropertyTypeTag propertyType={value} />
-                      )
-                    ) : (
-                      value
-                    )}
-                  </p>
-                </div>
-              ))}
+                        value
+                      )}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="mt-10">
@@ -217,11 +222,27 @@ export default async function PropertyPage({ params }: Props) {
                         {broker.title && (
                           <p className="text-sm text-[var(--charcoal-light)]">{broker.title}</p>
                         )}
-                        <BrokerContactReveal
-                          phone={broker.phone}
-                          ext={broker.ext}
-                          email={broker.email}
-                        />
+                        <dl className="mt-2 space-y-1.5">
+                          {broker.phone && (
+                            <div>
+                              <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Phone</dt>
+                              <dd>
+                                <a href={`tel:+1${broker.phone.replace(/\D/g, "").slice(-10)}`} className="text-sm text-[var(--charcoal)] hover:text-[var(--navy)]">
+                                  {formatPhone(broker.phone)}
+                                  {broker.ext && ` Ext. ${broker.ext}`}
+                                </a>
+                              </dd>
+                            </div>
+                          )}
+                          <div>
+                            <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Email</dt>
+                            <dd>
+                              <a href={`mailto:${broker.email}`} className="break-all text-sm text-[var(--charcoal)] hover:text-[var(--navy)]">
+                                {broker.email}
+                              </a>
+                            </dd>
+                          </div>
+                        </dl>
                       </div>
                     </div>
                   </div>
@@ -234,16 +255,13 @@ export default async function PropertyPage({ params }: Props) {
                   <dl className="mt-4 space-y-2" />
                 </>
               )}
-              {listing.brokers && listing.brokers.length > 0 && (
-                <p className="mt-6 text-center text-xs text-[var(--muted)]">Click to reveal</p>
-              )}
               <Link
                 href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing.title)}`}
-                className={`flex w-full items-center justify-center rounded-md bg-[var(--navy)] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 ${listing.brokers && listing.brokers.length > 0 ? "mt-2" : "mt-6"}`}
+                className="mt-6 flex w-full items-center justify-center rounded-md bg-[var(--navy)] px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Send a message
               </Link>
-              {listing.brochure && (
+              {listing.brochure ? (
                 <a
                   href={listing.brochure}
                   target="_blank"
@@ -252,6 +270,10 @@ export default async function PropertyPage({ params }: Props) {
                 >
                   Download brochure
                 </a>
+              ) : (
+                <div className="mt-3 flex w-full items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface-muted)] px-5 py-3 text-sm font-semibold text-[var(--muted)]">
+                  Download brochure
+                </div>
               )}
               <Link
                 href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing.title)}`}

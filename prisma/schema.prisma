@@ -8,16 +8,20 @@ datasource db {
 }
 
 model Agent {
-  id        String   @id @default(cuid())
-  name      String
-  title     String?
-  email     String
-  phone     String?
-  ext       String?
-  credentials String?
-  website   String?
-  headshot  String?
-  order     Int      @default(0)
+  id              String   @id @default(cuid())
+  slug            String?  @unique
+  name            String
+  title           String?
+  email           String
+  phone           String?
+  ext             String?
+  credentials     String?
+  website         String?
+  linkedIn        String?
+  description     String?  // Bio/overview for agent landing page
+  notableDealsJson String?  // JSON array of deal strings
+  headshot        String?
+  order           Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   listings  ListingBroker[]

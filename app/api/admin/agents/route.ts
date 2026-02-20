@@ -17,9 +17,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, title, email, phone, ext, credentials, website, headshot } = body;
+    const { name, title, email, phone, ext, credentials, website, linkedIn, description, notableDealsJson, headshot } = body;
+    const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const slug = (body.slug && String(body.slug).trim()) ? slugify(String(body.slug)) : (name ? slugify(name) : null);
     const agent = await prisma.agent.create({
       data: {
+        slug,
         name,
         title: title || null,
         email,
@@ -27,6 +30,9 @@ export async function POST(request: NextRequest) {
         ext: ext || null,
         credentials: credentials || null,
         website: website || null,
+        linkedIn: linkedIn || null,
+        description: description || null,
+        notableDealsJson: notableDealsJson || null,
         headshot: headshot || null,
       },
     });

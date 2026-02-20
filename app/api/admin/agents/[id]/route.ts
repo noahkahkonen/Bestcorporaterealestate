@@ -10,7 +10,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params;
   try {
     const body = await request.json();
-    const { name, title, email, phone, ext, credentials, website, headshot, order } = body;
+    const { name, slug, title, email, phone, ext, credentials, website, linkedIn, description, notableDealsJson, headshot, order } = body;
     const agent = await prisma.agent.update({
       where: { id },
       data: {
@@ -21,6 +21,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         ...(ext !== undefined && { ext: ext || null }),
         ...(credentials !== undefined && { credentials: credentials || null }),
         ...(website !== undefined && { website: website || null }),
+        ...(linkedIn !== undefined && { linkedIn: linkedIn || null }),
+        ...(slug !== undefined && { slug: slug || null }),
+        ...(description !== undefined && { description: description || null }),
+        ...(notableDealsJson !== undefined && { notableDealsJson: notableDealsJson || null }),
         ...(headshot !== undefined && { headshot: headshot || null }),
         ...(order !== undefined && { order: Number(order) ?? 0 }),
       },
