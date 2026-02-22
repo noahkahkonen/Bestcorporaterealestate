@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:seed-listings": "npx tsx prisma/seed-listings.ts",
+    "db:import-listings": "npx tsx scripts/bulk-import-listings.ts",
     "generate:marker": "node scripts/generate-marker.mjs"
   },
   "prisma": {

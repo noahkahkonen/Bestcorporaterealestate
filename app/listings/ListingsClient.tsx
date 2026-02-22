@@ -83,15 +83,17 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
           </div>
         </div>
       </div>
-      <div className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
-        <div className="h-[480px] w-full lg:h-[580px] rounded-lg overflow-hidden">
-          <ListingsMap
-            listings={filtered}
-            selectedListing={selectedListing}
-            onSelectListing={setSelectedListing}
-          />
+      {filters.propertyType !== "Business" && (
+        <div className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+          <div className="h-[480px] w-full lg:h-[580px] rounded-lg overflow-hidden">
+            <ListingsMap
+              listings={filtered}
+              selectedListing={selectedListing}
+              onSelectListing={setSelectedListing}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold text-[var(--charcoal)]">
           Listings {filtered.length > 0 && `(${filtered.length})`}
