@@ -17,7 +17,6 @@ export default async function HomePage() {
     <>
       <HomeHero />
       <FeaturedListings listings={listingsToShow} />
-      <NewsPreview />
       <section className="border-b border-[var(--border)] bg-[var(--surface)] py-14 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
@@ -36,8 +35,9 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-      <EmailSignup />
       <SoldDealsCarousel listings={soldListings} />
+      <EmailSignup />
+      <NewsPreview />
     </>
   );
 }

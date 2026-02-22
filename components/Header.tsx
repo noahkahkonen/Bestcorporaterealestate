@@ -23,13 +23,13 @@ export default function Header() {
   const isNews = pathname === "/news";
 
   const linkClass = (active: boolean) =>
-    `text-sm font-medium transition-colors hover:text-[var(--navy)] ${
+    `text-[15px] font-medium transition-colors hover:text-[var(--navy)] ${
       active ? "text-[var(--navy)]" : "text-[var(--charcoal-light)]"
     }`;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--surface)]/80 text-[var(--foreground)]">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--header-logo-text)]"
@@ -39,7 +39,7 @@ export default function Header() {
             alt="Best Corporate Real Estate"
             width={240}
             height={80}
-            className="h-16 w-auto bg-transparent"
+            className="h-[66px] w-auto bg-transparent"
             priority
             unoptimized
           />
@@ -203,7 +203,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Link
             href="/contact"
-            className="hidden rounded-md bg-[var(--navy)] px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:text-gray-900 md:inline-block"
+            className="hidden rounded-md bg-[var(--navy)] px-4 py-2.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90 dark:text-gray-900 md:inline-block"
           >
             Contact Us
           </Link>

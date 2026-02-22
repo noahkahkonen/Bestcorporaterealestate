@@ -13,6 +13,7 @@ import CashOnCashCalculator from "@/components/CashOnCashCalculator";
 import MonthlyRentCalculator from "@/components/MonthlyRentCalculator";
 import InteractiveSitePlan from "@/components/InteractiveSitePlan";
 import YouTubeEmbed from "@/components/YouTubeEmbed";
+import RequestFinancialsButton from "@/components/RequestFinancialsButton";
 import { formatPhone } from "@/lib/format-phone";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
 
@@ -273,6 +274,11 @@ export default async function PropertyPage({ params }: Props) {
               ) : (
                 <div className="mt-3 flex w-full items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface-muted)] px-5 py-3 text-sm font-semibold text-[var(--muted)]">
                   Download brochure
+                </div>
+              )}
+              {listing.financialDocPath && (
+                <div className="mt-3">
+                  <RequestFinancialsButton listingSlug={slug} listingTitle={listing.title} />
                 </div>
               )}
               <Link

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -57,10 +58,15 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <div className="mb-4 flex items-center gap-2">
-              <span className="h-8 w-8 rounded bg-white/20" aria-hidden />
-              <span className="text-lg font-semibold">Best Corporate Real Estate</span>
-            </div>
+            <Link href="/" className="mb-4 inline-flex items-center gap-2">
+              <Image
+                src="/images/best-logo.png"
+                alt="Best Corporate Real Estate"
+                width={240}
+                height={80}
+                className="h-16 w-auto brightness-0 invert"
+              />
+            </Link>
             <p className="text-sm text-gray-300">
               Commercial real estate advisory in Central Ohio. Columbus, OH.
             </p>

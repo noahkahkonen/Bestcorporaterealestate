@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     const { name, title, email, phone, ext, credentials, website, linkedIn, description, notableDealsJson, headshot } = body;
     const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
     const slug = (body.slug && String(body.slug).trim()) ? slugify(String(body.slug)) : (name ? slugify(name) : null);
+    const maxOrder = await prisma.agent.aggregate({ _max: { order: true } }).then((r) => (r._max.order ?? -1) + 1);
     const agent = await prisma.agent.create({
       data: {
         slug,
@@ -34,6 +35,7 @@ export async function POST(request: NextRequest) {
         description: description || null,
         notableDealsJson: notableDealsJson || null,
         headshot: headshot || null,
+        order: maxOrder,
       },
     });
     return NextResponse.json(agent);

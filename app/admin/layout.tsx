@@ -1,5 +1,6 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
+import Image from "next/image";
 import { authOptions } from "@/lib/auth";
 import AdminProvider from "@/components/AdminProvider";
 import AdminNavWithCounts from "@/components/AdminNavWithCounts";
@@ -23,8 +24,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <header className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--surface)]">
               <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-6">
-                  <Link href="/admin" className="font-semibold text-[var(--charcoal)]">
-                    Best CRE Admin
+                  <Link href="/admin" className="flex items-center">
+                    <Image
+                      src="/images/best-logo.png"
+                      alt="Best Corporate Real Estate"
+                      width={180}
+                      height={60}
+                      className="h-14 w-auto"
+                      priority
+                      unoptimized
+                    />
                   </Link>
                   <AdminNavWithCounts />
                 </div>

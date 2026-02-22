@@ -1,4 +1,4 @@
-import path from "node:path";
+import path from "path";
 import { PrismaClient } from "@prisma/client";
 
 // Resolve relative DATABASE_URL to absolute path (fixes cwd issues in dev/build)

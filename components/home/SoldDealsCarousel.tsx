@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Listing } from "@/types/listing";
+import { getSoldLeasedLabel } from "@/lib/listings";
 
 const ROTATE_INTERVAL_MS = 4500;
 const CARD_GAP = 24;
@@ -48,7 +49,7 @@ function SoldDealCard({ listing }: { listing: Listing }) {
           </div>
         )}
         <span className="absolute left-3 top-3 rounded bg-[var(--navy)] px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
-          Sold
+          {getSoldLeasedLabel(listing)}
         </span>
       </div>
       <div className="flex flex-1 flex-col p-4">
@@ -121,7 +122,7 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
                 <>
                   <div
                     ref={scrollRef}
-                    className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 scroll-smooth scrollbar-thin scrollbar-track-transparent scrollbar-thumb-[var(--border)]"
+                    className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 scroll-smooth scrollbar-hide"
                     style={{ scrollSnapType: "x mandatory" }}
                   >
                     {listings.map((listing) => (

@@ -9,7 +9,7 @@ export async function GET() {
 
   const [unreadMessages, applications] = await Promise.all([
     prisma.contactMessage.count({ where: { read: false } }),
-    prisma.leaseApplication.count(),
+    prisma.leaseApplication.count({ where: { received: false } }),
   ]);
 
   return NextResponse.json({ unreadMessages, applications });

@@ -46,6 +46,7 @@ export default function EditListingPage() {
     heroImage: string;
     galleryImagesJson: string[];
     brochure: string;
+    financialDocPath: string;
     youtubeLink: string;
     price: string;
     priceNegotiable: boolean;
@@ -57,6 +58,7 @@ export default function EditListingPage() {
     occupancy: string;
     brokerIds: string[];
     status: "Active" | "Pending" | "Sold";
+    transactionOutcome: "Sold" | "Leased";
     soldPrice: string;
     soldDate: string;
     soldNotes: string;
@@ -110,6 +112,7 @@ export default function EditListingPage() {
         heroImage: l.heroImage || "",
         galleryImagesJson: gall.length ? gall : (l.heroImage ? [l.heroImage] : []),
         brochure: l.brochure || "",
+        financialDocPath: l.financialDocPath || "",
         youtubeLink: l.youtubeLink || "",
         price: l.price != null ? formatNumberWithCommas(String(Math.round(l.price))) : "",
         priceNegotiable: !!l.priceNegotiable,
@@ -121,6 +124,7 @@ export default function EditListingPage() {
         occupancy: l.occupancy || "",
         brokerIds,
         status: l.status || "Active",
+        transactionOutcome: l.listingType === "For Lease" ? "Leased" : (l.transactionOutcome === "Leased" ? "Leased" : "Sold"),
         soldPrice: l.soldPrice != null ? formatNumberWithCommas(String(Math.round(l.soldPrice))) : "",
         soldDate: l.soldDate ? String(l.soldDate).slice(0, 10) : "",
         soldNotes: l.soldNotes || "",
@@ -132,16 +136,17 @@ export default function EditListingPage() {
     if (form) setForm((f) => (f ? { ...f, title } : f));
   }
 
-  async function handleFileUpload(file: File, field: "heroImage" | "galleryImagesJson" | "brochure") {
+  async function handleFileUpload(file: File, field: "heroImage" | "galleryImagesJson" | "brochure" | "financialDocPath") {
     const fd = new FormData();
     fd.append("file", file);
-    fd.append("folder", "listings");
+    fd.append("folder", field === "financialDocPath" ? "financial-docs" : "listings");
     const res = await fetch("/api/upload", { method: "POST", body: fd });
     const data = await res.json();
     if (data.url && form) {
       if (field === "heroImage") setForm((f) => ({ ...f!, heroImage: data.url }));
       else if (field === "galleryImagesJson") setForm((f) => ({ ...f!, galleryImagesJson: [...f!.galleryImagesJson, data.url] }));
       else if (field === "brochure") setForm((f) => ({ ...f!, brochure: data.url }));
+      else if (field === "financialDocPath") setForm((f) => ({ ...f!, financialDocPath: data.url }));
     }
   }
 
@@ -171,6 +176,7 @@ export default function EditListingPage() {
           heroImage: form.heroImage || null,
           galleryImagesJson: form.galleryImagesJson.length ? JSON.stringify(form.galleryImagesJson) : null,
           brochure: form.brochure || null,
+          financialDocPath: form.financialDocPath || null,
           youtubeLink: form.youtubeLink?.trim() || null,
           price: form.priceNegotiable ? null : (form.price ? parseFormattedNumber(form.price) || null : null),
           priceNegotiable: form.priceNegotiable,
@@ -182,6 +188,7 @@ export default function EditListingPage() {
           occupancy: form.occupancy || null,
           brokerIds: form.brokerIds,
           status: form.status,
+          transactionOutcome: form.status === "Sold" ? (form.listingType === "For Sale" ? "Sold" : form.listingType === "For Lease" ? "Leased" : form.transactionOutcome) : null,
           soldPrice: form.soldPrice.trim() ? parseFormattedNumber(form.soldPrice) || null : null,
           soldDate: form.soldDate.trim() || null,
           soldNotes: form.soldNotes.trim() || null,
@@ -192,8 +199,13 @@ export default function EditListingPage() {
         router.refresh();
       } else {
         const err = await res.json().catch(() => ({ error: "Failed to update" }));
-        alert(err.error || "Failed to update");
+        const msg = err.error || err.message || "Failed to update";
+        console.error("Listing update failed:", res.status, err);
+        alert(msg);
       }
+    } catch (err) {
+      console.error("Listing save error:", err);
+      alert("Network error or unexpected failure. Check the browser console for details.");
     } finally {
       setSaving(false);
     }
@@ -436,6 +448,43 @@ export default function EditListingPage() {
               )}
             </div>
           </div>
+          {(form.listingType === "For Sale" || form.listingType === "Sale/Lease") &&
+            (form.occupancy === "Investment" || form.occupancy === "Owner User/Investment") && (
+            <div className="mt-4">
+              <label className="block text-sm font-medium">Financial documents (PDF)</label>
+              <p className="mt-0.5 text-xs text-[var(--charcoal-light)]">Investment properties only. Requires NDA to view.</p>
+              <div
+                className="mt-1 flex min-h-[80px] flex-col items-center justify-center rounded-lg border-2 border-dashed border-[var(--border)] bg-[var(--surface-muted)] p-4"
+                onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("border-[var(--navy)]"); }}
+                onDragLeave={(e) => { e.currentTarget.classList.remove("border-[var(--navy)]"); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove("border-[var(--navy)]");
+                  const f = e.dataTransfer.files?.[0];
+                  if (f?.type === "application/pdf") handleFileUpload(f, "financialDocPath");
+                  else alert("Please drop a PDF file.");
+                }}
+              >
+                <input
+                  type="file"
+                  accept="application/pdf"
+                  className="hidden"
+                  id="financial-doc-input"
+                  onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, "financialDocPath"); e.target.value = ""; }}
+                />
+                {form.financialDocPath ? (
+                  <div className="flex items-center gap-2">
+                    <span className="truncate text-sm text-[var(--charcoal-light)] max-w-[200px]">{form.financialDocPath.split("/").pop()}</span>
+                    <button type="button" onClick={() => setForm((f) => ({ ...f!, financialDocPath: "" }))} className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50">Remove</button>
+                  </div>
+                ) : (
+                  <label htmlFor="financial-doc-input" className="cursor-pointer text-center text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
+                    Drop PDF or click to browse
+                  </label>
+                )}
+              </div>
+            </div>
+          )}
           <div className="mt-4">
             <label className="block text-sm font-medium">YouTube Video URL</label>
             <input
@@ -732,10 +781,37 @@ export default function EditListingPage() {
           </div>
           {form.status === "Sold" && (
             <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
-              <p className="mb-3 text-sm text-[var(--charcoal-light)]">Transaction data for sold listings (shown on homepage deals section)</p>
+              <p className="mb-3 text-sm text-[var(--charcoal-light)]">Transaction data for sold/leased listings (shown on homepage deals section)</p>
+              {form.listingType === "Sale/Lease" && (
+                <div className="mb-4">
+                  <label className="block text-sm font-medium">Transaction outcome</label>
+                  <div className="mt-2 flex gap-4">
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="transactionOutcome"
+                        checked={form.transactionOutcome === "Sold"}
+                        onChange={() => setForm((f) => ({ ...f!, transactionOutcome: "Sold" }))}
+                        className="rounded"
+                      />
+                      <span className="text-sm">Sold</span>
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="transactionOutcome"
+                        checked={form.transactionOutcome === "Leased"}
+                        onChange={() => setForm((f) => ({ ...f!, transactionOutcome: "Leased" }))}
+                        className="rounded"
+                      />
+                      <span className="text-sm">Leased</span>
+                    </label>
+                  </div>
+                </div>
+              )}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium">Sold Price ($)</label>
+                  <label className="block text-sm font-medium">Sale/Lease Price ($)</label>
                   <input
                     type="text"
                     inputMode="numeric"

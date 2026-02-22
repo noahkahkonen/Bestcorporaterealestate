@@ -23,7 +23,12 @@ export default function AdminNavWithCounts() {
   useEffect(() => {
     fetchCounts();
     const interval = setInterval(fetchCounts, REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
+    const onRefresh = () => fetchCounts();
+    window.addEventListener("admin-counts-refresh", onRefresh);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("admin-counts-refresh", onRefresh);
+    };
   }, []);
 
   return (
@@ -36,6 +41,12 @@ export default function AdminNavWithCounts() {
       </Link>
       <Link href="/admin/agents" className="text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
         Agents
+      </Link>
+      <Link href="/admin/news" className="text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
+        News
+      </Link>
+      <Link href="/admin/ndas" className="text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
+        NDAs
       </Link>
       <Link href="/admin/inbox" className="relative inline-flex text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
         Inbox

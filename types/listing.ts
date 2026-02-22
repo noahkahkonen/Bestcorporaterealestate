@@ -41,9 +41,11 @@ export interface Listing {
   heroImage: string;
   galleryImages: string[];
   brochure?: string | null;
+  financialDocPath?: string | null;  // Investment properties; requires NDA to view
   youtubeLink?: string | null;
   description: string;
   status?: "Active" | "Pending" | "Sold";
+  transactionOutcome?: "Sold" | "Leased" | null;
   soldPrice?: number | null;
   soldDate?: string | null; // ISO date string
   soldNotes?: string | null;

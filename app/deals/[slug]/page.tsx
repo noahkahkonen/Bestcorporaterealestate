@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getSoldListingBySlug } from "@/lib/listings";
+import { getSoldListingBySlug, getSoldLeasedLabel } from "@/lib/listings";
 import PropertyGallery from "@/components/PropertyGallery";
 import { formatPhone } from "@/lib/format-phone";
 
@@ -17,9 +17,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const listing = await getSoldListingBySlug(slug);
-  if (!listing) return { title: "Sold Deal" };
+  if (!listing) return { title: "Deal" };
+  const label = getSoldLeasedLabel(listing);
   return {
-    title: `${listing.title} | Sold Deal`,
+    title: `${listing.title} | ${label} Deal`,
     description: listing.description.slice(0, 160),
   };
 }
@@ -63,7 +64,7 @@ export default async function SoldDealPage({ params }: Props) {
         <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:gap-12">
           <div className="flex-1">
             <span className="inline-block rounded bg-[var(--navy)] px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
-              Sold
+              {getSoldLeasedLabel(listing)}
             </span>
             <h1 className="mt-3 text-2xl font-bold text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
               {listing.title}

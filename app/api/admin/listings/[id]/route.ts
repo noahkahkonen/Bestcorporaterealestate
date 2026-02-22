@@ -1,7 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+
+const LISTING_UPDATE_KEYS = [
+  "title", "slug", "nickname", "address", "city", "state", "zipCode",
+  "latitude", "longitude", "listingType", "propertyType", "landSubcategory",
+  "squareFeet", "acreage", "isMultiTenant", "unitCount", "unitsJson",
+  "description", "featuresJson", "heroImage", "galleryImagesJson",
+  "floorPlan", "sitePlan", "brochure", "financialDocPath", "youtubeLink",
+  "noi", "price", "priceNegotiable", "leaseType", "leasePricePerSf", "leaseNnnCharges",
+  "capRate", "occupancy", "published", "featured", "status",
+  "soldPrice", "soldDate", "soldNotes", "transactionOutcome",
+] as const;
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
@@ -130,6 +142,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if ("floorPlan" in body) data.floorPlan = body.floorPlan != null && body.floorPlan !== "" ? String(body.floorPlan) : null;
     if ("sitePlan" in body) data.sitePlan = body.sitePlan != null && body.sitePlan !== "" ? String(body.sitePlan) : null;
     if ("brochure" in body) data.brochure = body.brochure != null && body.brochure !== "" ? String(body.brochure) : null;
+    if ("financialDocPath" in body) data.financialDocPath = body.financialDocPath != null && body.financialDocPath !== "" ? String(body.financialDocPath) : null;
     if ("youtubeLink" in body) data.youtubeLink = body.youtubeLink != null && body.youtubeLink !== "" ? String(body.youtubeLink) : null;
 
     if ("noi" in body) {
@@ -186,14 +199,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       const v = body.soldNotes;
       data.soldNotes = v != null && String(v).trim() ? String(v).trim() : null;
     }
+    if ("transactionOutcome" in body) {
+      const v = body.transactionOutcome;
+      data.transactionOutcome = v === "Sold" || v === "Leased" ? v : null;
+    }
 
     if (Object.keys(data).length === 0) {
       return NextResponse.json(existing);
     }
 
+    // Build Prisma update input: only allowed keys, no undefined/invalid values
+    const cleanData: Prisma.ListingUpdateInput = {};
+    for (const k of LISTING_UPDATE_KEYS) {
+      const v = data[k];
+      if (v === undefined) continue;
+      if (v instanceof Date && Number.isNaN(v.getTime())) continue;
+      if (typeof v === "number" && (Number.isNaN(v) || !Number.isFinite(v))) continue;
+      (cleanData as Record<string, unknown>)[k] = v;
+    }
+
     await prisma.listing.update({
       where: { id },
-      data: data as Parameters<typeof prisma.listing.update>[0]["data"],
+      data: cleanData,
     });
 
     if (brokerIds !== undefined) {
@@ -213,7 +240,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   } catch (err) {
     console.error("Listing update error:", err);
     const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: msg }, { status: 500 });
+    const details = err && typeof err === "object" && "meta" in err ? JSON.stringify((err as { meta?: unknown }).meta) : "";
+    return NextResponse.json(
+      { error: msg, details: details || undefined },
+      { status: 500 }
+    );
   }
 }
 

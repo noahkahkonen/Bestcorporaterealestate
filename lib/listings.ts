@@ -2,6 +2,14 @@ import { prisma } from "@/lib/prisma";
 import type { Listing } from "@/types/listing";
 import listingsFallback from "@/data/listings.json";
 
+/** Returns "Sold" or "Leased" based on listing type and transaction outcome. */
+export function getSoldLeasedLabel(listing: { listingType: string; transactionOutcome?: string | null }): string {
+  if (listing.listingType === "For Lease") return "Leased";
+  if (listing.listingType === "For Sale") return "Sold";
+  if (listing.listingType === "Sale/Lease") return listing.transactionOutcome === "Leased" ? "Leased" : "Sold";
+  return "Sold";
+}
+
 export async function getFeaturedListings(): Promise<Listing[]> {
   try {
     const rows = await prisma.listing.findMany({
@@ -78,6 +86,7 @@ function dbToListing(row: {
   heroImage: string | null;
   galleryImagesJson: string | null;
   brochure: string | null;
+  financialDocPath?: string | null;
   youtubeLink: string | null;
   noi: number | null;
   price: number | null;
@@ -88,6 +97,7 @@ function dbToListing(row: {
   leaseNnnCharges: number | null;
   capRate: number | null;
   status?: string;
+  transactionOutcome?: string | null;
   soldPrice?: number | null;
   soldDate?: Date | null;
   soldNotes?: string | null;
@@ -147,8 +157,10 @@ function dbToListing(row: {
     galleryImages: galleryImages.length ? galleryImages : [heroImage],
     youtubeLink: row.youtubeLink ?? undefined,
     brochure: row.brochure ?? undefined,
+    financialDocPath: row.financialDocPath ?? undefined,
     description: row.description,
     status: (row.status === "Pending" || row.status === "Sold" ? row.status : "Active") as Listing["status"],
+    transactionOutcome: row.transactionOutcome === "Sold" || row.transactionOutcome === "Leased" ? row.transactionOutcome : undefined,
     soldPrice: row.soldPrice ?? undefined,
     soldDate: row.soldDate ? row.soldDate.toISOString().slice(0, 10) : undefined,
     soldNotes: row.soldNotes ?? undefined,

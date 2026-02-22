@@ -83,9 +83,11 @@ model Listing {
   published       Boolean  @default(true)
   featured        Boolean  @default(false)
   status          String   @default("Active")  // Active | Pending | Sold
+  transactionOutcome String?  // Sold | Leased - for Sale/Lease, which one; For Sale=Sold, For Lease=Leased
   soldPrice       Float?   // Final sale/lease price when Sold
   soldDate        DateTime? // Closing/lease commencement date
   soldNotes       String?  // Optional transaction details
+  financialDocPath String?  // PDF path for Investment properties; requires NDA to view
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   brokers         ListingBroker[]
@@ -97,6 +99,47 @@ model ListingBroker {
   listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
   agent     Agent   @relation(fields: [agentId], references: [id], onDelete: Cascade)
   @@id([listingId, agentId])
+}
+
+model News {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  excerpt     String?    // Short summary
+  content     String     @default("")
+  imageUrl    String?
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  links       NewsLink[]
+}
+
+model NewsLink {
+  id      String @id @default(cuid())
+  newsId  String
+  news    News   @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  label   String // Site name, e.g. "Columbus Business First"
+  url     String
+  order   Int    @default(0)
+  @@index([newsId])
+}
+
+model NdaSubmission {
+  id           String   @id @default(cuid())
+  listingSlug  String
+  listingTitle String
+  firstName    String
+  lastName     String
+  email        String
+  phone        String?
+  company      String?
+  signatureName String
+  acknowledgedAt DateTime @default(now())
+  status       String   @default("pending")  // pending | approved | rejected
+  approvalToken String?  @unique  // Token for approved users to access financials
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model LeaseApplication {
@@ -118,5 +161,6 @@ model LeaseApplication {
   applicationFeeCents    Int?     // Fee amount in cents (e.g. 5000 = $50)
   stripePaymentIntentId  String?  // Stripe PaymentIntent ID
   paymentStatus          String?  // pending | paid | failed
+  received               Boolean  @default(false)  // Marked as received by admin (removes from header counter)
   createdAt              DateTime @default(now())
 }

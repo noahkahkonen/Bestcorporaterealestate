@@ -69,7 +69,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    await prisma.leaseApplication.create({
+    const APPLICATION_FEE_CENTS = Number(process.env.APPLICATION_FEE_CENTS) || 5000;
+
+    const application = await prisma.leaseApplication.create({
       data: {
         listingSlug,
         listingTitle,
@@ -85,10 +87,17 @@ export async function POST(request: NextRequest) {
         financialsPathsJson: financialPaths.length ? JSON.stringify(financialPaths) : null,
         creditCheckAcknowledged,
         signatureName,
+        applicationFeeCents: APPLICATION_FEE_CENTS,
+        paymentStatus: "pending",
       },
     });
 
-    return NextResponse.json({ success: true, message: "Application submitted successfully." });
+    return NextResponse.json({
+      success: true,
+      message: "Application submitted successfully.",
+      applicationId: application.id,
+      paymentRequired: true,
+    });
   } catch (err) {
     console.error("Lease application error:", err);
     return NextResponse.json({ error: "Failed to submit application." }, { status: 500 });

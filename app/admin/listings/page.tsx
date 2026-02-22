@@ -3,13 +3,32 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+function matchesSearch(l: { title?: string; address?: string; city?: string; state?: string; zipCode?: string; propertyType?: string; listingType?: string; slug?: string }, query: string): boolean {
+  if (!query.trim()) return true;
+  const q = query.trim().toLowerCase();
+  const fields = [
+    l.title,
+    l.address,
+    l.city,
+    l.state,
+    l.zipCode,
+    l.propertyType,
+    l.listingType,
+    l.slug,
+  ]
+    .filter(Boolean)
+    .map((s) => String(s).toLowerCase());
+  return fields.some((f) => f.includes(q));
+}
+
 export default function AdminListingsPage() {
   const [listings, setListings] = useState<any[]>([]);
   const [agents, setAgents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
-  const [soldModal, setSoldModal] = useState<{ id: string; title: string } | null>(null);
-  const [soldForm, setSoldForm] = useState({ soldPrice: "", soldDate: "", soldNotes: "" });
+  const [soldModal, setSoldModal] = useState<{ id: string; title: string; listingType: string } | null>(null);
+  const [soldForm, setSoldForm] = useState({ soldPrice: "", soldDate: "", soldNotes: "", transactionOutcome: "Sold" as "Sold" | "Leased" });
   const [savingSold, setSavingSold] = useState(false);
 
   useEffect(() => {
@@ -63,8 +82,10 @@ export default function AdminListingsPage() {
       const soldPriceNum = soldForm.soldPrice.trim()
         ? parseFloat(soldForm.soldPrice.replace(/,/g, ""))
         : null;
+      const outcome = soldModal.listingType === "For Sale" ? "Sold" : soldModal.listingType === "For Lease" ? "Leased" : soldForm.transactionOutcome;
       const payload = {
         status: "Sold" as const,
+        transactionOutcome: outcome,
         soldPrice: soldPriceNum != null && !Number.isNaN(soldPriceNum) ? soldPriceNum : null,
         soldDate: soldForm.soldDate.trim() || null,
         soldNotes: soldForm.soldNotes.trim() || null,
@@ -78,7 +99,7 @@ export default function AdminListingsPage() {
       if (res.ok) {
         setListings((prev) => prev.map((l) => (l.id === soldModal.id ? data : l)));
         setSoldModal(null);
-        setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" });
+        setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "", transactionOutcome: "Sold" });
       } else {
         alert(data.error || "Failed to save. Please try again.");
       }
@@ -87,10 +108,24 @@ export default function AdminListingsPage() {
     }
   }
 
-  function openSoldModal(l: { id: string; title: string }) {
+  function openSoldModal(l: { id: string; title: string; listingType: string }) {
     setSoldModal(l);
-    setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" });
+    const defaultOutcome = l.listingType === "For Lease" ? "Leased" : "Sold";
+    setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "", transactionOutcome: defaultOutcome });
   }
+
+  function getStatusLabel(l: { listingType: string; transactionOutcome?: string | null }) {
+    if (l.listingType === "For Lease") return "Leased";
+    if (l.listingType === "For Sale") return "Sold";
+    return l.transactionOutcome === "Leased" ? "Leased" : "Sold";
+  }
+  function getMarkButtonLabel(l: { listingType: string }) {
+    if (l.listingType === "For Lease") return "Mark Leased";
+    if (l.listingType === "For Sale") return "Mark Sold";
+    return "Mark Sold/Leased";
+  }
+
+  const filteredListings = listings.filter((l) => matchesSearch(l, search));
 
   if (loading) {
     return (
@@ -116,11 +151,29 @@ export default function AdminListingsPage() {
         {listings.length} listing{listings.length !== 1 ? "s" : ""} in database.
       </p>
 
+      <div className="mt-4">
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by title, address, city, property type..."
+          className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm placeholder:text-[var(--charcoal-light)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]"
+          aria-label="Search listings"
+        />
+        {search.trim() && (
+          <p className="mt-2 text-sm text-[var(--charcoal-light)]">
+            {filteredListings.length} of {listings.length} match
+          </p>
+        )}
+      </div>
+
       <div className="mt-6 space-y-2">
-        {listings.length === 0 ? (
-          <p className="text-[var(--charcoal-light)]">No listings yet. Add one to get started.</p>
+        {filteredListings.length === 0 ? (
+          <p className="text-[var(--charcoal-light)]">
+            {search.trim() ? "No listings match your search." : "No listings yet. Add one to get started."}
+          </p>
         ) : (
-          listings.map((l) => (
+          filteredListings.map((l) => (
             <div
               key={l.id}
               className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4"
@@ -148,7 +201,7 @@ export default function AdminListingsPage() {
                 </p>
                 <p className="mt-1 text-xs text-[var(--muted)]">
                   {l.propertyType} • {l.listingType}
-                  {l.status === "Sold" && <span className="ml-2 font-medium text-[var(--navy)]">• Sold</span>}
+                  {l.status === "Sold" && <span className="ml-2 font-medium text-red-600">• {getStatusLabel(l)}</span>}
                   {l.status === "Pending" && <span className="ml-2 text-amber-600">• Pending</span>}
                   {l.published && l.status !== "Sold" && <span className="ml-2 text-green-600">• Live</span>}
                   {!l.published && <span className="ml-2 text-amber-600">• Draft</span>}
@@ -158,10 +211,10 @@ export default function AdminListingsPage() {
                 {l.status !== "Sold" && (
                   <button
                     type="button"
-                    onClick={() => openSoldModal({ id: l.id, title: l.title })}
+                    onClick={() => openSoldModal({ id: l.id, title: l.title, listingType: l.listingType || "For Sale" })}
                     className="rounded px-3 py-1 text-sm font-medium bg-[var(--navy)]/10 text-[var(--navy)] hover:bg-[var(--navy)]/20"
                   >
-                    Mark Sold
+                    {getMarkButtonLabel(l)}
                   </button>
                 )}
                 <Link
@@ -230,11 +283,40 @@ export default function AdminListingsPage() {
       {soldModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="mx-4 max-w-md rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-[var(--charcoal)]">Mark as Sold</h3>
+            <h3 className="text-lg font-semibold text-[var(--charcoal)]">
+              {soldModal.listingType === "For Lease" ? "Mark as Leased" : soldModal.listingType === "Sale/Lease" ? "Mark as Sold/Leased" : "Mark as Sold"}
+            </h3>
             <p className="mt-2 text-sm text-[var(--charcoal-light)]">
               Add transaction data for &quot;{soldModal.title}&quot;. This listing will appear in the Sold Deals section on the homepage.
             </p>
             <div className="mt-4 space-y-4">
+              {soldModal.listingType === "Sale/Lease" && (
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-[var(--charcoal)]">Transaction outcome</label>
+                  <div className="flex gap-3">
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="transactionOutcome"
+                        checked={soldForm.transactionOutcome === "Sold"}
+                        onChange={() => setSoldForm((f) => ({ ...f, transactionOutcome: "Sold" }))}
+                        className="rounded"
+                      />
+                      <span className="text-sm">Sold</span>
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="radio"
+                        name="transactionOutcome"
+                        checked={soldForm.transactionOutcome === "Leased"}
+                        onChange={() => setSoldForm((f) => ({ ...f, transactionOutcome: "Leased" }))}
+                        className="rounded"
+                      />
+                      <span className="text-sm">Leased</span>
+                    </label>
+                  </div>
+                </div>
+              )}
               <div>
                 <label className="mb-1 block text-sm font-medium text-[var(--charcoal)]">Sale/Lease Price ($)</label>
                 <input
@@ -268,7 +350,7 @@ export default function AdminListingsPage() {
             <div className="mt-6 flex gap-3">
               <button
                 type="button"
-                onClick={() => { setSoldModal(null); setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" }); }}
+                onClick={() => { setSoldModal(null); setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "", transactionOutcome: "Sold" }); }}
                 className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-semibold"
               >
                 Cancel
@@ -279,7 +361,7 @@ export default function AdminListingsPage() {
                 disabled={savingSold}
                 className="flex-1 rounded-lg bg-[var(--navy)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
               >
-                {savingSold ? "Saving..." : "Mark Sold"}
+                {savingSold ? "Saving..." : getMarkButtonLabel(soldModal)}
               </button>
             </div>
           </div>

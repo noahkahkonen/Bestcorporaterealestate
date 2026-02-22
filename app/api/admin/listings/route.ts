@@ -16,7 +16,7 @@ export async function GET() {
 
   const listings = await prisma.listing.findMany({
     include: { brokers: { include: { agent: true } } },
-    orderBy: { createdAt: "desc" },
+    orderBy: [{ status: "asc" }, { createdAt: "desc" }],
   });
   return NextResponse.json(listings);
 }

@@ -49,6 +49,10 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
         setError(data.error || "Failed to submit.");
         return;
       }
+      if (data.paymentRequired && data.applicationId) {
+        window.location.href = `/listings/${listing.slug}/apply/pay?applicationId=${data.applicationId}`;
+        return;
+      }
       setSuccess(true);
     } catch {
       setError("Failed to submit. Please try again.");
@@ -247,6 +251,9 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
       </div>
 
       <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-6">
+        <p className="mb-4 text-sm text-[var(--charcoal-light)]">
+          A non-refundable application fee of $50 will be required after submission. You will be redirected to a secure payment page (card, Apple Pay, or Google Pay).
+        </p>
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"

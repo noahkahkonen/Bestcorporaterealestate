@@ -20,6 +20,7 @@ interface LeaseApplication {
   financialsPathsJson: string | null;
   creditCheckAcknowledged: boolean;
   signatureName: string;
+  received: boolean;
   createdAt: string;
 }
 
@@ -33,19 +34,50 @@ function parseFinancialPaths(json: string | null): string[] {
   }
 }
 
+function matchesSearch(app: LeaseApplication, query: string): boolean {
+  if (!query.trim()) return true;
+  const q = query.trim().toLowerCase();
+  const fields = [
+    app.firstName,
+    app.lastName,
+    app.email,
+    app.businessName,
+    app.listingTitle,
+    app.use,
+    app.signatureName,
+    app.phone,
+  ]
+    .filter(Boolean)
+    .map((s) => String(s).toLowerCase());
+  return fields.some((f) => f.includes(q));
+}
+
 export default function AdminApplicationsPage() {
   const [applications, setApplications] = useState<LeaseApplication[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/admin/lease-applications")
       .then((r) => r.json())
       .then((data) => {
-        setApplications(data);
+        setApplications(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
+
+  async function markReceived(id: string) {
+    const res = await fetch("/api/admin/lease-applications", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, received: true }),
+    });
+    if (res.ok) {
+      setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, received: true } : a)));
+      window.dispatchEvent(new CustomEvent("admin-counts-refresh"));
+    }
+  }
 
   if (loading) {
     return (
@@ -56,6 +88,8 @@ export default function AdminApplicationsPage() {
     );
   }
 
+  const filtered = applications.filter((app) => matchesSearch(app, search));
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-[var(--charcoal)]">Lease Applications</h1>
@@ -63,13 +97,29 @@ export default function AdminApplicationsPage() {
         {applications.length} application{applications.length !== 1 ? "s" : ""} received.
       </p>
 
+      <div className="mt-4">
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, email, property, business..."
+          className="w-full max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm placeholder:text-[var(--charcoal-light)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]"
+          aria-label="Search applications"
+        />
+        {search.trim() && (
+          <p className="mt-2 text-sm text-[var(--charcoal-light)]">
+            {filtered.length} of {applications.length} match
+          </p>
+        )}
+      </div>
+
       <div className="mt-6 space-y-6">
-        {applications.length === 0 ? (
+        {filtered.length === 0 ? (
           <p className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-8 text-center text-[var(--charcoal-light)]">
-            No lease applications yet.
+            {search.trim() ? "No applications match your search." : "No lease applications yet."}
           </p>
         ) : (
-          applications.map((app) => {
+          filtered.map((app) => {
             const financialPaths = parseFinancialPaths(app.financialsPathsJson);
             return (
               <div
@@ -96,6 +146,28 @@ export default function AdminApplicationsPage() {
                       </svg>
                     </Link>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!app.received) markReceived(app.id);
+                    }}
+                    className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      app.received
+                        ? "bg-[var(--navy)] text-white cursor-default"
+                        : "bg-[var(--surface-muted)] text-[var(--navy)] hover:bg-[var(--surface-hover)] cursor-pointer"
+                    }`}
+                  >
+                    {app.received ? (
+                      <>
+                        Received
+                        <svg className="ml-1.5 inline-block h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </>
+                    ) : (
+                      "Received"
+                    )}
+                  </button>
                 </div>
 
                 <dl className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

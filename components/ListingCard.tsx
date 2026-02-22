@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import type { Listing } from "@/types/listing";
 import PropertyTypeTag from "@/components/PropertyTypeTag";
+import { getSoldLeasedLabel } from "@/lib/listings";
 
 interface ListingCardProps {
   listing: Listing;
@@ -68,7 +69,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
                         : "bg-[var(--surface-muted)] text-[var(--charcoal-light)]"
                   }`}
                 >
-                  {listing.status}
+                  {listing.status === "Sold" ? getSoldLeasedLabel(listing) : listing.status}
                 </span>
               )}
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
