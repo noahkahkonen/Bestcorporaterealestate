@@ -63,7 +63,7 @@ export default function HomeHero() {
           Columbus, Ohio
         </p>
         <h1
-          className={`mt-2 max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl ${reveal} ${
+          className={`mt-2 max-w-3xl whitespace-nowrap text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl ${reveal} ${
             inView ? `${visible} translate-y-0` : `${hidden} translate-y-8`
           }`}
           style={{
@@ -71,9 +71,7 @@ export default function HomeHero() {
             textShadow: "2px 0 4px rgba(0,0,0,0.3), -2px 0 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3), 0 -2px 4px rgba(0,0,0,0.3), 2px 2px 4px rgba(0,0,0,0.3), -2px 2px 4px rgba(0,0,0,0.3), 2px -2px 4px rgba(0,0,0,0.3), -2px -2px 4px rgba(0,0,0,0.3), 0 0 12px rgba(0,0,0,0.2), 0 0 24px rgba(0,0,0,0.12)",
           }}
         >
-          Best Corporate
-          <br />
-          Real Estate
+          Best Corporate Real Estate
         </h1>
         <p
           className={`mt-4 max-w-xl text-base text-white/90 sm:mt-5 lg:text-lg ${reveal} ${

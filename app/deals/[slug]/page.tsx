@@ -35,10 +35,16 @@ export default async function SoldDealPage({ params }: Props) {
     listing.squareFeet && { label: "Square Feet", value: `${listing.squareFeet.toLocaleString()} SF` },
     listing.acreage != null && { label: "Acres", value: `${listing.acreage}` },
     listing.listingType && { label: "Transaction Type", value: listing.listingType },
-    listing.soldPrice != null && {
-      label: "Sale/Lease Price",
-      value: `$${listing.soldPrice.toLocaleString()}`,
-    },
+    (() => {
+      const label = getSoldLeasedLabel(listing);
+      if (label === "Leased" && listing.leasePricePerSf != null && listing.leaseType) {
+        return { label: "Sale/Lease Price", value: `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}` };
+      }
+      if (listing.soldPrice != null) {
+        return { label: "Sale/Lease Price", value: `$${listing.soldPrice.toLocaleString()}` };
+      }
+      return null;
+    })(),
     listing.soldDate && {
       label: "Closing Date",
       value: new Date(listing.soldDate).toLocaleDateString("en-US", {
@@ -74,9 +80,14 @@ export default async function SoldDealPage({ params }: Props) {
               {listing.zipCode && ` ${listing.zipCode}`}
             </p>
 
-            {listing.soldPrice != null && (
+            {(listing.soldPrice != null ||
+              (getSoldLeasedLabel(listing) === "Leased" && listing.leasePricePerSf != null && listing.leaseType)) && (
               <p className="mt-4 text-xl font-semibold text-[var(--navy)]">
-                ${listing.soldPrice.toLocaleString()}
+                {getSoldLeasedLabel(listing) === "Leased" && listing.leasePricePerSf != null && listing.leaseType
+                  ? `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`
+                  : listing.soldPrice != null
+                    ? `$${listing.soldPrice.toLocaleString()}`
+                    : null}
               </p>
             )}
 
@@ -131,7 +142,7 @@ export default async function SoldDealPage({ params }: Props) {
             )}
           </div>
 
-          <aside className="w-full shrink-0 lg:w-80">
+          <aside className="w-full shrink-0 lg:w-fit">
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
                 Deal Summary
@@ -172,7 +183,7 @@ export default async function SoldDealPage({ params }: Props) {
                             {b.name.charAt(0)}
                           </div>
                         )}
-                        <div>
+                        <div className="min-w-fit">
                           <p className="font-medium text-[var(--charcoal)]">
                             {b.name}
                           </p>
@@ -192,7 +203,7 @@ export default async function SoldDealPage({ params }: Props) {
                           {b.email && (
                             <a
                               href={`mailto:${b.email}`}
-                              className="block text-sm text-[var(--navy)] hover:underline"
+                              className="mt-0.5 block whitespace-nowrap text-sm text-[var(--navy)] hover:underline"
                             >
                               {b.email}
                             </a>

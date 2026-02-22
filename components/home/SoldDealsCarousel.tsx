@@ -21,8 +21,10 @@ function SoldDealCard({ listing }: { listing: Listing }) {
     listing.acreage && `${listing.acreage} Acres`,
   ].filter(Boolean);
 
-  const priceDisplay =
-    listing.soldPrice != null
+  const isLeased = getSoldLeasedLabel(listing) === "Leased";
+  const priceDisplay = isLeased && listing.leasePricePerSf != null && listing.leaseType
+    ? `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`
+    : listing.soldPrice != null
       ? `$${listing.soldPrice.toLocaleString()}`
       : listing.price != null
         ? `$${listing.price.toLocaleString()}`
@@ -103,7 +105,7 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
     <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
-          Sold Deals & Testimonials
+          Transactions & Testimonials
         </h2>
         <p className="mt-2 text-base text-[var(--charcoal-light)] lg:text-lg">
           Past deals we&apos;ve completed and what clients say.
@@ -160,7 +162,7 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
               ) : (
                 <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center">
                   <p className="text-[var(--charcoal-light)]">
-                    Sold deals will appear here once listings are marked as sold.
+                    Transactions will appear here once listings are marked as sold or leased.
                   </p>
                 </div>
               )}

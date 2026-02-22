@@ -287,7 +287,7 @@ export default function AdminListingsPage() {
               {soldModal.listingType === "For Lease" ? "Mark as Leased" : soldModal.listingType === "Sale/Lease" ? "Mark as Sold/Leased" : "Mark as Sold"}
             </h3>
             <p className="mt-2 text-sm text-[var(--charcoal-light)]">
-              Add transaction data for &quot;{soldModal.title}&quot;. This listing will appear in the Sold Deals section on the homepage.
+              Add transaction data for &quot;{soldModal.title}&quot;. This listing will appear in the Transactions section on the homepage.
             </p>
             <div className="mt-4 space-y-4">
               {soldModal.listingType === "Sale/Lease" && (
