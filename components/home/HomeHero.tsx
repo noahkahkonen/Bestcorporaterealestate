@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 
-const HERO_IMAGE_LIGHT = "/images/downtown-columbus-hero.png";
-const HERO_IMAGE_DARK = "/images/scioto-mile-hero.png";
+const HERO_VIDEO = "/videos/hero-video.mp4";
 
 export default function HomeHero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
@@ -24,6 +23,11 @@ export default function HomeHero() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) video.play().catch(() => {});
+  }, []);
+
   const reveal = "transition-all duration-700 ease-out";
   const hidden = "opacity-0";
   const visible = "opacity-100";
@@ -35,23 +39,14 @@ export default function HomeHero() {
       style={{ aspectRatio: "21 / 9" }}
     >
       <div className="absolute inset-0">
-        <Image
-          src={HERO_IMAGE_LIGHT}
-          alt="Downtown Columbus skyline"
-          fill
-          className="hero-img-light absolute inset-0 object-cover object-center"
-          sizes="100vw"
-          quality={100}
-          priority
-        />
-        <Image
-          src={HERO_IMAGE_DARK}
-          alt="Scioto Mile at dusk"
-          fill
-          className="hero-img-dark absolute inset-0 object-cover object-center"
-          sizes="100vw"
-          quality={100}
-          priority
+        <video
+          ref={videoRef}
+          src={HERO_VIDEO}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#065f46]/90 via-[#065f46]/30 to-transparent" />
@@ -76,7 +71,9 @@ export default function HomeHero() {
             textShadow: "2px 0 4px rgba(0,0,0,0.3), -2px 0 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3), 0 -2px 4px rgba(0,0,0,0.3), 2px 2px 4px rgba(0,0,0,0.3), -2px 2px 4px rgba(0,0,0,0.3), 2px -2px 4px rgba(0,0,0,0.3), -2px -2px 4px rgba(0,0,0,0.3), 0 0 12px rgba(0,0,0,0.2), 0 0 24px rgba(0,0,0,0.12)",
           }}
         >
-          Best Corporate Real Estate
+          Best Corporate
+          <br />
+          Real Estate
         </h1>
         <p
           className={`mt-4 max-w-xl text-base text-white/90 sm:mt-5 lg:text-lg ${reveal} ${
