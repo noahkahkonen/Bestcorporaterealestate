@@ -56,17 +56,31 @@ export default function EditListingPage() {
     capRate: string;
     occupancy: string;
     brokerIds: string[];
+    status: "Active" | "Pending" | "Sold";
+    soldPrice: string;
+    soldDate: string;
+    soldNotes: string;
   } | null>(null);
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/admin/listings/${id}`).then((r) => r.json()),
-      fetch("/api/admin/agents").then((r) => r.json()),
-      fetch("/api/admin/features").then((r) => r.json()),
+      fetch(`/api/admin/listings/${id}`).then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && data && !data.error ? data : null;
+      }),
+      fetch("/api/admin/agents").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
+      fetch("/api/admin/features").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
     ]).then(([l, a, f]) => {
       setListing(l);
       setAgents(a);
       setFeatures(f);
+      if (!l) return;
       let feat: string[] = [];
       try {
         const parsed = JSON.parse(l.featuresJson || "[]");
@@ -106,6 +120,10 @@ export default function EditListingPage() {
         capRate: l.capRate != null ? String((l.capRate * 100).toFixed(2).replace(/\.?0+$/, "")) : "",
         occupancy: l.occupancy || "",
         brokerIds,
+        status: l.status || "Active",
+        soldPrice: l.soldPrice != null ? formatNumberWithCommas(String(Math.round(l.soldPrice))) : "",
+        soldDate: l.soldDate ? String(l.soldDate).slice(0, 10) : "",
+        soldNotes: l.soldNotes || "",
       });
     });
   }, [id]);
@@ -163,6 +181,10 @@ export default function EditListingPage() {
           capRate: form.capRate ? parseFloat(form.capRate) / 100 : null,
           occupancy: form.occupancy || null,
           brokerIds: form.brokerIds,
+          status: form.status,
+          soldPrice: form.soldPrice.trim() ? parseFormattedNumber(form.soldPrice) || null : null,
+          soldDate: form.soldDate.trim() || null,
+          soldNotes: form.soldNotes.trim() || null,
         }),
       });
       if (res.ok) {
@@ -689,6 +711,61 @@ export default function EditListingPage() {
                 </div>
               </div>
             </>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <h2 className="text-lg font-semibold text-[var(--charcoal)]">Status & Sold Transaction</h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="block text-sm font-medium">Status</label>
+              <select
+                value={form.status}
+                onChange={(e) => setForm((f) => ({ ...f!, status: e.target.value as "Active" | "Pending" | "Sold" }))}
+                className="mt-1 w-full rounded-lg border px-3 py-2"
+              >
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Sold">Sold</option>
+              </select>
+            </div>
+          </div>
+          {form.status === "Sold" && (
+            <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+              <p className="mb-3 text-sm text-[var(--charcoal-light)]">Transaction data for sold listings (shown on homepage deals section)</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium">Sold Price ($)</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={form.soldPrice}
+                    onChange={(e) => setForm((f) => ({ ...f!, soldPrice: formatNumberWithCommas(e.target.value) }))}
+                    placeholder="1,250,000"
+                    className="mt-1 w-full rounded-lg border px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium">Closing Date</label>
+                  <input
+                    type="date"
+                    value={form.soldDate}
+                    onChange={(e) => setForm((f) => ({ ...f!, soldDate: e.target.value }))}
+                    className="mt-1 w-full rounded-lg border px-3 py-2"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium">Notes</label>
+                  <textarea
+                    value={form.soldNotes}
+                    onChange={(e) => setForm((f) => ({ ...f!, soldNotes: e.target.value }))}
+                    placeholder="Transaction details, buyer/tenant info..."
+                    rows={3}
+                    className="mt-1 w-full rounded-lg border px-3 py-2"
+                  />
+                </div>
+              </div>
+            </div>
           )}
         </div>
 

@@ -55,12 +55,19 @@ export default function NewListingPage() {
   });
 
   useEffect(() => {
-    Promise.all([fetch("/api/admin/agents").then((r) => r.json()), fetch("/api/admin/features").then((r) => r.json())]).then(
-      ([a, f]) => {
-        setAgents(a);
-        setFeatures(f);
-      }
-    );
+    Promise.all([
+      fetch("/api/admin/agents").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
+      fetch("/api/admin/features").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
+    ]).then(([a, f]) => {
+      setAgents(a);
+      setFeatures(f);
+    });
   }, []);
 
   function handleTitleChange(title: string) {

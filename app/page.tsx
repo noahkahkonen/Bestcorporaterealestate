@@ -2,13 +2,16 @@ import Link from "next/link";
 import HomeHero from "@/components/home/HomeHero";
 import FeaturedListings from "@/components/home/FeaturedListings";
 import NewsPreview from "@/components/home/NewsPreview";
-import Testimonials from "@/components/home/Testimonials";
+import SoldDealsCarousel from "@/components/home/SoldDealsCarousel";
 import EmailSignup from "@/components/home/EmailSignup";
-import { getFeaturedListings, getListings } from "@/lib/listings";
+import { getFeaturedListings, getListings, getSoldListings } from "@/lib/listings";
 
 export default async function HomePage() {
-  const featuredListings = await getFeaturedListings();
-  const allListings = await getListings();
+  const [featuredListings, allListings, soldListings] = await Promise.all([
+    getFeaturedListings(),
+    getListings(),
+    getSoldListings(),
+  ]);
   const listingsToShow = featuredListings.length > 0 ? featuredListings : allListings.slice(0, 6);
   return (
     <>
@@ -34,7 +37,7 @@ export default async function HomePage() {
         </div>
       </section>
       <EmailSignup />
-      <Testimonials />
+      <SoldDealsCarousel listings={soldListings} />
     </>
   );
 }

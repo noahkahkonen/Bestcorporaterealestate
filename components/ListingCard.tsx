@@ -57,7 +57,21 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
         </div>
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           <div className="flex items-start justify-between gap-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm shrink-0">
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {listing.status && listing.status !== "Active" && (
+                <span
+                  className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
+                    listing.status === "Sold"
+                      ? "bg-[var(--navy)]/15 text-[var(--navy)]"
+                      : listing.status === "Pending"
+                        ? "bg-amber-100 text-amber-800"
+                        : "bg-[var(--surface-muted)] text-[var(--charcoal-light)]"
+                  }`}
+                >
+                  {listing.status}
+                </span>
+              )}
+              <p className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
               {listing.listingType} •{" "}
               {listing.propertyType === "Land" && listing.landSubcategory ? (
                 <>
@@ -68,7 +82,8 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
               ) : (
                 <PropertyTypeTag propertyType={listing.propertyType} />
               )}
-            </p>
+              </p>
+            </div>
             {priceBlocks.length > 0 && (
               <div className="flex flex-col items-end gap-0.5 shrink-0">
                 {priceBlocks.map((p, i) => (

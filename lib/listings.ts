@@ -5,7 +5,7 @@ import listingsFallback from "@/data/listings.json";
 export async function getFeaturedListings(): Promise<Listing[]> {
   try {
     const rows = await prisma.listing.findMany({
-      where: { published: true, featured: true },
+      where: { published: true, featured: true, status: { not: "Sold" } },
       orderBy: { createdAt: "desc" },
       include: { brokers: { include: { agent: true } } },
     });
@@ -18,7 +18,7 @@ export async function getFeaturedListings(): Promise<Listing[]> {
 
 export async function getListings(): Promise<Listing[]> {
   const rows = await prisma.listing.findMany({
-    where: { published: true },
+    where: { published: true, status: { not: "Sold" } },
     orderBy: { createdAt: "desc" },
     include: { brokers: { include: { agent: true } } },
   });
@@ -33,6 +33,24 @@ export async function getListings(): Promise<Listing[]> {
 export async function getListingBySlug(slug: string): Promise<Listing | null> {
   const row = await prisma.listing.findFirst({
     where: { slug, published: true },
+    include: { brokers: { include: { agent: true } } },
+  });
+  if (!row) return null;
+  return dbToListing(row);
+}
+
+export async function getSoldListings(): Promise<Listing[]> {
+  const rows = await prisma.listing.findMany({
+    where: { published: true, status: "Sold" },
+    orderBy: [{ soldDate: "desc" }, { createdAt: "desc" }],
+    include: { brokers: { include: { agent: true } } },
+  });
+  return rows.map(dbToListing);
+}
+
+export async function getSoldListingBySlug(slug: string): Promise<Listing | null> {
+  const row = await prisma.listing.findFirst({
+    where: { slug, published: true, status: "Sold" },
     include: { brokers: { include: { agent: true } } },
   });
   if (!row) return null;
@@ -69,6 +87,10 @@ function dbToListing(row: {
   leasePricePerSf: number | null;
   leaseNnnCharges: number | null;
   capRate: number | null;
+  status?: string;
+  soldPrice?: number | null;
+  soldDate?: Date | null;
+  soldNotes?: string | null;
   brokers?: Array<{ agent: { id: string; name: string; title: string | null; email: string; phone: string | null; ext: string | null; credentials: string | null; headshot: string | null } }>;
 }): Listing {
   const features: string[] = [];
@@ -126,6 +148,10 @@ function dbToListing(row: {
     youtubeLink: row.youtubeLink ?? undefined,
     brochure: row.brochure ?? undefined,
     description: row.description,
+    status: (row.status === "Pending" || row.status === "Sold" ? row.status : "Active") as Listing["status"],
+    soldPrice: row.soldPrice ?? undefined,
+    soldDate: row.soldDate ? row.soldDate.toISOString().slice(0, 10) : undefined,
+    soldNotes: row.soldNotes ?? undefined,
   };
 
   if (row.noi != null && row.price != null && row.capRate != null) {

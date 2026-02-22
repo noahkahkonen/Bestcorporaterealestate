@@ -8,15 +8,25 @@ export default function AdminListingsPage() {
   const [agents, setAgents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
+  const [soldModal, setSoldModal] = useState<{ id: string; title: string } | null>(null);
+  const [soldForm, setSoldForm] = useState({ soldPrice: "", soldDate: "", soldNotes: "" });
+  const [savingSold, setSavingSold] = useState(false);
 
   useEffect(() => {
-    Promise.all([fetch("/api/admin/listings").then((r) => r.json()), fetch("/api/admin/agents").then((r) => r.json())]).then(
-      ([listingsData, agentsData]) => {
-        setListings(listingsData);
-        setAgents(agentsData);
-        setLoading(false);
-      }
-    );
+    Promise.all([
+      fetch("/api/admin/listings").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
+      fetch("/api/admin/agents").then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      }),
+    ]).then(([listingsData, agentsData]) => {
+      setListings(listingsData);
+      setAgents(agentsData);
+      setLoading(false);
+    });
   }, []);
 
   async function togglePublished(id: string, published: boolean) {
@@ -44,6 +54,42 @@ export default function AdminListingsPage() {
       setListings((prev) => prev.filter((l) => l.id !== deleteTarget.id));
       setDeleteTarget(null);
     }
+  }
+
+  async function handleMarkSold() {
+    if (!soldModal) return;
+    setSavingSold(true);
+    try {
+      const soldPriceNum = soldForm.soldPrice.trim()
+        ? parseFloat(soldForm.soldPrice.replace(/,/g, ""))
+        : null;
+      const payload = {
+        status: "Sold" as const,
+        soldPrice: soldPriceNum != null && !Number.isNaN(soldPriceNum) ? soldPriceNum : null,
+        soldDate: soldForm.soldDate.trim() || null,
+        soldNotes: soldForm.soldNotes.trim() || null,
+      };
+      const res = await fetch(`/api/admin/listings/${soldModal.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setListings((prev) => prev.map((l) => (l.id === soldModal.id ? data : l)));
+        setSoldModal(null);
+        setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" });
+      } else {
+        alert(data.error || "Failed to save. Please try again.");
+      }
+    } finally {
+      setSavingSold(false);
+    }
+  }
+
+  function openSoldModal(l: { id: string; title: string }) {
+    setSoldModal(l);
+    setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" });
   }
 
   if (loading) {
@@ -102,14 +148,22 @@ export default function AdminListingsPage() {
                 </p>
                 <p className="mt-1 text-xs text-[var(--muted)]">
                   {l.propertyType} • {l.listingType}
-                  {l.published ? (
-                    <span className="ml-2 text-green-600">• Live on site</span>
-                  ) : (
-                    <span className="ml-2 text-amber-600">• Draft</span>
-                  )}
+                  {l.status === "Sold" && <span className="ml-2 font-medium text-[var(--navy)]">• Sold</span>}
+                  {l.status === "Pending" && <span className="ml-2 text-amber-600">• Pending</span>}
+                  {l.published && l.status !== "Sold" && <span className="ml-2 text-green-600">• Live</span>}
+                  {!l.published && <span className="ml-2 text-amber-600">• Draft</span>}
                 </p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
+                {l.status !== "Sold" && (
+                  <button
+                    type="button"
+                    onClick={() => openSoldModal({ id: l.id, title: l.title })}
+                    className="rounded px-3 py-1 text-sm font-medium bg-[var(--navy)]/10 text-[var(--navy)] hover:bg-[var(--navy)]/20"
+                  >
+                    Mark Sold
+                  </button>
+                )}
                 <Link
                   href={`/admin/listings/${l.id}/edit`}
                   className="rounded-lg border border-[var(--border)] px-3 py-1.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-muted)]"
@@ -167,6 +221,65 @@ export default function AdminListingsPage() {
                 className="flex-1 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white"
               >
                 Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {soldModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="mx-4 max-w-md rounded-xl border border-[var(--border)] bg-[var(--surface)] p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-[var(--charcoal)]">Mark as Sold</h3>
+            <p className="mt-2 text-sm text-[var(--charcoal-light)]">
+              Add transaction data for &quot;{soldModal.title}&quot;. This listing will appear in the Sold Deals section on the homepage.
+            </p>
+            <div className="mt-4 space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-[var(--charcoal)]">Sale/Lease Price ($)</label>
+                <input
+                  type="text"
+                  value={soldForm.soldPrice}
+                  onChange={(e) => setSoldForm((f) => ({ ...f, soldPrice: e.target.value }))}
+                  placeholder="e.g. 1250000"
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-[var(--charcoal)]">Closing Date</label>
+                <input
+                  type="date"
+                  value={soldForm.soldDate}
+                  onChange={(e) => setSoldForm((f) => ({ ...f, soldDate: e.target.value }))}
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-[var(--charcoal)]">Notes (optional)</label>
+                <textarea
+                  value={soldForm.soldNotes}
+                  onChange={(e) => setSoldForm((f) => ({ ...f, soldNotes: e.target.value }))}
+                  placeholder="Transaction details, buyer/tenant info..."
+                  rows={3}
+                  className="w-full rounded-lg border border-[var(--border)] px-3 py-2 text-sm"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => { setSoldModal(null); setSoldForm({ soldPrice: "", soldDate: "", soldNotes: "" }); }}
+                className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2.5 text-sm font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleMarkSold}
+                disabled={savingSold}
+                className="flex-1 rounded-lg bg-[var(--navy)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              >
+                {savingSold ? "Saving..." : "Mark Sold"}
               </button>
             </div>
           </div>

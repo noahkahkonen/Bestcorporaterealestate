@@ -12,7 +12,10 @@ export default function AdminAgentsPage() {
 
   useEffect(() => {
     fetch("/api/admin/agents")
-      .then((r) => r.json())
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        return r.ok && Array.isArray(data) ? data : [];
+      })
       .then(setAgents)
       .finally(() => setLoading(false));
   }, []);

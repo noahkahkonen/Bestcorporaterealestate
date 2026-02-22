@@ -43,6 +43,10 @@ export interface Listing {
   brochure?: string | null;
   youtubeLink?: string | null;
   description: string;
+  status?: "Active" | "Pending" | "Sold";
+  soldPrice?: number | null;
+  soldDate?: string | null; // ISO date string
+  soldNotes?: string | null;
   investmentMetrics?: InvestmentMetrics;
   brokers?: Broker[];
 }

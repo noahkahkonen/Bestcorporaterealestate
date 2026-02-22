@@ -82,6 +82,10 @@ model Listing {
   occupancy       String?  // Owner User, Investment, Owner User/Investment (For Sale & Sale/Lease only)
   published       Boolean  @default(true)
   featured        Boolean  @default(false)
+  status          String   @default("Active")  // Active | Pending | Sold
+  soldPrice       Float?   // Final sale/lease price when Sold
+  soldDate        DateTime? // Closing/lease commencement date
+  soldNotes       String?  // Optional transaction details
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   brokers         ListingBroker[]
@@ -111,5 +115,8 @@ model LeaseApplication {
   financialsPathsJson    String?   // JSON array of file paths
   creditCheckAcknowledged Boolean @default(false)
   signatureName          String   // Typed name acting as signature
+  applicationFeeCents    Int?     // Fee amount in cents (e.g. 5000 = $50)
+  stripePaymentIntentId  String?  // Stripe PaymentIntent ID
+  paymentStatus          String?  // pending | paid | failed
   createdAt              DateTime @default(now())
 }

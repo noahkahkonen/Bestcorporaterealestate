@@ -165,6 +165,28 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if ("published" in body && typeof body.published === "boolean") data.published = body.published;
     if ("featured" in body && typeof body.featured === "boolean") data.featured = body.featured;
 
+    if ("status" in body && body.status != null) {
+      const s = String(body.status).trim();
+      if (["Active", "Pending", "Sold"].includes(s)) data.status = s;
+    }
+    if ("soldPrice" in body) {
+      const v = body.soldPrice;
+      let n = NaN;
+      if (v != null && v !== "") {
+        const str = String(v).replace(/,/g, "");
+        n = parseFloat(str);
+      }
+      data.soldPrice = Number.isFinite(n) ? n : null;
+    }
+    if ("soldDate" in body) {
+      const v = body.soldDate;
+      data.soldDate = v != null && String(v).trim() ? new Date(String(v).trim()) : null;
+    }
+    if ("soldNotes" in body) {
+      const v = body.soldNotes;
+      data.soldNotes = v != null && String(v).trim() ? String(v).trim() : null;
+    }
+
     if (Object.keys(data).length === 0) {
       return NextResponse.json(existing);
     }
