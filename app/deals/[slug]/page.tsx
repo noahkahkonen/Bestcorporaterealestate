@@ -9,9 +9,14 @@ import { formatPhone } from "@/lib/format-phone";
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const { getSoldListings } = await import("@/lib/listings");
-  const listings = await getSoldListings();
-  return listings.map((l) => ({ slug: l.slug }));
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const { getSoldListings } = await import("@/lib/listings");
+    const listings = await getSoldListings();
+    return listings.map((l) => ({ slug: l.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

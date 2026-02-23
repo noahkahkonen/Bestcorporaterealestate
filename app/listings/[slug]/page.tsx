@@ -20,8 +20,13 @@ import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const listings = await getListings();
-  return listings.map((l) => ({ slug: l.slug }));
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const listings = await getListings();
+    return listings.map((l) => ({ slug: l.slug }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

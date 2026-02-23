@@ -9,8 +9,13 @@ import { formatPhone } from "@/lib/format-phone";
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const agents = await prisma.agent.findMany({ select: { slug: true, id: true } });
-  return agents.map((a) => ({ slug: a.slug || a.id }));
+  if (!process.env.DATABASE_URL) return [];
+  try {
+    const agents = await prisma.agent.findMany({ select: { slug: true, id: true } });
+    return agents.map((a) => ({ slug: a.slug || a.id }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

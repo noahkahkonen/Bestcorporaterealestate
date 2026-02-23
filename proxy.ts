@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 const secret = process.env.NEXTAUTH_SECRET || (process.env.NODE_ENV === "development" ? "dev-secret-min-32-chars-long" : undefined);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (!path.startsWith("/admin")) return NextResponse.next();
   if (path === "/admin/login") return NextResponse.next();
@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(login);
     }
   } catch (err) {
-    console.error("Middleware getToken error:", err);
+    console.error("Proxy getToken error:", err);
     const login = new URL("/admin/login", request.url);
     login.searchParams.set("callbackUrl", path);
     return NextResponse.redirect(login);
