@@ -1,6 +1,9 @@
 import Link from "next/link";
 import HomeHero from "@/components/home/HomeHero";
 import FeaturedListings from "@/components/home/FeaturedListings";
+
+// Dynamic: homepage fetches listings from DB, skip prerender at build (no DB in Docker build)
+export const dynamic = "force-dynamic";
 import NewsPreview from "@/components/home/NewsPreview";
 import SoldDealsCarousel from "@/components/home/SoldDealsCarousel";
 import EmailSignup from "@/components/home/EmailSignup";

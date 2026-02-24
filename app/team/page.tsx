@@ -4,12 +4,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatPhone } from "@/lib/format-phone";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Team",
   description: "Meet the commercial real estate professionals at Best Corporate Real Estate in Columbus, Ohio.",
 };
-
-export const dynamic = "force-dynamic";
 
 export default async function TeamPage() {
   const agents = await prisma.agent.findMany({ orderBy: { order: "asc" } });

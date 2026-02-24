@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getListings } from "@/lib/listings";
+
+export const dynamic = "force-dynamic";
 import type { Listing } from "@/types/listing";
 import ListingsClient from "./ListingsClient";
 
