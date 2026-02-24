@@ -25,17 +25,22 @@ export async function getFeaturedListings(): Promise<Listing[]> {
 }
 
 export async function getListings(): Promise<Listing[]> {
-  const rows = await prisma.listing.findMany({
-    where: { published: true, status: { not: "Sold" } },
-    orderBy: { createdAt: "desc" },
-    include: { brokers: { include: { agent: true } } },
-  });
+  try {
+    const rows = await prisma.listing.findMany({
+      where: { published: true, status: { not: "Sold" } },
+      orderBy: { createdAt: "desc" },
+      include: { brokers: { include: { agent: true } } },
+    });
 
-  if (rows.length === 0) {
+    if (rows.length === 0) {
+      return listingsFallback as Listing[];
+    }
+
+    return rows.map(dbToListing);
+  } catch (err) {
+    console.error("getListings error:", err);
     return listingsFallback as Listing[];
   }
-
-  return rows.map(dbToListing);
 }
 
 export async function getListingBySlug(slug: string): Promise<Listing | null> {
@@ -48,12 +53,17 @@ export async function getListingBySlug(slug: string): Promise<Listing | null> {
 }
 
 export async function getSoldListings(): Promise<Listing[]> {
-  const rows = await prisma.listing.findMany({
-    where: { published: true, status: "Sold" },
-    orderBy: [{ soldDate: "desc" }, { createdAt: "desc" }],
-    include: { brokers: { include: { agent: true } } },
-  });
-  return rows.map(dbToListing);
+  try {
+    const rows = await prisma.listing.findMany({
+      where: { published: true, status: "Sold" },
+      orderBy: [{ soldDate: "desc" }, { createdAt: "desc" }],
+      include: { brokers: { include: { agent: true } } },
+    });
+    return rows.map(dbToListing);
+  } catch (err) {
+    console.error("getSoldListings error:", err);
+    return [];
+  }
 }
 
 export async function getSoldListingBySlug(slug: string): Promise<Listing | null> {

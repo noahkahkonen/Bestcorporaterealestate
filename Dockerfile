@@ -22,7 +22,10 @@ RUN npx prisma generate
 # Copy source
 COPY . .
 
-# Build (DATABASE_URL not needed for build - we handle it in generateStaticParams)
+# Build (DB-dependent pages use force-dynamic, no DB needed at build)
+# Pass Google Maps key at build: docker compose build --build-arg NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
@@ -65,5 +68,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Run migrations then start
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+# Run migrations then start (use node directly - prisma CLI not in PATH)
+CMD ["sh", "-c", "node node_modules/prisma/build/index.js migrate deploy && node server.js"]

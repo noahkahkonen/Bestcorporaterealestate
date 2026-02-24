@@ -16,28 +16,36 @@ docker compose up --build
 
 ## First Run: Seed the Database
 
-After the first successful start, seed the database:
+With the bind mount (`./data:/data`), run the seed from your host (not in Docker):
 
 ```bash
-docker compose exec web npx prisma db seed
-docker compose exec web npx tsx prisma/seed-listings.ts
+cd "/Users/noahkahkonen/Best Test"
+DATABASE_URL="file:$(pwd)/data/dev.db" npx tsx prisma/seed.ts
+DATABASE_URL="file:$(pwd)/data/dev.db" npx tsx prisma/seed-listings.ts
 ```
 
-Or in one command (with container stopped):
-
-```bash
-docker compose run --rm web sh -c "npx prisma migrate deploy && npx prisma db seed && npx tsx prisma/seed-listings.ts"
-```
+If the database is locked (container running), stop the container first: `docker compose down`, run the seed, then `docker compose up -d`.
 
 ## Environment Variables
 
-Create `.env.local` with your keys (Google Maps, Stripe, etc.) and uncomment the `env_file` section in `docker-compose.yml`.
+### Google Maps API Key (for /listings map)
 
-Or pass variables directly:
+Create a `.env` file in the project root (same folder as docker-compose.yml) with:
+
+```
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_actual_google_maps_api_key
+```
+
+Get a key at: https://console.cloud.google.com/apis/credentials
+
+Then rebuild so the key is baked in:
 
 ```bash
-docker compose run -e NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_key web
+docker compose down
+docker compose up --build -d
 ```
+
+The compose file also loads `.env.local` for runtime. If your key is in `.env.local`, copy it to `.env` as well (Docker Compose uses `.env` for build args).
 
 ## Commands
 
