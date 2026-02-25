@@ -18,9 +18,24 @@ A modern commercial real estate brokerage website built with Next.js 14+ (App Ro
    npm install
    ```
 
-2. **Environment variables**
+2. **Database (PostgreSQL)**
 
-   Copy `.env.example` to `.env.local` and add your Google Maps API key:
+   Create a PostgreSQL database. Options:
+
+   - **[Neon](https://neon.tech)** – Free tier, works with Vercel. Create a project and copy the connection string.
+   - **[Supabase](https://supabase.com)** – Free tier. Project Settings → Database → Connection string.
+   - **Local Postgres** – Run `postgresql://user:password@localhost:5432/bestcre`.
+
+   Add `DATABASE_URL` to `.env.local`, then run migrations:
+
+   ```bash
+   npx prisma migrate deploy
+   npm run db:seed
+   ```
+
+3. **Environment variables**
+
+   Copy `.env.example` to `.env.local`:
 
    ```bash
    cp .env.example .env.local
@@ -28,7 +43,7 @@ A modern commercial real estate brokerage website built with Next.js 14+ (App Ro
 
    Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in `.env.local`. Get a key at [Google Cloud Console](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
-3. **Run development server**
+4. **Run development server**
 
    ```bash
    npm run dev
@@ -70,8 +85,9 @@ Filter options (Property Type, Listing Type, City, Features) are driven by this 
 ## Deployment (Vercel)
 
 1. Push the repo to GitHub and import the project in Vercel.
-2. Add `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in Vercel Environment Variables.
-3. Deploy.
+2. Add a **PostgreSQL database** (Vercel Postgres, Neon, or Supabase) and set `DATABASE_URL` in Vercel Environment Variables.
+3. Add `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` and other required env vars (see `.env.example`).
+4. Deploy. Migrations run automatically on build if configured, or run `npx prisma migrate deploy` in a post-deploy script.
 
 ## Placeholders
 

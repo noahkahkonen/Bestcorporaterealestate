@@ -16,7 +16,7 @@ RUN npm ci
 COPY prisma ./prisma/
 
 # Generate Prisma client (needs DATABASE_URL for schema validation - use placeholder)
-ENV DATABASE_URL="file:/tmp/dev.db"
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db?schema=public"
 RUN npx prisma generate
 
 # Copy source
@@ -58,7 +58,7 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/tsx ./node_modules/tsx
 COPY --from=builder /app/node_modules/esbuild ./node_modules/esbuild
 
-# Create data directory for SQLite (will be mounted as volume)
+# Create data directory for uploads (mounted as volume)
 RUN mkdir -p /data && chown -R nextjs:nodejs /data
 
 USER nextjs

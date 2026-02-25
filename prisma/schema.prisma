@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -162,5 +162,6 @@ model LeaseApplication {
   stripePaymentIntentId  String?  // Stripe PaymentIntent ID
   paymentStatus          String?  // pending | paid | failed
   received               Boolean  @default(false)  // Marked as received by admin (removes from header counter)
+  coApplicantDataJson    String?  // JSON object with co-applicant fields when applicable
   createdAt              DateTime @default(now())
 }

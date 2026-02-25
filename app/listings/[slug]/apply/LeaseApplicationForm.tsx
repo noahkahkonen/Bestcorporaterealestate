@@ -14,6 +14,7 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
   const [error, setError] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
+  const [hasCoApplicant, setHasCoApplicant] = useState(false);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -24,6 +25,15 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
     email: "",
     ssn: "",
     creditCheckAcknowledged: false,
+    signatureName: "",
+  });
+  const [coApplicant, setCoApplicant] = useState({
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    phone: "",
+    email: "",
+    ssn: "",
     signatureName: "",
   });
 
@@ -85,6 +95,7 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
       <input type="hidden" name="listingSlug" value={listing.slug} />
       <input type="hidden" name="listingTitle" value={listing.title} />
 
+      <h3 className="text-lg font-semibold text-[var(--charcoal)]">Applicant</h3>
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="firstName" className={labelBase}>
@@ -217,6 +228,143 @@ export default function LeaseApplicationForm({ listing }: LeaseApplicationFormPr
           Enter 9 digits; displayed as masked for your security.
         </p>
       </div>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setHasCoApplicant((v) => !v)}
+          className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+            hasCoApplicant
+              ? "border-[var(--navy)] bg-[var(--navy)] text-white"
+              : "border-[var(--border)] bg-[var(--surface-muted)] text-[var(--charcoal)] hover:bg-[var(--border)]"
+          }`}
+        >
+          {hasCoApplicant ? "Remove co-applicant" : "Add co-applicant"}
+        </button>
+      </div>
+
+      {hasCoApplicant && (
+        <div className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-6">
+          <h3 className="text-lg font-semibold text-[var(--charcoal)]">Co-Applicant</h3>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="coApplicantFirstName" className={labelBase}>
+                First name (legal)
+              </label>
+              <input
+                id="coApplicantFirstName"
+                name="coApplicantFirstName"
+                type="text"
+                value={coApplicant.firstName}
+                onChange={(e) => setCoApplicant((c) => ({ ...c, firstName: e.target.value }))}
+                className={inputBase}
+                autoComplete="off"
+              />
+            </div>
+            <div>
+              <label htmlFor="coApplicantLastName" className={labelBase}>
+                Last name (legal)
+              </label>
+              <input
+                id="coApplicantLastName"
+                name="coApplicantLastName"
+                type="text"
+                value={coApplicant.lastName}
+                onChange={(e) => setCoApplicant((c) => ({ ...c, lastName: e.target.value }))}
+                className={inputBase}
+                autoComplete="off"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="coApplicantDateOfBirth" className={labelBase}>
+              Date of birth
+            </label>
+            <input
+              id="coApplicantDateOfBirth"
+              name="coApplicantDateOfBirth"
+              type="date"
+              value={coApplicant.dateOfBirth}
+              onChange={(e) => setCoApplicant((c) => ({ ...c, dateOfBirth: e.target.value }))}
+              className={inputBase}
+            />
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label htmlFor="coApplicantPhone" className={labelBase}>
+                Phone number
+              </label>
+              <input
+                id="coApplicantPhone"
+                name="coApplicantPhone"
+                type="tel"
+                value={coApplicant.phone}
+                onChange={(e) => setCoApplicant((c) => ({ ...c, phone: e.target.value }))}
+                className={inputBase}
+                autoComplete="off"
+              />
+            </div>
+            <div>
+              <label htmlFor="coApplicantEmail" className={labelBase}>
+                Email
+              </label>
+              <input
+                id="coApplicantEmail"
+                name="coApplicantEmail"
+                type="email"
+                value={coApplicant.email}
+                onChange={(e) => setCoApplicant((c) => ({ ...c, email: e.target.value }))}
+                className={inputBase}
+                autoComplete="off"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="coApplicantSsn" className={labelBase}>
+              Social Security Number
+            </label>
+            <input
+              id="coApplicantSsn"
+              name="coApplicantSsn"
+              type="password"
+              inputMode="numeric"
+              autoComplete="off"
+              maxLength={11}
+              placeholder="•••-••-••••"
+              value={coApplicant.ssn}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 9);
+                setCoApplicant((c) => ({ ...c, ssn: v }));
+              }}
+              className={`${inputBase} font-mono tracking-widest`}
+            />
+            <p className="mt-1 text-xs text-[var(--charcoal-light)]">
+              Enter 9 digits; displayed as masked for your security.
+            </p>
+          </div>
+          <div>
+            <label htmlFor="coApplicantSignatureName" className={labelBase}>
+              Co-applicant signature (type full legal name)
+            </label>
+            <input
+              id="coApplicantSignatureName"
+              name="coApplicantSignatureName"
+              type="text"
+              required={hasCoApplicant}
+              value={coApplicant.signatureName}
+              onChange={(e) => setCoApplicant((c) => ({ ...c, signatureName: e.target.value }))}
+              className={`${inputBase} text-2xl`}
+              style={{ fontFamily: "cursive" }}
+              placeholder="Full legal name"
+            />
+            {coApplicant.signatureName && (
+              <p className="mt-2 text-2xl italic text-[var(--charcoal)]" style={{ fontFamily: "cursive" }}>
+                {coApplicant.signatureName}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-6">
         <h3 className="font-semibold text-[var(--charcoal)]">Documents</h3>

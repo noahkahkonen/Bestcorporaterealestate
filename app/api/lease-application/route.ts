@@ -26,6 +26,22 @@ export async function POST(request: NextRequest) {
     const creditCheckAcknowledged = formData.get("creditCheckAcknowledged") === "true";
     const signatureName = String(formData.get("signatureName") ?? "").trim();
 
+    const coApplicantFirstName = String(formData.get("coApplicantFirstName") ?? "").trim();
+    const coApplicantLastName = String(formData.get("coApplicantLastName") ?? "").trim();
+    const coApplicantSignatureName = String(formData.get("coApplicantSignatureName") ?? "").trim();
+    const hasCoApplicant = !!(coApplicantFirstName || coApplicantLastName);
+    const coApplicantDataJson = hasCoApplicant
+      ? JSON.stringify({
+          firstName: coApplicantFirstName,
+          lastName: coApplicantLastName,
+          dateOfBirth: String(formData.get("coApplicantDateOfBirth") ?? "").trim() || null,
+          phone: String(formData.get("coApplicantPhone") ?? "").trim() || null,
+          email: String(formData.get("coApplicantEmail") ?? "").trim() || null,
+          ssn: String(formData.get("coApplicantSsn") ?? "").trim().replace(/\D/g, "") || null,
+          signatureName: coApplicantSignatureName || null,
+        })
+      : null;
+
     if (!firstName || !lastName || !email || !signatureName) {
       return NextResponse.json(
         { error: "First name, last name, email, and signature are required." },
@@ -35,6 +51,12 @@ export async function POST(request: NextRequest) {
     if (!creditCheckAcknowledged) {
       return NextResponse.json(
         { error: "You must acknowledge the background and credit check permission." },
+        { status: 400 }
+      );
+    }
+    if (hasCoApplicant && !coApplicantSignatureName) {
+      return NextResponse.json(
+        { error: "Co-applicant signature is required when a co-applicant is added." },
         { status: 400 }
       );
     }
@@ -87,6 +109,7 @@ export async function POST(request: NextRequest) {
         financialsPathsJson: financialPaths.length ? JSON.stringify(financialPaths) : null,
         creditCheckAcknowledged,
         signatureName,
+        coApplicantDataJson,
         applicationFeeCents: APPLICATION_FEE_CENTS,
         paymentStatus: "pending",
       },

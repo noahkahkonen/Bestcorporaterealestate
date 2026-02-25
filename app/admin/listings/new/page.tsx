@@ -373,7 +373,7 @@ export default function NewListingPage() {
                 <div className="mt-4 grid gap-4 sm:grid-cols-3">
                   <div>
                     <label className="block text-sm font-medium">Price</label>
-                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                       <span className="pl-3 text-[var(--muted)]">$</span>
                       <input
                         type="text"
@@ -392,13 +392,13 @@ export default function NewListingPage() {
                           });
                         }}
                         placeholder="1,500,000"
-                        className="w-full border-0 bg-transparent py-2 pr-2 focus:ring-0"
+                        className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
                       />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium">NOI</label>
-                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                       <span className="pl-3 text-[var(--muted)]">$</span>
                       <input
                         type="text"
@@ -417,7 +417,7 @@ export default function NewListingPage() {
                           });
                         }}
                         placeholder="120,000"
-                        className="w-full border-0 bg-transparent py-2 pr-2 focus:ring-0"
+                        className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
                       />
                     </div>
                   </div>
@@ -451,7 +451,7 @@ export default function NewListingPage() {
                 {form.leaseType && (
                   <div>
                     <label className="block text-sm font-medium">Lease Price ($/SF/Y)</label>
-                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                       <span className="pl-3 text-[var(--muted)]">$</span>
                       <input
                         type="text"
@@ -459,7 +459,7 @@ export default function NewListingPage() {
                         value={form.leasePricePerSf}
                         onChange={(e) => setForm((f) => ({ ...f, leasePricePerSf: formatLeaseRateInput(e.target.value) }))}
                         placeholder="10.00"
-                        className="w-full border-0 bg-transparent py-2 pr-2 focus:ring-0"
+                        className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
                       />
                       <span className="pr-3 text-[var(--muted)]">/SF</span>
                     </div>
@@ -497,7 +497,7 @@ export default function NewListingPage() {
                   <div className="mt-3 grid gap-4 sm:grid-cols-3">
                     <div>
                       <label className="block text-xs font-medium text-[var(--charcoal-light)]">Sale Price</label>
-                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                         <span className="pl-3 text-xs text-[var(--muted)]">$</span>
                         <input
                           type="text"
@@ -516,13 +516,13 @@ export default function NewListingPage() {
                             });
                           }}
                           placeholder="1,500,000"
-                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:ring-0"
+                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0"
                         />
                       </div>
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-[var(--charcoal-light)]">NOI</label>
-                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                         <span className="pl-3 text-xs text-[var(--muted)]">$</span>
                         <input
                           type="text"
@@ -541,7 +541,7 @@ export default function NewListingPage() {
                             });
                           }}
                           placeholder="120,000"
-                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:ring-0"
+                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0"
                         />
                       </div>
                     </div>
@@ -572,7 +572,7 @@ export default function NewListingPage() {
                   {form.leaseType && (
                     <div>
                       <label className="block text-sm font-medium">Lease Price ($/SF/Y)</label>
-                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)]">
+                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
                         <span className="pl-3 text-[var(--muted)]">$</span>
                         <input
                           type="text"
@@ -580,7 +580,7 @@ export default function NewListingPage() {
                           value={form.leasePricePerSf}
                           onChange={(e) => setForm((f) => ({ ...f, leasePricePerSf: formatLeaseRateInput(e.target.value) }))}
                           placeholder="10.00"
-                          className="w-full border-0 bg-transparent py-2 pr-2 focus:ring-0"
+                          className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
                         />
                         <span className="pr-3 text-[var(--muted)]">/SF</span>
                       </div>

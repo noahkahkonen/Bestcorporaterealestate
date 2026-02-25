@@ -4,6 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatPhone } from "@/lib/format-phone";
 
+interface CoApplicantData {
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  ssn?: string | null;
+  signatureName?: string | null;
+}
+
 interface LeaseApplication {
   id: string;
   listingSlug: string;
@@ -21,6 +31,7 @@ interface LeaseApplication {
   creditCheckAcknowledged: boolean;
   signatureName: string;
   received: boolean;
+  coApplicantDataJson: string | null;
   createdAt: string;
 }
 
@@ -34,9 +45,28 @@ function parseFinancialPaths(json: string | null): string[] {
   }
 }
 
+function parseCoApplicant(json: string | null): CoApplicantData | null {
+  if (!json) return null;
+  try {
+    const data = JSON.parse(json);
+    if (data && (data.firstName || data.lastName)) return data as CoApplicantData;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function formatSsn(ssn: string | null | undefined): string {
+  if (!ssn) return "—";
+  const digits = ssn.replace(/\D/g, "");
+  if (digits.length !== 9) return "—";
+  return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}`;
+}
+
 function matchesSearch(app: LeaseApplication, query: string): boolean {
   if (!query.trim()) return true;
   const q = query.trim().toLowerCase();
+  const co = parseCoApplicant(app.coApplicantDataJson);
   const fields = [
     app.firstName,
     app.lastName,
@@ -46,6 +76,9 @@ function matchesSearch(app: LeaseApplication, query: string): boolean {
     app.use,
     app.signatureName,
     app.phone,
+    co?.firstName,
+    co?.lastName,
+    co?.email,
   ]
     .filter(Boolean)
     .map((s) => String(s).toLowerCase());
@@ -208,6 +241,10 @@ export default function AdminApplicationsPage() {
                     </div>
                   )}
                   <div>
+                    <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">SSN</dt>
+                    <dd className="font-mono text-[var(--charcoal)]">{formatSsn(app.ssn)}</dd>
+                  </div>
+                  <div>
                     <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Signature</dt>
                     <dd className="italic text-[var(--charcoal)]" style={{ fontFamily: "cursive" }}>
                       {app.signatureName}
@@ -220,6 +257,69 @@ export default function AdminApplicationsPage() {
                     </dd>
                   </div>
                 </dl>
+
+                {parseCoApplicant(app.coApplicantDataJson) && (
+                  <div className="mt-6 border-t border-[var(--border)] pt-6">
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+                      Co-Applicant
+                    </h3>
+                    <dl className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {(() => {
+                        const co = parseCoApplicant(app.coApplicantDataJson)!;
+                        return (
+                          <>
+                            {(co.firstName || co.lastName) && (
+                              <div>
+                                <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Name</dt>
+                                <dd className="text-[var(--charcoal)]">
+                                  {`${(co.firstName || "").trim()} ${(co.lastName || "").trim()}`.trim() || "—"}
+                                </dd>
+                              </div>
+                            )}
+                            {co.dateOfBirth && (
+                              <div>
+                                <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">DOB</dt>
+                                <dd className="text-[var(--charcoal)]">{co.dateOfBirth}</dd>
+                              </div>
+                            )}
+                            {co.phone && (
+                              <div>
+                                <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Phone</dt>
+                                <dd>
+                                  <a href={`tel:+1${co.phone.replace(/\D/g, "").slice(-10)}`} className="text-[var(--charcoal)] hover:text-[var(--navy)]">
+                                    {formatPhone(co.phone)}
+                                  </a>
+                                </dd>
+                              </div>
+                            )}
+                            {co.email && (
+                              <div>
+                                <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Email</dt>
+                                <dd>
+                                  <a href={`mailto:${co.email}`} className="text-[var(--navy)] hover:underline">
+                                    {co.email}
+                                  </a>
+                                </dd>
+                              </div>
+                            )}
+                            <div>
+                              <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">SSN</dt>
+                              <dd className="font-mono text-[var(--charcoal)]">{formatSsn(co.ssn)}</dd>
+                            </div>
+                            {co.signatureName && (
+                              <div>
+                                <dt className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">Signature</dt>
+                                <dd className="italic text-[var(--charcoal)]" style={{ fontFamily: "cursive" }}>
+                                  {co.signatureName}
+                                </dd>
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </dl>
+                  </div>
+                )}
 
                 <div className="mt-6 border-t border-[var(--border)] pt-6">
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
