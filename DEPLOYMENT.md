@@ -33,7 +33,7 @@ In Vercel → Project → **Settings** → **Environment Variables**, add:
 
 | Variable | Value | Notes |
 |----------|-------|-------|
-| `DATABASE_URL` | Your Neon connection string | From Neon dashboard |
+| `DATABASE_URL` | Your Neon **pooled** connection string | From Neon dashboard → Connect → enable "Connection pooling" → copy. Must include `-pooler` in hostname (e.g. `ep-xxx-pooler.us-east-2.aws.neon.tech`). Add `?pgbouncer=true` if not present. |
 | `NEXTAUTH_URL` | `https://bestcorporate.shop` | Your production URL |
 | `NEXTAUTH_SECRET` | Random 32+ char string | Generate: `openssl rand -base64 32` |
 | `ADMIN_USERNAME` | Your admin username | |
@@ -43,6 +43,7 @@ In Vercel → Project → **Settings** → **Environment Variables**, add:
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `pk_live_...` | |
 | `STRIPE_WEBHOOK_SECRET` | From Stripe webhook | Create webhook for `https://bestcorporate.shop/api/webhooks/stripe` |
 | `APPLICATION_FEE_CENTS` | `5000` | $50 application fee |
+| `BLOB_READ_WRITE_TOKEN` | (auto) | Create Vercel Blob store: Project → Storage → Create → Blob. Token is auto-added. Required for agent/listing image uploads. |
 
 ### 4. Add Domain
 
@@ -120,6 +121,18 @@ pm2 startup
 4. **Set up Nginx** as reverse proxy (port 3000 → 80/443) and SSL with Let’s Encrypt.
 
 5. **Environment variables**: Create `.env` on the server with production values.
+
+---
+
+## Troubleshooting: "Application error: a server-side exception has occurred"
+
+If pages fail to load on Vercel:
+
+1. **Use Neon pooled connection** – In Neon dashboard → Connect → enable "Connection pooling". Copy the string (hostname has `-pooler`). Set as `DATABASE_URL` in Vercel.
+2. **Add `?pgbouncer=true`** – Append to `DATABASE_URL` if not present (e.g. `...?sslmode=require&pgbouncer=true`). The app adds this automatically when it detects a pooled URL.
+3. **Check Vercel logs** – Project → Deployments → select deployment → Functions → view logs for the actual error.
+4. **Verify env vars** – Ensure `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET` are set. `NEXTAUTH_URL` must be your production URL (e.g. `https://bestcorporaterealestate.vercel.app`).
+5. **Image uploads** – Create a Vercel Blob store: Project → **Storage** tab → **Create** → **Blob**. This adds `BLOB_READ_WRITE_TOKEN` automatically. Redeploy after creating.
 
 ---
 

@@ -34,7 +34,7 @@ export default function AdminAgentsPage() {
     const res = await fetch("/api/upload", { method: "POST", body: fd });
     const data = await res.json();
     if (data.url) setForm((f) => ({ ...f, headshot: data.url }));
-    else alert("Upload failed.");
+    else alert(data.detail ? `Upload failed: ${data.detail}` : "Upload failed.");
   }
 
   async function handleCreate() {
