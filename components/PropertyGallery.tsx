@@ -12,7 +12,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
   const [index, setIndex] = useState(0);
   const displayImages = images.length ? images : ["/placeholder"];
   const currentSrc = displayImages[index % displayImages.length];
-  const hasRealImages = displayImages.some((s) => s.startsWith("/") && s !== "/placeholder");
+  const isRealImage = (s: string) => (s.startsWith("/") || s.startsWith("https://")) && s !== "/placeholder";
+  const hasRealImages = displayImages.some(isRealImage);
 
   const goPrev = () => setIndex((i) => (i - 1 + displayImages.length) % displayImages.length);
   const goNext = () => setIndex((i) => (i + 1) % displayImages.length);
@@ -20,7 +21,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
   return (
     <div className="w-full space-y-3">
       <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-[#065f46]">
-        {hasRealImages && currentSrc.startsWith("/") && currentSrc !== "/placeholder" ? (
+        {hasRealImages && isRealImage(currentSrc) ? (
           <Image
             src={currentSrc}
             alt={title}
@@ -72,7 +73,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
               }`}
               aria-label={`View image ${i + 1}`}
             >
-              {src.startsWith("/") && src !== "/placeholder" ? (
+              {isRealImage(src) ? (
                 <Image
                   src={src}
                   alt=""

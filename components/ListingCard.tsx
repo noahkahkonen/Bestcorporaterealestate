@@ -19,7 +19,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
     listing.acreage && `${listing.acreage} Acres`,
   ].filter(Boolean);
-  const showRealImage = listing.heroImage.startsWith("/") && !imgError;
+  const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
   const isForLease = listing.listingType === "For Lease" || listing.listingType === "Sale/Lease";
 
   const salePriceDisplay =

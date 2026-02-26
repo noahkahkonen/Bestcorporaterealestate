@@ -7,6 +7,9 @@ import { authOptions } from "@/lib/auth";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
+// Vercel serverless body limit is 4.5MB (use full limit for server uploads)
+const MAX_FILE_SIZE = 4.5 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,6 +20,16 @@ export async function POST(request: NextRequest) {
     const folder = (formData.get("folder") as string) || "misc";
 
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        {
+          error: "File too large",
+          detail: `File must be under ${MAX_FILE_SIZE / 1024 / 1024}MB. Yours is ${(file.size / 1024 / 1024).toFixed(1)}MB.`,
+        },
+        { status: 413 }
+      );
+    }
 
     const ext = path.extname(file.name) || ".bin";
     const name = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;

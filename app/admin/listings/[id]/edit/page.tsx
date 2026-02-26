@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
+import { upload as blobUpload } from "@vercel/blob/client";
 import {
   formatPriceInput,
   formatLeaseRateInput,
@@ -28,6 +29,8 @@ export default function EditListingPage() {
   const [agents, setAgents] = useState<any[]>([]);
   const [features, setFeatures] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
+  const [uploadingBrochure, setUploadingBrochure] = useState(false);
+  const brochureInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<{
     title: string;
     address: string;
@@ -137,16 +140,48 @@ export default function EditListingPage() {
   }
 
   async function handleFileUpload(file: File, field: "heroImage" | "galleryImagesJson" | "brochure" | "financialDocPath") {
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("folder", field === "financialDocPath" ? "financial-docs" : "listings");
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const data = await res.json();
-    if (data.url && form) {
-      if (field === "heroImage") setForm((f) => ({ ...f!, heroImage: data.url }));
-      else if (field === "galleryImagesJson") setForm((f) => ({ ...f!, galleryImagesJson: [...f!.galleryImagesJson, data.url] }));
-      else if (field === "brochure") setForm((f) => ({ ...f!, brochure: data.url }));
-      else if (field === "financialDocPath") setForm((f) => ({ ...f!, financialDocPath: data.url }));
+    if (field === "brochure") setUploadingBrochure(true);
+    try {
+      // PDFs > 4MB use client upload (bypasses 4.5MB server limit, supports up to 50MB)
+      const useClientUpload =
+        (field === "brochure" || field === "financialDocPath") && file.size > 4 * 1024 * 1024;
+      if (useClientUpload && form) {
+        const folder = field === "financialDocPath" ? "financial-docs" : "listings";
+        const name = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.pdf`;
+        const blob = await blobUpload(name, file, {
+          access: "public",
+          handleUploadUrl: "/api/upload/blob-handler",
+        });
+        if (field === "brochure") setForm((f) => (f ? { ...f, brochure: blob.url } : f));
+        else setForm((f) => (f ? { ...f, financialDocPath: blob.url } : f));
+        return;
+      }
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("folder", field === "financialDocPath" ? "financial-docs" : "listings");
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      let data: { url?: string; error?: string; detail?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        alert(`Upload failed: server returned ${res.status} (not JSON)`);
+        return;
+      }
+      if (data.url && form) {
+        if (field === "heroImage") setForm((f) => ({ ...f!, heroImage: data.url! }));
+        else if (field === "galleryImagesJson") setForm((f) => ({ ...f!, galleryImagesJson: [...f!.galleryImagesJson, data.url!] }));
+        else if (field === "brochure") setForm((f) => ({ ...f!, brochure: data.url! }));
+        else if (field === "financialDocPath") setForm((f) => ({ ...f!, financialDocPath: data.url! }));
+      } else {
+        const msg = data.detail || data.error || "Upload failed.";
+        alert(`Upload failed: ${msg}`);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed.";
+      alert(`Upload failed: ${msg}`);
+      console.error("Brochure upload error:", err);
+    } finally {
+      if (field === "brochure") setUploadingBrochure(false);
     }
   }
 
@@ -345,7 +380,25 @@ export default function EditListingPage() {
           <h2 className="text-lg font-semibold text-[var(--charcoal)]">Images</h2>
           <div className="mt-4">
             <label className="block text-sm font-medium">Hero Image</label>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              {form.heroImage && (
+                <div className="group relative">
+                  <div className="relative h-20 w-28 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-muted)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={form.heroImage} alt="" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f!, heroImage: "" }))}
+                      className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-90 hover:opacity-100"
+                      aria-label="Remove hero image"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -355,22 +408,11 @@ export default function EditListingPage() {
                 }}
                 className="text-sm"
               />
-              {form.heroImage && (
-                <>
-                  <span className="text-sm text-[var(--charcoal-light)] truncate max-w-[240px]">{form.heroImage}</span>
-                  <button
-                    type="button"
-                    onClick={() => setForm((f) => ({ ...f!, heroImage: "" }))}
-                    className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50"
-                  >
-                    Remove
-                  </button>
-                </>
-              )}
             </div>
           </div>
           <div className="mt-4">
             <label className="block text-sm font-medium">Gallery</label>
+            <p className="mt-0.5 text-xs text-[var(--charcoal-light)]">Select multiple images at once (Ctrl/Cmd+click or drag to select)</p>
             <div className="mt-2 flex flex-wrap gap-3">
               {form.galleryImagesJson.map((url, i) => (
                 <div key={`${url}-${i}`} className="group relative">
@@ -399,9 +441,15 @@ export default function EditListingPage() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleFileUpload(f, "galleryImagesJson");
+              multiple
+              onChange={async (e) => {
+                const files = e.target.files;
+                if (files?.length) {
+                  for (let i = 0; i < files.length; i++) {
+                    await handleFileUpload(files[i]!, "galleryImagesJson");
+                  }
+                }
+                e.target.value = "";
               }}
               className="mt-2 text-sm"
             />
@@ -422,29 +470,44 @@ export default function EditListingPage() {
                 if (f?.type === "application/pdf") handleFileUpload(f, "brochure");
                 else alert("Please drop a PDF file.");
               }}
+              onClick={() => brochureInputRef.current?.click()}
             >
               <input
+                ref={brochureInputRef}
                 type="file"
                 accept="application/pdf"
                 className="hidden"
-                id="brochure-input"
-                onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, "brochure"); e.target.value = ""; }}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleFileUpload(f, "brochure");
+                  e.target.value = "";
+                }}
               />
-              {form.brochure ? (
-                <div className="flex items-center gap-2">
-                  <span className="truncate text-sm text-[var(--charcoal-light)] max-w-[200px]">{form.brochure.split("/").pop()}</span>
-                  <button
-                    type="button"
-                    onClick={() => setForm((f) => ({ ...f!, brochure: "" }))}
-                    className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50"
-                  >
-                    Remove
-                  </button>
+              {uploadingBrochure ? (
+                <span className="text-sm text-[var(--charcoal-light)]">Uploading…</span>
+              ) : form.brochure ? (
+                <div className="group relative" onClick={(e) => e.stopPropagation()}>
+                  <div className="relative flex h-20 w-28 flex-col items-center justify-center overflow-hidden rounded-lg border border-[var(--border)] bg-red-50/50 px-2">
+                    <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    <span className="mt-1 truncate text-center text-xs text-[var(--charcoal-light)] max-w-full">{form.brochure.split("/").pop()}</span>
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f!, brochure: "" }))}
+                      className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-90 hover:opacity-100"
+                      aria-label="Remove brochure"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               ) : (
-                <label htmlFor="brochure-input" className="cursor-pointer text-center text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
+                <span className="cursor-pointer text-center text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">
                   Drop PDF here or click to browse
-                </label>
+                </span>
               )}
             </div>
           </div>
@@ -473,9 +536,23 @@ export default function EditListingPage() {
                   onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileUpload(f, "financialDocPath"); e.target.value = ""; }}
                 />
                 {form.financialDocPath ? (
-                  <div className="flex items-center gap-2">
-                    <span className="truncate text-sm text-[var(--charcoal-light)] max-w-[200px]">{form.financialDocPath.split("/").pop()}</span>
-                    <button type="button" onClick={() => setForm((f) => ({ ...f!, financialDocPath: "" }))} className="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50">Remove</button>
+                  <div className="group relative">
+                    <div className="relative flex h-20 w-28 flex-col items-center justify-center overflow-hidden rounded-lg border border-[var(--border)] bg-red-50/50 px-2">
+                      <svg className="h-10 w-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
+                      <span className="mt-1 truncate text-center text-xs text-[var(--charcoal-light)] max-w-full">{form.financialDocPath.split("/").pop()}</span>
+                      <button
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f!, financialDocPath: "" }))}
+                        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-90 hover:opacity-100"
+                        aria-label="Remove financial doc"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <label htmlFor="financial-doc-input" className="cursor-pointer text-center text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]">

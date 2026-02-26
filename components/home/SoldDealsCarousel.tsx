@@ -15,7 +15,7 @@ interface SoldDealsCarouselProps {
 
 function SoldDealCard({ listing }: { listing: Listing }) {
   const [imgError, setImgError] = useState(false);
-  const showRealImage = listing.heroImage.startsWith("/") && !imgError;
+  const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
   const stats = [
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
     listing.acreage && `${listing.acreage} Acres`,

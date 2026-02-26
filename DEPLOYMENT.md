@@ -34,6 +34,7 @@ In Vercel → Project → **Settings** → **Environment Variables**, add:
 | Variable | Value | Notes |
 |----------|-------|-------|
 | `DATABASE_URL` | Your Neon **pooled** connection string | From Neon dashboard → Connect → enable "Connection pooling" → copy. Must include `-pooler` in hostname (e.g. `ep-xxx-pooler.us-east-2.aws.neon.tech`). Add `?pgbouncer=true` if not present. |
+| `DIRECT_URL` | Your Neon **direct** connection string | Same as above but **without** `-pooler` in hostname (e.g. `ep-xxx.us-east-2.aws.neon.tech`). Required for migrations during build. Get from Neon → Connect → "Direct connection". |
 | `NEXTAUTH_URL` | `https://bestcorporate.shop` | Your production URL |
 | `NEXTAUTH_SECRET` | Random 32+ char string | Generate: `openssl rand -base64 32` |
 | `ADMIN_USERNAME` | Your admin username | |
@@ -67,7 +68,7 @@ In Hostinger → **Domains** → **bestcorporate.shop** → **DNS / Nameservers*
 
 Vercel’s domain settings will show the exact values. Propagation can take up to 48 hours (often minutes).
 
-### 6. Run Migrations
+### 6. Migrations
 
 After first deploy, run migrations (one-time):
 
@@ -124,6 +125,13 @@ pm2 startup
 
 ---
 
+## Troubleshooting: P1002 (migration timeout) or build fails
+
+If `npm run build` fails with **P1002** (database timeout during `prisma migrate deploy`):
+
+1. **Add `DIRECT_URL`** – In Vercel → Settings → Environment Variables, add `DIRECT_URL` with your Neon **direct** connection string (no `-pooler` in hostname). Get it from Neon → Connect → "Direct connection".
+2. **Redeploy** – Environment variables only apply on new deploys.
+
 ## Troubleshooting: "Application error: a server-side exception has occurred"
 
 If pages fail to load on Vercel:
@@ -133,6 +141,18 @@ If pages fail to load on Vercel:
 3. **Check Vercel logs** – Project → Deployments → select deployment → Functions → view logs for the actual error.
 4. **Verify env vars** – Ensure `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET` are set. `NEXTAUTH_URL` must be your production URL (e.g. `https://bestcorporaterealestate.vercel.app`).
 5. **Image uploads** – Create a Vercel Blob store: Project → **Storage** tab → **Create** → **Blob**. This adds `BLOB_READ_WRITE_TOKEN` automatically. Redeploy after creating.
+
+---
+
+## Troubleshooting: Brochure upload not working
+
+If brochure uploads fail or nothing happens:
+
+1. **Create Vercel Blob store** – Vercel → Project → **Storage** tab → **Create** → **Blob**. This adds `BLOB_READ_WRITE_TOKEN` automatically. **Redeploy after creating** (env vars only apply on new deploy).
+2. **Verify `BLOB_READ_WRITE_TOKEN`** – In Vercel → Settings → Environment Variables, confirm it exists. If missing, create the Blob store and redeploy.
+3. **File size** – PDFs under 4.5MB use server upload. PDFs 4–50MB use client upload (direct to Blob). Larger than 50MB is not supported.
+4. **Check browser** – Open DevTools → Network tab. Select a PDF, then look for the `/api/upload` request. Check the response status and body for the error message.
+5. **Check logs** – Vercel → Deployments → your deployment → Functions → click the upload function to see server logs.
 
 ---
 
