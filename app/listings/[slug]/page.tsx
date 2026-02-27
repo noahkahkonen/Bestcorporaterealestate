@@ -111,11 +111,11 @@ export default async function PropertyPage({ params }: Props) {
               )}
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
               {stats.map(({ label, value }) => {
                 const isLandWithSub = label === "Property Type" && value.includes(" – ");
                 return (
-                  <div key={label} className="w-fit rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+                  <div key={label} className="w-fit rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4 text-center">
                     <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
                       {label}
                     </p>
