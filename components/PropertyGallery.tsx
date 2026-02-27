@@ -26,7 +26,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             src={currentSrc}
             alt={title}
             fill
-            className="object-cover object-top"
+            className="object-contain object-center"
             sizes="(max-width: 1440px) 100vw, 1440px"
             quality={90}
             priority
@@ -78,7 +78,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                   src={src}
                   alt=""
                   fill
-                  className="object-cover object-center"
+                  className="object-contain object-center"
                   sizes="96px"
                   quality={90}
                 />

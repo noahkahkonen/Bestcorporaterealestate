@@ -44,11 +44,11 @@ export default function Header() {
             unoptimized
           />
           <Image
-            src="/images/best-logo-white.png"
+            src="/images/best-logo.png"
             alt="Best Corporate Real Estate"
             width={240}
             height={80}
-            className="hero-img-dark h-[66px] w-auto bg-transparent"
+            className="hero-img-dark h-[66px] w-auto bg-transparent brightness-0 invert"
             priority
             unoptimized
           />
