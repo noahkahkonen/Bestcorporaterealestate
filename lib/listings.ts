@@ -131,11 +131,14 @@ function dbToListing(row: {
     // ignore
   }
 
-  const heroImage = row.heroImage || "/images/placeholders/listing-6.jpg";
-  // Always include hero first; merge with gallery images (dedupe)
+  // Hero is the main photo (card + first in gallery). Prefer DB hero, else first from gallery.
+  const heroImage =
+    row.heroImage || (galleryFromJson[0] && String(galleryFromJson[0]).trim()) || "/images/placeholders/listing-6.jpg";
+  // Gallery: hero first, then additional images (dedupe, preserve order)
   const galleryImages: string[] = [heroImage];
   for (const url of galleryFromJson) {
-    if (url && url !== heroImage && !galleryImages.includes(url)) galleryImages.push(url);
+    const u = url && String(url).trim();
+    if (u && u !== heroImage && !galleryImages.includes(u)) galleryImages.push(u);
   }
   const rawLat = row.latitude;
   const rawLng = row.longitude;

@@ -11,10 +11,8 @@ interface PropertyGalleryProps {
 export default function PropertyGallery({ images, title }: PropertyGalleryProps) {
   const [index, setIndex] = useState(0);
   const isRealImage = (s: string) => (s.startsWith("/") || s.startsWith("https://")) && s !== "/placeholder";
-  const displayImages = (() => {
-    const real = images.filter(isRealImage);
-    return real.length ? real : images.length ? images : ["/placeholder"];
-  })();
+  // Preserve order: first image is always the hero/main photo from listing
+  const displayImages = images.length ? images : ["/placeholder"];
   const hasRealImages = displayImages.some(isRealImage);
 
   const goPrev = () => setIndex((i) => (i - 1 + displayImages.length) % displayImages.length);
