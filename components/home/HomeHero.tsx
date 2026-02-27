@@ -70,7 +70,7 @@ export default function HomeHero() {
             textShadow: "2px 0 4px rgba(0,0,0,0.3), -2px 0 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3), 0 -2px 4px rgba(0,0,0,0.3), 2px 2px 4px rgba(0,0,0,0.3), -2px 2px 4px rgba(0,0,0,0.3), 2px -2px 4px rgba(0,0,0,0.3), -2px -2px 4px rgba(0,0,0,0.3), 0 0 12px rgba(0,0,0,0.2), 0 0 24px rgba(0,0,0,0.12)",
           }}
         >
-          Best Corporate Real Estate
+          Best Corporate Real{"\u00A0"}Estate
         </h1>
         <p
           className={`mt-2 max-w-xl text-sm text-white/90 sm:mt-5 sm:text-base lg:text-lg ${reveal} ${
