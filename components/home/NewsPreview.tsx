@@ -1,13 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { NewsItem } from "@/lib/news";
 
-const PLACEHOLDER_ITEMS = [
-  { title: "Central Ohio Market Report Q4 2024", date: "Jan 15, 2025", slug: "market-report-q4", image: "/images/news/news-story.png" },
-  { title: "Industrial Demand Continues in Polaris Corridor", date: "Jan 8, 2025", slug: "industrial-polaris", image: "/images/news/news-story.png" },
-  { title: "Downtown Office Trends: What Tenants Want", date: "Dec 20, 2024", slug: "downtown-office", image: "/images/news/news-story.png" },
-];
+function formatDate(d: Date | null): string {
+  if (!d) return "";
+  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
 
-export default function NewsPreview() {
+interface NewsPreviewProps {
+  articles: NewsItem[];
+}
+
+export default function NewsPreview({ articles }: NewsPreviewProps) {
   return (
     <section className="border-b border-[var(--border)] bg-[var(--surface)] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -28,30 +32,36 @@ export default function NewsPreview() {
           </Link>
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {PLACEHOLDER_ITEMS.map((item) => (
-            <Link
-              key={item.slug}
-              href="/news"
-              className="group flex overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-shadow hover:shadow-md sm:flex-col"
-            >
-              <div className="relative h-40 w-full flex-shrink-0 sm:h-44">
-                <Image
-                  src={item.image}
-                  alt=""
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                  quality={90}
-                />
-              </div>
-              <div className="p-5">
-                <p className="text-xs font-medium text-[var(--muted)]">{item.date}</p>
-                <h3 className="mt-2 font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)]">
-                  {item.title}
-                </h3>
-              </div>
-            </Link>
-          ))}
+          {articles.length === 0 ? (
+            <p className="col-span-full text-[var(--charcoal-light)]">No news stories yet.</p>
+          ) : (
+            articles.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/news/${item.slug}`}
+                className="group flex overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-shadow hover:shadow-md sm:flex-col"
+              >
+                <div className="relative h-40 w-full flex-shrink-0 sm:h-44">
+                  <Image
+                    src={item.imageUrl || "/images/news/news-story.png"}
+                    alt=""
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                    quality={90}
+                  />
+                </div>
+                <div className="p-5">
+                  <p className="text-xs font-medium text-[var(--muted)]">
+                    {formatDate(item.publishedAt || item.createdAt)}
+                  </p>
+                  <h3 className="mt-2 font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)]">
+                    {item.title}
+                  </h3>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </div>
     </section>

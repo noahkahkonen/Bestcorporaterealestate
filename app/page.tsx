@@ -8,12 +8,14 @@ import NewsPreview from "@/components/home/NewsPreview";
 import SoldDealsCarousel from "@/components/home/SoldDealsCarousel";
 import EmailSignup from "@/components/home/EmailSignup";
 import { getFeaturedListings, getListings, getSoldListings } from "@/lib/listings";
+import { getNews } from "@/lib/news";
 
 export default async function HomePage() {
-  const [featuredListings, allListings, soldListings] = await Promise.all([
+  const [featuredListings, allListings, soldListings, news] = await Promise.all([
     getFeaturedListings(),
     getListings(),
     getSoldListings(),
+    getNews(),
   ]);
   const listingsToShow = featuredListings.length > 0 ? featuredListings : allListings.slice(0, 6);
   return (
@@ -40,7 +42,7 @@ export default async function HomePage() {
       </section>
       <SoldDealsCarousel listings={soldListings} />
       <EmailSignup />
-      <NewsPreview />
+      <NewsPreview articles={news.slice(0, 3)} />
     </>
   );
 }

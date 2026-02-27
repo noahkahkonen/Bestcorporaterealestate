@@ -32,14 +32,23 @@ export default function Header() {
       <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--header-logo-text)]"
+          className="relative flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--header-logo-text)]"
         >
           <Image
             src="/images/best-logo.png"
             alt="Best Corporate Real Estate"
             width={240}
             height={80}
-            className="h-[66px] w-auto bg-transparent"
+            className="hero-img-light h-[66px] w-auto bg-transparent"
+            priority
+            unoptimized
+          />
+          <Image
+            src="/images/best-logo-white.png"
+            alt="Best Corporate Real Estate"
+            width={240}
+            height={80}
+            className="hero-img-dark h-[66px] w-auto bg-transparent"
             priority
             unoptimized
           />
