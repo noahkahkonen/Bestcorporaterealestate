@@ -91,12 +91,12 @@ export default async function PropertyPage({ params }: Props) {
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-[1fr_410px] lg:gap-10">
           <div className="min-w-0">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-              <div className="min-w-0 flex-1">
+            <div className="flex flex-row flex-nowrap items-start justify-between gap-3 sm:gap-4">
+              <div className="min-w-0 max-w-[50%] flex-1 sm:max-w-none">
                 <h1 className="text-xl font-bold tracking-tight text-[var(--charcoal)] sm:text-2xl">
                   {listing.title}
                 </h1>
-                <p className="mt-1 text-xl text-[var(--charcoal-light)] sm:text-2xl">
+                <p className="mt-1 text-base text-[var(--charcoal-light)] sm:mt-1 sm:text-2xl">
                   {listing.address},{" "}
                   <span className="whitespace-nowrap">
                     {listing.city}, {listing.state}
@@ -105,17 +105,17 @@ export default async function PropertyPage({ params }: Props) {
                 </p>
               </div>
               {headerPrice && (
-                <p className="mt-1 shrink-0 text-right text-2xl font-bold text-[var(--charcoal)] sm:mt-0 sm:text-3xl">
+                <p className="shrink-0 text-right text-lg font-bold text-[var(--charcoal)] sm:text-3xl">
                   {headerPrice}
                 </p>
               )}
             </div>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 flex flex-wrap gap-4">
               {stats.map(({ label, value }) => {
                 const isLandWithSub = label === "Property Type" && value.includes(" – ");
                 return (
-                  <div key={label} className="rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+                  <div key={label} className="w-fit rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">
                     <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
                       {label}
                     </p>

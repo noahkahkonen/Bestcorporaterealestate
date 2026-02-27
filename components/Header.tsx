@@ -16,6 +16,10 @@ export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
+  const [mobileListingsTypeOpen, setMobileListingsTypeOpen] = useState(false);
+  const [mobileListingsAssetOpen, setMobileListingsAssetOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const isListings = pathname === "/listings";
   const isServices = pathname === "/services";
@@ -44,7 +48,7 @@ export default function Header() {
             unoptimized
           />
           <Image
-            src="/images/best-logo.png"
+            src="/images/best-logo-dark-mode.png"
             alt="Best Corporate Real Estate"
             width={240}
             height={80}
@@ -234,58 +238,161 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu with dropdowns */}
+      {/* Mobile menu with submenus */}
       {mobileOpen && (
         <div className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-4 md:hidden">
-          <nav className="flex flex-col gap-1">
+          <nav className="flex flex-col gap-0">
             <Link
               href="/"
-              className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Home
             </Link>
-            <div className="rounded px-3 py-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Listings</p>
-              <Link href="/listings" className="block py-1.5 pl-2 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]" onClick={() => setMobileOpen(false)}>All Listings</Link>
-              <p className="mt-2 text-xs text-[var(--muted)]">By listing type</p>
-              {LISTING_TYPES.map((type) => (
-                <Link
-                  key={type}
-                  href={`/listings?listingType=${encodeURIComponent(type)}`}
-                  className="block py-1.5 pl-2 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
-                  onClick={() => setMobileOpen(false)}
+
+            {/* Listings - expandable */}
+            <div className="rounded">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+                onClick={() => setMobileListingsOpen((o) => !o)}
+                aria-expanded={mobileListingsOpen}
+              >
+                Listings
+                <svg
+                  className={`h-4 w-4 transition-transform ${mobileListingsOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {type}
-                </Link>
-              ))}
-              <p className="mt-2 text-xs text-[var(--muted)]">By asset type</p>
-              {PROPERTY_TYPES.map((type) => (
-                <Link
-                  key={type}
-                  href={`/listings?propertyType=${encodeURIComponent(type)}`}
-                  className="block py-1.5 pl-2 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {type}
-                </Link>
-              ))}
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {mobileListingsOpen && (
+                <div className="border-l-2 border-[var(--border)] pl-3 ml-3 space-y-1">
+                  <Link
+                    href="/listings"
+                    className="block py-1.5 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    All Listings
+                  </Link>
+                  <div>
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-[var(--charcoal)] hover:text-[var(--navy)]"
+                      onClick={() => setMobileListingsTypeOpen((o) => !o)}
+                      aria-expanded={mobileListingsTypeOpen}
+                    >
+                      By Listing Type
+                      <svg
+                        className={`h-3.5 w-3.5 transition-transform ${mobileListingsTypeOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {mobileListingsTypeOpen && (
+                      <div className="pl-2 space-y-0.5">
+                        {LISTING_TYPES.map((type) => (
+                          <Link
+                            key={type}
+                            href={`/listings?listingType=${encodeURIComponent(type)}`}
+                            className="block py-1.5 text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {type}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-[var(--charcoal)] hover:text-[var(--navy)]"
+                      onClick={() => setMobileListingsAssetOpen((o) => !o)}
+                      aria-expanded={mobileListingsAssetOpen}
+                    >
+                      By Asset Type
+                      <svg
+                        className={`h-3.5 w-3.5 transition-transform ${mobileListingsAssetOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    {mobileListingsAssetOpen && (
+                      <div className="pl-2 space-y-0.5">
+                        {PROPERTY_TYPES.map((type) => (
+                          <Link
+                            key={type}
+                            href={`/listings?propertyType=${encodeURIComponent(type)}`}
+                            className="block py-1.5 text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {type}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="rounded px-3 py-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">Services</p>
-              {SERVICE_CATEGORIES.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="block py-1.5 pl-2 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
-                  onClick={() => setMobileOpen(false)}
+
+            {/* Services - expandable */}
+            <div className="rounded">
+              <button
+                type="button"
+                className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+                onClick={() => setMobileServicesOpen((o) => !o)}
+                aria-expanded={mobileServicesOpen}
+              >
+                Services
+                <svg
+                  className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {label}
-                </Link>
-              ))}
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {mobileServicesOpen && (
+                <div className="border-l-2 border-[var(--border)] pl-3 ml-3 space-y-0.5">
+                  {SERVICE_CATEGORIES.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className="block py-1.5 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
-            <Link href="/team" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]" onClick={() => setMobileOpen(false)}>Team</Link>
-            <Link href="/news" className="rounded px-3 py-2 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]" onClick={() => setMobileOpen(false)}>News</Link>
+
+            <Link
+              href="/team"
+              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Team
+            </Link>
+            <Link
+              href="/news"
+              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              News
+            </Link>
             <Link
               href="/contact"
               className="mt-2 rounded-md bg-[var(--navy)] px-4 py-2.5 text-center text-sm font-medium text-white dark:text-gray-900"

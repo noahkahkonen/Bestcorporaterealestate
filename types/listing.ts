@@ -66,4 +66,4 @@ export const PROPERTY_TYPES = [
 
 export const LISTING_TYPES = ["For Sale", "For Lease", "Sale/Lease"] as const;
 
-export const LAND_SUBCATEGORIES = ["Retail", "Office", "Industrial", "Specialty", "Residential"] as const;
+export const LAND_SUBCATEGORIES = ["Retail", "Office", "Industrial", "Specialty", "Residential", "Multifamily"] as const;

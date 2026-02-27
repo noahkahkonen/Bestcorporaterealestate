@@ -60,7 +60,7 @@ model Listing {
   longitude       Float
   listingType     String   // For Sale, For Lease, Sale/Lease
   propertyType    String   // Retail, Industrial, etc.
-  landSubcategory String?  // When Land: Retail, Office, Industrial, Specialty, Residential
+  landSubcategory String?  // When Land: Retail, Office, Industrial, Specialty, Residential, Multifamily
   squareFeet      Int?
   acreage         Float?
   isMultiTenant   Boolean  @default(false)
