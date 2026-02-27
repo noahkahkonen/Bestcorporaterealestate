@@ -22,19 +22,6 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
   const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
   const isForLease = listing.listingType === "For Lease" || listing.listingType === "Sale/Lease";
 
-  const salePriceDisplay =
-    (listing.price != null || listing.investmentMetrics?.price != null || listing.priceNegotiable) &&
-    (listing.listingType === "For Sale" || listing.listingType === "Sale/Lease")
-      ? listing.priceNegotiable ? "Negotiable" : `$${(listing.price ?? listing.investmentMetrics?.price ?? 0).toLocaleString()}`
-      : null;
-
-  const leaseDisplay =
-    isForLease && listing.leasePricePerSf != null && listing.leaseType
-      ? `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`
-      : null;
-
-  const priceBlocks = [salePriceDisplay, leaseDisplay].filter(Boolean);
-
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/listings/${listing.slug}`} className="flex flex-1 flex-col">
@@ -57,9 +44,9 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
           )}
         </div>
         <div className="flex flex-1 flex-col p-4 sm:p-5">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             {listing.status && listing.status !== "Active" && (
-                <span
+              <span
                   className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
                     listing.status === "Sold"
                       ? "bg-[var(--navy)]/15 text-[var(--navy)]"
@@ -67,11 +54,11 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
                         ? "bg-amber-100 text-amber-800"
                         : "bg-[var(--surface-muted)] text-[var(--charcoal-light)]"
                   }`}
-                >
-                  {listing.status === "Sold" ? getSoldLeasedLabel(listing) : listing.status}
-                </span>
+              >
+                {listing.status === "Sold" ? getSoldLeasedLabel(listing) : listing.status}
+              </span>
             )}
-            <p className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
+            <p className="ml-auto text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
               {listing.listingType} •{" "}
               {listing.propertyType === "Land" && listing.landSubcategory ? (
                 <>
@@ -84,25 +71,14 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
               )}
             </p>
           </div>
-          <div className="mt-1 flex flex-row flex-nowrap items-start justify-between gap-2 sm:block">
-            <div className="min-w-0 max-w-[50%] sm:max-w-none">
-              <h2 className="text-lg font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)] lg:text-xl">
-                {listing.title}
-              </h2>
-              <p className="mt-1 text-sm text-[var(--charcoal-light)] lg:text-base">
-                {listing.address}, {listing.city}, {listing.state}
-                {listing.zipCode && ` ${listing.zipCode}`}
-              </p>
-            </div>
-            {priceBlocks.length > 0 && (
-              <div className="flex shrink-0 flex-col items-end gap-0.5 sm:mt-1 sm:items-start">
-                {priceBlocks.map((p, i) => (
-                  <span key={i} className="text-base font-semibold text-[var(--charcoal)] whitespace-nowrap sm:text-sm">
-                    {p}
-                  </span>
-                ))}
-              </div>
-            )}
+          <div className="mt-1">
+            <h2 className="text-lg font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)] lg:text-xl">
+              {listing.title}
+            </h2>
+            <p className="mt-1 text-sm text-[var(--charcoal-light)] lg:text-base">
+              {listing.address}, {listing.city}, {listing.state}
+              {listing.zipCode && ` ${listing.zipCode}`}
+            </p>
           </div>
           {stats.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
