@@ -40,7 +40,7 @@ export default async function SoldDealPage({ params }: Props) {
   const stats = [
     { label: "Property Type", value: listing.propertyType },
     listing.squareFeet && { label: "Square Feet", value: `${listing.squareFeet.toLocaleString()} SF` },
-    listing.acreage != null && { label: "Acres", value: `${listing.acreage}` },
+    listing.acreage != null && { label: "Acreage", value: `${listing.acreage}` },
     listing.listingType && { label: "Transaction Type", value: listing.listingType },
     (() => {
       const label = getSoldLeasedLabel(listing);

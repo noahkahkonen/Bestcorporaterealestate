@@ -26,7 +26,7 @@ Use `listings-import-template.csv` to bulk add listings. Open in Excel, fill in 
 | **propertyType** | Yes | Text | `Retail` \| `Industrial` \| `Office` \| `Multifamily` \| `Land` \| `Specialty` \| `Residential` \| `Business` |
 | **landSubcategory** | No | Text | When propertyType=Land: `Retail` \| `Office` \| `Industrial` \| `Specialty` \| `Residential` \| `Multifamily` |
 | **squareFeet** | No | Integer | Square footage |
-| **acreage** | No | Number | Acres (for land) |
+| **acreage** | No | Number | Acreage (for land) |
 | **isMultiTenant** | No | Boolean | `true` \| `false` |
 | **unitCount** | No | Integer | Number of units (multi-tenant) |
 | **description** | Yes | Text | Full property description |

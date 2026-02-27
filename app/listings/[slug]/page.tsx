@@ -71,7 +71,7 @@ export default async function PropertyPage({ params }: Props) {
         : listing.propertyType,
     },
     listing.squareFeet && { label: "Square Feet", value: `${listing.squareFeet.toLocaleString()} SF` },
-    listing.acreage != null && { label: "Acres", value: `${listing.acreage}` },
+    listing.acreage != null && { label: "Acreage", value: `${listing.acreage}` },
     listing.investmentMetrics?.capRate != null && {
       label: "Cap Rate",
       value: `${(listing.investmentMetrics.capRate * 100).toFixed(1)}%`,

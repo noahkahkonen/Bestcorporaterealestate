@@ -17,7 +17,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
   const [imgError, setImgError] = useState(false);
   const stats = [
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
-    listing.acreage && `${listing.acreage} Acres`,
+    listing.acreage && `${listing.acreage} Acreage`,
   ].filter(Boolean);
   const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
   const isForLease = listing.listingType === "For Lease" || listing.listingType === "Sale/Lease";
@@ -97,7 +97,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
             {priceBlocks.length > 0 && (
               <div className="flex shrink-0 flex-col items-end gap-0.5 sm:mt-1 sm:items-start">
                 {priceBlocks.map((p, i) => (
-                  <span key={i} className="text-sm font-semibold text-[var(--charcoal)] whitespace-nowrap">
+                  <span key={i} className="text-base font-semibold text-[var(--charcoal)] whitespace-nowrap sm:text-sm">
                     {p}
                   </span>
                 ))}

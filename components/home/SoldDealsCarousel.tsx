@@ -18,7 +18,7 @@ function SoldDealCard({ listing }: { listing: Listing }) {
   const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
   const stats = [
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
-    listing.acreage && `${listing.acreage} Acres`,
+    listing.acreage && `${listing.acreage} Acreage`,
   ].filter(Boolean);
 
   const isLeased = getSoldLeasedLabel(listing) === "Leased";
