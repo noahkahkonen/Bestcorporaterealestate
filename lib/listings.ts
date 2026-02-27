@@ -121,17 +121,22 @@ function dbToListing(row: {
     // ignore
   }
 
-  const galleryImages: string[] = [];
+  const galleryFromJson: string[] = [];
   try {
     if (row.galleryImagesJson) {
       const parsed = JSON.parse(row.galleryImagesJson);
-      if (Array.isArray(parsed)) galleryImages.push(...parsed);
+      if (Array.isArray(parsed)) galleryFromJson.push(...parsed);
     }
   } catch {
     // ignore
   }
 
   const heroImage = row.heroImage || "/images/placeholders/listing-6.jpg";
+  // Always include hero first; merge with gallery images (dedupe)
+  const galleryImages: string[] = [heroImage];
+  for (const url of galleryFromJson) {
+    if (url && url !== heroImage && !galleryImages.includes(url)) galleryImages.push(url);
+  }
   const rawLat = row.latitude;
   const rawLng = row.longitude;
   const invalidCoord =
@@ -164,7 +169,7 @@ function dbToListing(row: {
     acreage: row.acreage,
     features,
     heroImage,
-    galleryImages: galleryImages.length ? galleryImages : [heroImage],
+    galleryImages,
     youtubeLink: row.youtubeLink ?? undefined,
     brochure: row.brochure ?? undefined,
     financialDocPath: row.financialDocPath ?? undefined,
