@@ -45,8 +45,9 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
         </div>
         <div className="flex flex-1 flex-col p-4 sm:p-5">
           <div className="flex items-center justify-between gap-2">
-            {listing.status && listing.status !== "Active" && (
-              <span
+            <div className="flex items-center gap-2">
+              {listing.status && listing.status !== "Active" && (
+                <span
                   className={`rounded px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
                     listing.status === "Sold"
                       ? "bg-[var(--navy)]/15 text-[var(--navy)]"
@@ -54,12 +55,15 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
                         ? "bg-amber-100 text-amber-800"
                         : "bg-[var(--surface-muted)] text-[var(--charcoal-light)]"
                   }`}
-              >
-                {listing.status === "Sold" ? getSoldLeasedLabel(listing) : listing.status}
+                >
+                  {listing.status === "Sold" ? getSoldLeasedLabel(listing) : listing.status}
+                </span>
+              )}
+              <span className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
+                {listing.listingType}
               </span>
-            )}
-            <p className="ml-auto text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm">
-              {listing.listingType} •{" "}
+            </div>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--charcoal-light)] lg:text-sm shrink-0">
               {listing.propertyType === "Land" && listing.landSubcategory ? (
                 <>
                   <PropertyTypeTag propertyType={listing.propertyType} />
@@ -69,7 +73,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
               ) : (
                 <PropertyTypeTag propertyType={listing.propertyType} />
               )}
-            </p>
+            </span>
           </div>
           <div className="mt-1">
             <h2 className="text-lg font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)] lg:text-xl">
