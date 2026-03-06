@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { getListings, getListingBySlug, getSimilarListings } from "@/lib/listings";
 import type { Listing } from "@/types/listing";
 import PropertyGallery from "@/components/PropertyGallery";
-import PropertyGalleryGrid from "@/components/PropertyGalleryGrid";
 import PropertyMap from "@/components/PropertyMap";
 import PropertyTypeTag from "@/components/PropertyTypeTag";
 import InvestmentMetricsSection from "@/components/InvestmentMetricsSection";
@@ -93,9 +92,9 @@ export default async function PropertyPage({ params }: Props) {
   return (
     <div className="pb-16">
       <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* Photo Gallery – Stitch grid layout */}
+        {/* Photo Gallery */}
         <div className="mb-10">
-          <PropertyGalleryGrid images={listing_.galleryImages} title={listing_.title} />
+          <PropertyGallery images={listing_.galleryImages} title={listing_.title} />
         </div>
 
         {/* Property Info Header – Stitch style */}
