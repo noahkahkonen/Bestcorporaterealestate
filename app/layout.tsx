@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
+
+const playfair = Playfair_Display({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
 
 const inter = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -33,7 +40,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="overflow-x-clip">
-      <body className={`${inter.variable} min-h-screen overflow-x-clip font-sans antialiased`}>
+      <body className={`${playfair.variable} ${inter.variable} min-h-screen overflow-x-clip font-sans antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>

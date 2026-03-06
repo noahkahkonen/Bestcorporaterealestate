@@ -20,7 +20,7 @@ export default function FeaturedListings({ listings }: FeaturedListingsProps) {
   if (listings.length === 0) return null;
 
   return (
-    <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-16 sm:py-20">
+    <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface-muted)] py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>

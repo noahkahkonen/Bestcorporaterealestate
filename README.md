@@ -22,15 +22,16 @@ A modern commercial real estate brokerage website built with Next.js 14+ (App Ro
 
    Create a PostgreSQL database. Options:
 
-   - **[Neon](https://neon.tech)** – Free tier, works with Vercel. Create a project and copy the connection string.
+   - **[Neon](https://neon.tech)** – Free tier, works with Vercel. **→ See [NEON-SETUP.md](./NEON-SETUP.md)** for step-by-step connection instructions.
    - **[Supabase](https://supabase.com)** – Free tier. Project Settings → Database → Connection string.
    - **Local Postgres** – Run `postgresql://user:password@localhost:5432/bestcre`.
 
-   Add `DATABASE_URL` to `.env.local`, then run migrations:
+   Add `DATABASE_URL` and `DIRECT_URL` to `.env.local`, then run migrations:
 
    ```bash
-   npx prisma migrate deploy
+   npm run db:migrate
    npm run db:seed
+   npm run db:seed-listings
    ```
 
 3. **Environment variables**

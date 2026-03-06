@@ -3,11 +3,8 @@
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 
-const HERO_VIDEO = "/videos/hero-video.mp4";
-
 export default function HomeHero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
@@ -23,11 +20,6 @@ export default function HomeHero() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (video) video.play().catch(() => {});
-  }, []);
-
   const reveal = "transition-all duration-700 ease-out";
   const hidden = "opacity-0";
   const visible = "opacity-100";
@@ -35,66 +27,71 @@ export default function HomeHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex w-full min-h-[42vh] flex-col justify-end overflow-hidden bg-[#065f46] text-white sm:min-h-0 sm:aspect-[21/9]"
+      className="relative flex min-h-screen w-full items-center overflow-hidden"
+      style={{
+        background: "linear-gradient(to right, rgba(0, 71, 51, 0.9) 15%, rgba(0, 71, 51, 0.6) 50%, rgba(0, 71, 51, 0.3)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=2000') center/cover",
+      }}
     >
-      <div className="absolute inset-0">
-        <video
-          ref={videoRef}
-          src={HERO_VIDEO}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-[#065f46]/90 via-[#065f46]/30 to-transparent" />
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-6 pt-8 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pb-16 lg:pt-28">
-        <p
-          className={`text-xs font-medium uppercase tracking-widest text-white/80 sm:text-base lg:text-lg ${reveal} ${
-            inView ? `${visible} translate-x-0` : `${hidden} -translate-x-8`
-          }`}
-          style={{
-            transitionDelay: inView ? "0ms" : "0ms",
-            textShadow: "2px 0 6px rgba(0,0,0,0.5), -2px 0 6px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.5), 0 -2px 6px rgba(0,0,0,0.5), 2px 2px 6px rgba(0,0,0,0.5), -2px 2px 6px rgba(0,0,0,0.5), 2px -2px 6px rgba(0,0,0,0.5), -2px -2px 6px rgba(0,0,0,0.5), 0 0 16px rgba(0,0,0,0.35), 0 0 32px rgba(0,0,0,0.2)",
-          }}
-        >
-          Columbus, Ohio
-        </p>
-        <h1
-          className={`mt-1.5 max-w-3xl text-2xl font-bold leading-tight tracking-tight sm:mt-2 sm:text-6xl sm:leading-none lg:text-7xl ${reveal} ${
-            inView ? `${visible} translate-y-0` : `${hidden} translate-y-8`
-          }`}
-          style={{
-            transitionDelay: inView ? "120ms" : "0ms",
-            textShadow: "2px 0 4px rgba(0,0,0,0.3), -2px 0 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.3), 0 -2px 4px rgba(0,0,0,0.3), 2px 2px 4px rgba(0,0,0,0.3), -2px 2px 4px rgba(0,0,0,0.3), 2px -2px 4px rgba(0,0,0,0.3), -2px -2px 4px rgba(0,0,0,0.3), 0 0 12px rgba(0,0,0,0.2), 0 0 24px rgba(0,0,0,0.12)",
-          }}
-        >
-          Best Corporate Real{"\u00A0"}Estate
-        </h1>
-        <p
-          className={`mt-2 max-w-xl text-sm text-white/90 sm:mt-5 sm:text-base lg:text-lg ${reveal} ${
-            inView ? `${visible} translate-y-0` : `${hidden} translate-y-6`
-          }`}
-          style={{
-            transitionDelay: inView ? "240ms" : "0ms",
-            textShadow: "2px 0 6px rgba(0,0,0,0.5), -2px 0 6px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.5), 0 -2px 6px rgba(0,0,0,0.5), 2px 2px 6px rgba(0,0,0,0.5), -2px 2px 6px rgba(0,0,0,0.5), 2px -2px 6px rgba(0,0,0,0.5), -2px -2px 6px rgba(0,0,0,0.5), 0 0 16px rgba(0,0,0,0.35), 0 0 32px rgba(0,0,0,0.2)",
-          }}
-        >
-          Full-service brokerage and advisory for office, retail, industrial, multifamily, and land. Your partner in Central Ohio commercial real estate.
-        </p>
-        <div
-          className={`mt-4 sm:mt-8 ${reveal} ${inView ? `${visible} translate-y-0 scale-100` : `${hidden} translate-y-4 scale-[0.98]`}`}
-          style={{ transitionDelay: inView ? "380ms" : "0ms" }}
-        >
-          <Link
-            href="/listings"
-            className="inline-flex rounded-md bg-white px-4 py-2 text-sm font-semibold text-[#065f46] transition-opacity hover:opacity-90 sm:px-6 sm:py-3 sm:text-base"
+      <div
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: "radial-gradient(circle, #004733 1px, transparent 1px)",
+          backgroundSize: "30px 30px",
+        }}
+      />
+      <div className="relative z-10 mx-auto w-full max-w-[1600px] px-8 py-20">
+        <div className="max-w-5xl">
+          <div
+            className={`flex items-center gap-6 text-[var(--accent)] mb-10 ${reveal} ${inView ? visible : hidden}`}
           >
-            View Listings
-          </Link>
+            <span className="h-[2px] w-16 bg-[var(--accent)]" />
+            <span className="uppercase tracking-[0.5em] text-xs font-black">Columbus, Ohio</span>
+          </div>
+          <h1
+            className={`font-display text-6xl font-bold leading-[0.95] tracking-tight text-[var(--corporate-white)] sm:text-7xl lg:text-8xl xl:text-9xl ${reveal} ${
+              inView ? `${visible} translate-y-0` : `${hidden} translate-y-8`
+            }`}
+            style={{ transitionDelay: inView ? "80ms" : "0ms" }}
+          >
+            Best{" "}
+            <span className="text-[var(--corporate-white)]">Corporate</span>{" "}
+            <span className="text-[var(--accent)]">Real Estate</span>
+          </h1>
+          <p
+            className={`mt-10 mb-14 max-w-2xl text-xl font-light leading-relaxed text-slate-200 md:text-2xl ${reveal} ${
+              inView ? `${visible} translate-y-0` : `${hidden} translate-y-6`
+            }`}
+            style={{ transitionDelay: inView ? "160ms" : "0ms" }}
+          >
+            Best Corporate Real Estate delivers high-conviction insights and capital solutions through deep local market expertise across Central Ohio.
+          </p>
+          <div
+            className={`flex flex-col gap-4 sm:flex-row sm:gap-4 ${reveal} ${inView ? `${visible} translate-y-0 scale-100` : `${hidden} translate-y-4 scale-[0.98]`}`}
+            style={{ transitionDelay: inView ? "260ms" : "0ms" }}
+          >
+            <div className="flex max-w-2xl flex-1 items-center gap-0 overflow-hidden rounded-sm border border-[var(--corporate-white)]/20 bg-[var(--corporate-white)]/10 p-2 shadow-2xl backdrop-blur-xl">
+              <input
+                type="text"
+                placeholder="Search markets, sectors, or asset types..."
+                className="w-full border-none bg-transparent px-6 py-4 text-lg text-[var(--corporate-white)] placeholder:text-slate-300 focus:ring-0"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const q = (e.target as HTMLInputElement).value;
+                    window.location.href = q ? `/listings?q=${encodeURIComponent(q)}` : "/listings";
+                  }
+                }}
+              />
+              <Link
+                href="/listings"
+                className="shrink-0 rounded-sm bg-[var(--accent)] px-12 py-4 text-sm font-black uppercase tracking-widest text-[var(--navy)] shadow-lg transition-all hover:bg-[var(--corporate-white)]"
+              >
+                Explore
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
+      <div className="absolute bottom-0 right-12 h-1/2 w-px bg-gradient-to-t from-[var(--accent)] to-transparent" />
     </section>
   );
 }

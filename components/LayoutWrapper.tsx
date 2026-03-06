@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PrivacyDataPopup from "@/components/PrivacyDataPopup";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,10 +14,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="min-w-0 overflow-x-clip">
+    <div className="relative min-w-0 overflow-x-clip">
       <Header />
       <main className="min-h-screen">{children}</main>
       <Footer />
+      <PrivacyDataPopup />
     </div>
   );
 }

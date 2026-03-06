@@ -75,6 +75,27 @@ export async function getSoldListingBySlug(slug: string): Promise<Listing | null
   return dbToListing(row);
 }
 
+/** Similar active listings: same propertyType, exclude current slug, limit 3 */
+export async function getSimilarListings(slug: string, propertyType: string): Promise<Listing[]> {
+  try {
+    const rows = await prisma.listing.findMany({
+      where: {
+        published: true,
+        status: { not: "Sold" },
+        slug: { not: slug },
+        propertyType,
+      },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+      include: { brokers: { include: { agent: true } } },
+    });
+    return rows.map(dbToListing);
+  } catch (err) {
+    console.error("getSimilarListings error:", err);
+    return [];
+  }
+}
+
 function dbToListing(row: {
   id: string;
   featured?: boolean;

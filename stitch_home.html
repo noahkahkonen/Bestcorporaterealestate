@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Elite CRE | Strategic Commercial Real Estate Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --primary: #004733;
+                --primary-dark: #003627;
+                --accent: #C4D600;
+                --cream: #F4F1EA;
+                --cream-dark: #EDE9DE;
+                --slate-text: #334155;
+            }
+        }
+        .hero-bg {
+            background: linear-gradient(to right, rgba(0, 71, 51, 0.9) 15%, rgba(0, 71, 51, 0.6) 50%, rgba(0, 71, 51, 0.3)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+        }
+        .pattern-grid {
+            background-image: radial-gradient(circle, #004733 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.05;
+        }
+        .architectural-line {
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            height: 1px;
+            width: 100%;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--primary);
+        }
+        .marquee-content {
+            display: flex;
+            width: max-content;
+            animation: marquee 40s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#004733",
+                        "primary-dark": "#003627",
+                        "accent": "#C4D600",
+                        "cream": "#F4F1EA",
+                        "cream-dark": "#EDE9DE",
+                    },
+                    fontFamily: {
+                        display: ["Playfair Display", "serif"],
+                        sans: ["Inter", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-cream dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans leading-relaxed">
+<div class="bg-primary-dark text-white text-[10px] uppercase tracking-[0.2em] py-3 px-6 border-b border-white/5 overflow-hidden">
+<div class="marquee-content gap-12 items-center">
+<span><strong class="text-accent">OFFICE INDEX:</strong> -1.2% ↓</span>
+<span><strong class="text-accent">INDUSTRIAL:</strong> +4.8% ↑</span>
+<span><strong class="text-accent">MULTIFAMILY:</strong> +2.1% ↑</span>
+<span><strong class="text-accent">RETAIL:</strong> +0.5% ↑</span>
+<span><strong class="text-accent">CAP RATES:</strong> 5.4% AVG</span>
+<span><strong class="text-accent">TRANSACTION VOL:</strong> $4.2B YTD</span>
+<span><strong class="text-accent">OFFICE INDEX:</strong> -1.2% ↓</span>
+<span><strong class="text-accent">INDUSTRIAL:</strong> +4.8% ↑</span>
+<span><strong class="text-accent">MULTIFAMILY:</strong> +2.1% ↑</span>
+<span><strong class="text-accent">RETAIL:</strong> +0.5% ↑</span>
+<span><strong class="text-accent">CAP RATES:</strong> 5.4% AVG</span>
+<span><strong class="text-accent">TRANSACTION VOL:</strong> $4.2B YTD</span>
+</div>
+</div>
+<nav class="sticky top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800">
+<div class="max-w-[1600px] mx-auto px-8 h-24 flex justify-between items-center">
+<div class="flex items-center gap-16">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 bg-primary flex items-center justify-center rounded-sm rotate-45 shadow-lg shadow-primary/20">
+<span class="text-accent font-bold text-2xl -rotate-45">E</span>
+</div>
+<span class="text-2xl font-display font-black text-primary dark:text-white tracking-tighter">ELITE<span class="text-accent">CRE</span></span>
+</div>
+<div class="hidden xl:flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600">
+<a class="hover:text-primary transition-colors border-b-2 border-transparent hover:border-accent pb-1" href="#">Advisory</a>
+<a class="hover:text-primary transition-colors border-b-2 border-transparent hover:border-accent pb-1" href="#">Data &amp; Analytics</a>
+<a class="hover:text-primary transition-colors border-b-2 border-transparent hover:border-accent pb-1" href="#">Capital Markets</a>
+<a class="hover:text-primary transition-colors border-b-2 border-transparent hover:border-accent pb-1" href="#">Research</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-700 hover:text-primary">
+<span class="material-symbols-outlined text-xl">search</span> Search
+            </button>
+<button class="bg-primary text-white px-8 py-4 rounded-sm hover:bg-primary-dark transition-all font-bold text-xs uppercase tracking-widest shadow-xl shadow-primary/20">
+                Contact Intelligence
+            </button>
+</div>
+</div>
+</nav>
+<header class="relative min-h-screen flex items-center hero-bg overflow-hidden">
+<div class="absolute inset-0 pattern-grid"></div>
+<div class="max-w-[1600px] mx-auto px-8 w-full relative z-10 py-20">
+<div class="max-w-5xl">
+<div class="flex items-center gap-6 text-accent mb-10">
+<span class="w-16 h-[2px] bg-accent"></span>
+<span class="uppercase tracking-[0.5em] text-xs font-black">Strategic Performance Partners</span>
+</div>
+<h1 class="text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-display font-bold text-white mb-10 leading-[0.95] tracking-tight">
+                Architecting <br/><span class="text-accent">Market Alpha</span>
+</h1>
+<p class="text-xl md:text-2xl text-slate-200 mb-14 leading-relaxed max-w-2xl font-light">
+                Elite CRE delivers high-conviction insights and capital solutions through proprietary data and local market dominance.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex-1 max-w-2xl flex bg-white/10 backdrop-blur-xl border border-white/20 p-2 rounded-sm shadow-2xl">
+<input class="bg-transparent border-none focus:ring-0 text-white placeholder:text-slate-300 w-full px-6 py-4 text-lg" placeholder="Search markets, sectors, or asset types..." type="text"/>
+<button class="bg-accent text-primary px-12 py-4 font-black uppercase tracking-widest text-sm hover:bg-white transition-all shadow-lg">Explore</button>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute right-12 bottom-0 h-1/2 w-[1px] bg-gradient-to-t from-accent to-transparent"></div>
+</header>
+<section class="bg-white py-32 border-b border-slate-100 relative overflow-hidden">
+<div class="max-w-[1600px] mx-auto px-8 relative z-10">
+<div class="flex flex-col lg:flex-row justify-between items-end mb-20 gap-8">
+<div class="max-w-2xl">
+<span class="text-primary font-black text-xs uppercase tracking-[0.4em] mb-4 block">Real-Time Indicators</span>
+<h2 class="text-5xl md:text-6xl font-display font-bold text-primary leading-tight">Market Spotlight</h2>
+<div class="w-24 h-1 bg-accent mt-8"></div>
+</div>
+<div class="flex gap-4">
+<button class="p-4 border border-slate-200 rounded-full hover:bg-primary hover:text-white transition-all flex items-center justify-center"><span class="material-symbols-outlined">west</span></button>
+<button class="p-4 border border-slate-200 rounded-full hover:bg-primary hover:text-white transition-all flex items-center justify-center"><span class="material-symbols-outlined">east</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<div class="bg-cream p-10 border-l-4 border-primary group hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl">
+<div class="flex justify-between items-start mb-8">
+<span class="text-slate-500 text-xs font-bold uppercase tracking-widest group-hover:text-white/70">Manhattan Office</span>
+<span class="text-red-500 group-hover:text-accent font-bold text-lg">-2.4%</span>
+</div>
+<div class="h-20 flex items-end gap-1.5 mb-8">
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/2"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-3/4"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-2/3"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-full"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-4/5"></div>
+<div class="w-full bg-primary group-hover:bg-accent h-1/3"></div>
+</div>
+<h4 class="text-2xl font-display font-bold mb-3 group-hover:text-white">Leasing Velocity</h4>
+<p class="text-slate-500 group-hover:text-white/60 leading-relaxed">Trophy assets maintain premium, but Class B faces significant headwinds.</p>
+</div>
+<div class="bg-cream p-10 border-l-4 border-primary group hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl">
+<div class="flex justify-between items-start mb-8">
+<span class="text-slate-500 text-xs font-bold uppercase tracking-widest group-hover:text-white/70">London Industrial</span>
+<span class="text-emerald-600 group-hover:text-accent font-bold text-lg">+5.1%</span>
+</div>
+<div class="h-20 flex items-end gap-1.5 mb-8">
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/3"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-2/3"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/2"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-3/4"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-2/3"></div>
+<div class="w-full bg-primary group-hover:bg-accent h-full"></div>
+</div>
+<h4 class="text-2xl font-display font-bold mb-3 group-hover:text-white">Yield Compression</h4>
+<p class="text-slate-500 group-hover:text-white/60 leading-relaxed">Last-mile logistics demand remains at record highs across UK hubs.</p>
+</div>
+<div class="bg-cream p-10 border-l-4 border-primary group hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl">
+<div class="flex justify-between items-start mb-8">
+<span class="text-slate-500 text-xs font-bold uppercase tracking-widest group-hover:text-white/70">Tokyo Multifamily</span>
+<span class="text-emerald-600 group-hover:text-accent font-bold text-lg">+1.8%</span>
+</div>
+<div class="h-20 flex items-end gap-1.5 mb-8">
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-full"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-4/5"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-3/4"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-full"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-full"></div>
+<div class="w-full bg-primary group-hover:bg-accent h-full"></div>
+</div>
+<h4 class="text-2xl font-display font-bold mb-3 group-hover:text-white">Occupancy Stability</h4>
+<p class="text-slate-500 group-hover:text-white/60 leading-relaxed">Residential assets provide defensive posture amidst Q1 volatility.</p>
+</div>
+<div class="bg-cream p-10 border-l-4 border-primary group hover:bg-primary transition-all duration-500 shadow-sm hover:shadow-2xl">
+<div class="flex justify-between items-start mb-8">
+<span class="text-slate-500 text-xs font-bold uppercase tracking-widest group-hover:text-white/70">Global REITs</span>
+<span class="text-emerald-600 group-hover:text-accent font-bold text-lg">+3.2%</span>
+</div>
+<div class="h-20 flex items-end gap-1.5 mb-8">
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/4"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/3"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-1/2"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-2/3"></div>
+<div class="w-full bg-primary/10 group-hover:bg-white/10 h-3/4"></div>
+<div class="w-full bg-primary group-hover:bg-accent h-full"></div>
+</div>
+<h4 class="text-2xl font-display font-bold mb-3 group-hover:text-white">Market Sentiment</h4>
+<p class="text-slate-500 group-hover:text-white/60 leading-relaxed">Investor confidence returning as global rate cycles begin to peak.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-primary-dark py-32 relative overflow-hidden">
+<div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+<div class="max-w-[1600px] mx-auto px-8 relative z-10">
+<div class="text-center mb-24">
+<span class="text-accent font-black text-xs uppercase tracking-[0.5em] mb-4 block">End-to-End Excellence</span>
+<h2 class="text-6xl md:text-7xl font-display font-bold text-white mb-8">Comprehensive Solutions</h2>
+<p class="text-slate-400 max-w-3xl mx-auto text-xl font-light">Integrated advisory services for institutional and private investors across the global property lifecycle.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+<div class="group relative h-[650px] overflow-hidden rounded-sm cursor-pointer shadow-2xl">
+<img alt="Investment Sales" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwrXFnssowySL6pSDyw0Obx4JCl2i-fso8ScTp1PV1udMRwwTqX-rUyA3-Sn6sTmge72gzvR2sST1PXTEflfhi2REAsSJfPpv0DEFY4qJ_8jlLS1ENSzHdzvkF4cX9s87GMRZBY1ViLqRcAGYVTgm_hEFnnFspC21gSjR-K5uvPUcZmzDlJGsVxtS5pgo-R7piXVFbqDFZOz_UtALyEqZKkfzrv1_vvoYwG8N3gzP0mzX_gAKKF50iYUpBinCGwrGbKtWQFP1Pl7A"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-12 w-full transition-all duration-700 transform translate-y-12 group-hover:translate-y-0">
+<div class="w-16 h-1.5 bg-accent mb-8"></div>
+<h3 class="text-4xl font-display font-bold text-white mb-6">Investment Sales</h3>
+<p class="text-slate-300 text-lg mb-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 leading-relaxed">Connecting institutional capital with high-yield opportunities through sophisticated disposition and acquisition strategies.</p>
+<a class="inline-flex items-center gap-3 text-accent font-black uppercase tracking-[0.2em] text-xs hover:gap-5 transition-all" href="#">Explore Strategy <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</div>
+<div class="group relative h-[650px] overflow-hidden rounded-sm cursor-pointer shadow-2xl">
+<img alt="Debt and Equity" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHYFPlYyI1m5Kqo6iDOGBZ1sAkDPO5twvKh2TY9sjeVTSD7TETWDOo1DlsZRUNwikFv6k084iM8YnzyoAE6pOaToqCl1EMGIeU1LcQ8wtsqQlqjs0qy5bZjZrDT75DhzzrL3-DKqKh3Ao71wTEm_ePNaCA2SpESBAfTKyZZukIHH-FswCI34whY6yQWlS4T_aw5N7ywtZKODt9oAuOTDZ_y7cQU7PNdzOx2fBP00JY8QUtGQoirQOdwQnsSTSUTPSnX6oRsAEiCCA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-12 w-full transition-all duration-700 transform translate-y-12 group-hover:translate-y-0">
+<div class="w-16 h-1.5 bg-accent mb-8"></div>
+<h3 class="text-4xl font-display font-bold text-white mb-6">Debt &amp; Equity</h3>
+<p class="text-slate-300 text-lg mb-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 leading-relaxed">Bespoke capital stack structuring including senior debt, mezzanine financing, and joint venture equity arrangements.</p>
+<a class="inline-flex items-center gap-3 text-accent font-black uppercase tracking-[0.2em] text-xs hover:gap-5 transition-all" href="#">Structure Capital <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</div>
+<div class="group relative h-[650px] overflow-hidden rounded-sm cursor-pointer shadow-2xl">
+<img alt="Advisory Services" class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-50 group-hover:opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGOofryrRCkhp87HcPOI6WszMhTe2pGcNbsed4z4-DwevmTQYwqUvQC5-Tp4lvN1K_TH6c6g-WQftHiKUF0Uhg1z5k85C8X9Ix4YaJxEve_QfYnQOnbMJjfwtcXGhWMXu0Xx58Fv3bpVi1JhClHQbM7RP0wLRA9Hi_57QTh761hulYQoW7yt1grDcikIL9YLhXmy7FyVcmUz3fVTAxNQ5IKVebC3nQLgzMmPq27Mu-ctCXFPY4aj_UVrD2vItmBldiH3dPCbWX8kw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-dark via-primary-dark/60 to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-12 w-full transition-all duration-700 transform translate-y-12 group-hover:translate-y-0">
+<div class="w-16 h-1.5 bg-accent mb-8"></div>
+<h3 class="text-4xl font-display font-bold text-white mb-6">Advisory &amp; Valuation</h3>
+<p class="text-slate-300 text-lg mb-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 leading-relaxed">Independent rigorous analysis providing clarity on asset worth and strategic portfolio performance optimization.</p>
+<a class="inline-flex items-center gap-3 text-accent font-black uppercase tracking-[0.2em] text-xs hover:gap-5 transition-all" href="#">Request Briefing <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="bg-cream py-32 border-y border-slate-200 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-96 h-96 pattern-grid opacity-10"></div>
+<div class="max-w-[1600px] mx-auto px-8">
+<div class="flex items-center justify-between mb-24">
+<div>
+<span class="text-primary font-black text-xs uppercase tracking-[0.4em] mb-4 block">Proven Results</span>
+<h2 class="text-5xl md:text-6xl font-display font-bold text-primary">Recent Transactions</h2>
+</div>
+<div class="hidden lg:block h-[1px] flex-1 mx-24 bg-slate-300"></div>
+<a class="text-primary font-black text-xs uppercase tracking-widest border-b-2 border-accent pb-2 hover:text-primary-dark" href="#">View Portfolio</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+<div class="flex flex-col xl:flex-row gap-10 items-center bg-white p-8 shadow-2xl group transition-all duration-500 hover:-translate-y-2">
+<div class="overflow-hidden w-full xl:w-[350px]">
+<img alt="Zenith Financial" class="w-full h-72 object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFffZgwhaChMximKHq3JzCMvJBibJleo72wvd0rU5EyP_xbwkWeGGlXTj-JnbGHhtE-X-_QDwwz-fxTAw-Ug40_ENFt5599TTblyXDKt4KnKse8qyYSVCDUNLnHN4DhbJl3L4SVaUjRNOjlspBIGNBWTMb2bc0pGzRc7gD4howzgUmzJlkO2OtSTgarg-psv94Uo3GFK06eAewGCZ1uAndb4qr2pPCSi934wP2H5mHTNdRPK5XRhs2xPldQq5yTAZIImeOqa0qhWo"/>
+</div>
+<div class="flex-1">
+<div class="text-accent text-xs font-black uppercase tracking-[0.2em] mb-3">Office Acquisition</div>
+<h4 class="text-3xl font-display font-bold mb-6 text-primary">The Zenith Financial Center</h4>
+<p class="text-slate-600 text-lg mb-8 leading-relaxed">Closed a $245M disposition on behalf of a sovereign wealth fund. Strategic repositioning achieved 100% occupancy.</p>
+<div class="flex gap-10 text-xs font-bold uppercase tracking-tighter text-slate-400">
+<div class="flex flex-col gap-1"><span class="text-primary-dark">Value</span><span>$245,000,000</span></div>
+<div class="flex flex-col gap-1"><span class="text-primary-dark">Market</span><span>London, UK</span></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col xl:flex-row gap-10 items-center bg-white p-8 shadow-2xl group transition-all duration-500 hover:-translate-y-2">
+<div class="overflow-hidden w-full xl:w-[350px]">
+<img alt="Global Gateway" class="w-full h-72 object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk7Ll6HOFA3PGq4_YiMH7_78I9ykVIcmTaIArcQADcpQCCCp98wKqICiYu0NhBrRnatqePmQ8GCrJ0JmiJm_Gvn-_TC3mhSBUkciPeqQrivUjK2LfQavHIsAFoUuWTnq9mJowQv2YV4Ma4SNE4l45WS51h2SKuPCJHq2mV07pXmLU_xPEKbi1ouNOkBSwCT1HrMO9PySjbSkgUJSNRULQKgzTjYY01bTOpJjrV7f9nBys9C2Sz1U-SQSQvMi7321ZHB0E0mdK8uJw"/>
+</div>
+<div class="flex-1">
+<div class="text-accent text-xs font-black uppercase tracking-[0.2em] mb-3">Industrial Portfolio</div>
+<h4 class="text-3xl font-display font-bold mb-6 text-primary">Global Gateway Logistics</h4>
+<p class="text-slate-600 text-lg mb-8 leading-relaxed">Secured $180M in portfolio refinancing for 12 key assets across the Sunbelt, optimizing WACC for our client.</p>
+<div class="flex gap-10 text-xs font-bold uppercase tracking-tighter text-slate-400">
+<div class="flex flex-col gap-1"><span class="text-primary-dark">Value</span><span>$180,000,000</span></div>
+<div class="flex flex-col gap-1"><span class="text-primary-dark">Market</span><span>Multi-City, USA</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-28 bg-white relative overflow-hidden">
+<div class="absolute inset-0 architectural-line opacity-20 top-0"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10">
+<h2 class="text-center text-xs font-black text-slate-400 uppercase tracking-[0.6em] mb-20">Selected Institutional Partners</h2>
+<div class="flex flex-wrap justify-center items-center gap-20 md:gap-32 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+<img alt="Partner Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA93NU91JfK0eAQEvcoYeUmL_luI5iPrFnuoJIY9DrM1xn8QN6EsxeppLtXUdZiLnPYOCy7IMhO2_r51TNP20mwcYQqLnyyFYbZnFR7iD_eStDYZlP9SnYs3MTM6M_MkidPSsQXc7A7YLFVyAZdeI_-j6fz7ze0y3cRvR_nCafeRiIBd1D9kusyA7tUNotNeUba6o1XVhDHSRWwkoeyElI4lZu8P8B4LqEkYodMBQpISXF0MA5-eiTzaBRyqw9v3-BkK5rHvK6lD6s"/>
+<img alt="Partner Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIXL_mHxqpvFZknU1OK2jhkGcA34yh9rCWx9m3ZngqRMNsRpgU3QPowB4zTk6DaTI6R63WekEdxctgTObnf2NPE9coA2905-CctPsYOv8bvKUjSDCcv27055z09FCEBIkp66-TEbcBdpnaWqTPfSDjR3u-WTFVglgPlXZvsKC7-fQFlZvCBgClIYSJgczmzQjus53GMDT5Of7_JXFSWkAzRmlYaVxKAOWt5YyNV8hwyp2U-M1Su2cu0UKRLcCOdUGnJstIClzSokU"/>
+<img alt="Partner Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCn-1Zqxpyweg4uj_oQ29L11d0oAJxO_3YeKwAmJeIuygdWdr0G6Z9NXiNdaS7lPt56uIUE1nxw5O-U2HUM3KkTOnmNvJXzqOTPiNtb8_qQcWWj4wRT_6V5gBpQ0C4vR4ReyPtfrKCThYP9J1ZiyDVEjULsgAD8KvzUqEHcNBTSXBbY3_9L45gB1Dd_6i0RWpuC-tVyoW95dXcZlNpQpTz54J5HzTLnUHR_NO0NsPVW2b7xWtQCCGbBeLo8G0obBlwhd6NM3NKkYu0"/>
+<img alt="Partner Logo" class="h-8 object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdIRAL54jQmolt5HDTMXBFb2XxlnBR-aHYYb_eV48fia__lFyw1w3KrhO_4QwPSFDLeAzhfQCyPRrQjvoYs4-ai5cgWS7scoRC-Z-n-vORlYsT-E4uy-rqpYpNn6scnw2tc5iqQLEZnMSOHO0asD1jgASBVDnS_HHxFhuDISt95hP4mCiB_cadLSzRT0APFGH404wvZ38fxSlmsgfrBm0PI1vxENjo4fCwJHaBX5Qkqqjpg--XwbO1jMj8cQPgS8BhGkwTTRqdTkw"/>
+</div>
+</div>
+<div class="absolute inset-0 architectural-line opacity-20 bottom-0"></div>
+</section>
+<section class="bg-primary-dark py-40 px-6 relative">
+<div class="absolute left-0 top-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/pinstriped-suit.png')]"></div>
+<div class="max-w-5xl mx-auto text-center relative z-10">
+<h2 class="text-5xl md:text-8xl font-display font-bold text-white mb-12 leading-tight">Deploy Capital with Confidence</h2>
+<p class="text-slate-400 text-2xl mb-16 font-light max-w-3xl mx-auto">Access our latest Market Sentiment Report and join the world's most sophisticated property owners.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-8">
+<button class="bg-accent text-primary px-16 py-6 font-black uppercase tracking-[0.3em] text-sm hover:scale-105 transition-all shadow-2xl">
+                Download Report
+            </button>
+<button class="border-2 border-white/20 text-white px-16 py-6 font-black uppercase tracking-[0.3em] text-sm hover:bg-white hover:text-primary transition-all">
+                Request Briefing
+            </button>
+</div>
+</div>
+</section>
+<footer class="bg-slate-950 text-white pt-32 pb-12 border-t border-white/5">
+<div class="max-w-[1600px] mx-auto px-8">
+<div class="grid grid-cols-1 lg:grid-cols-6 gap-20 mb-32">
+<div class="lg:col-span-2">
+<div class="flex items-center gap-3 mb-12">
+<div class="w-12 h-12 bg-accent flex items-center justify-center rounded-sm">
+<span class="text-primary font-black text-2xl">E</span>
+</div>
+<span class="text-3xl font-display font-black tracking-tighter uppercase">ELITE<span class="text-accent">CRE</span></span>
+</div>
+<p class="text-slate-500 text-lg leading-relaxed mb-12 max-w-sm">Global intelligence for commercial real estate markets. We provide high-fidelity data and strategic capital solutions for leading institutions.</p>
+<div class="flex gap-6">
+<a class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-accent hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
+<a class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-accent hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">hub</span></a>
+<a class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-accent hover:text-primary transition-all" href="#"><span class="material-symbols-outlined text-xl">share</span></a>
+</div>
+</div>
+<div>
+<h4 class="text-xs font-black uppercase tracking-[0.4em] text-accent mb-10">Intelligence</h4>
+<ul class="space-y-6 text-slate-500 text-base">
+<li><a class="hover:text-white transition-colors" href="#">Market Reports</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Price Indices</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Forecast Models</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Data Terminal</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-black uppercase tracking-[0.4em] text-accent mb-10">Core Sectors</h4>
+<ul class="space-y-6 text-slate-500 text-base">
+<li><a class="hover:text-white transition-colors" href="#">Office &amp; Workplace</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Industrial Logistics</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Multifamily / BTR</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Life Sciences</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-black uppercase tracking-[0.4em] text-accent mb-10">Company</h4>
+<ul class="space-y-6 text-slate-500 text-base">
+<li><a class="hover:text-white transition-colors" href="#">Global Leadership</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Investment Sales</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Career Opportunities</a></li>
+<li><a class="hover:text-white transition-colors" href="#">Media Relations</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-xs font-black uppercase tracking-[0.4em] text-accent mb-10">Contact</h4>
+<p class="text-slate-400 text-sm mb-6 leading-relaxed">One World Trade Center<br/>New York, NY 10007</p>
+<a class="text-white text-base font-bold block mb-4 underline decoration-accent underline-offset-8" href="mailto:info@elitecre.com">info@elitecre.com</a>
+<span class="text-slate-500 text-sm">+1 (212) 555-0198</span>
+</div>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-center pt-16 border-t border-white/5 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-600">
+<div class="flex gap-10 mb-8 md:mb-0">
+<span>© 2024 ELITE CRE STRATEGIES. ALL RIGHTS RESERVED.</span>
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Use</a>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-sm">language</span> GLOBAL EDITION (EN)
+            </div>
+</div>
+</div>
+</footer>
+<div class="fixed bottom-10 left-10 max-w-sm bg-white shadow-2xl rounded-sm p-10 border border-slate-100 z-[100] transform transition-all hover:scale-[1.02]">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-5">
+<div class="bg-primary/5 p-4 rounded-full text-primary">
+<span class="material-symbols-outlined text-2xl">security</span>
+</div>
+<h5 class="font-display font-bold text-2xl text-primary">Privacy &amp; Data</h5>
+</div>
+<p class="text-sm text-slate-500 leading-relaxed">We use strategic cookies and analysis to ensure your experience on our market intelligence platform is optimized and secure.</p>
+<div class="flex gap-4">
+<button class="flex-1 bg-primary text-white py-4 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-primary-dark transition-all">Accept All</button>
+<button class="flex-1 border border-slate-200 py-4 rounded-sm text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all text-slate-600">Settings</button>
+</div>
+</div>
+</div>
+
+</body></html>

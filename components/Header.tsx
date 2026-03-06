@@ -3,62 +3,50 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
-
-const SERVICE_CATEGORIES = [
-  { href: "/services#seller-representation", label: "Commercial services" },
-  { href: "/services#residential-services", label: "Residential services" },
-  { href: "/services#property-management", label: "Property management" },
-];
 
 export default function Header() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
-  const [mobileListingsTypeOpen, setMobileListingsTypeOpen] = useState(false);
-  const [mobileListingsAssetOpen, setMobileListingsAssetOpen] = useState(false);
-  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
 
   const isListings = pathname === "/listings";
+  const isDeals = pathname.startsWith("/deals");
   const isServices = pathname === "/services";
   const isTeam = pathname === "/team";
   const isNews = pathname === "/news";
 
   const linkClass = (active: boolean) =>
-    `text-[15px] font-medium transition-colors hover:text-[var(--navy)] ${
-      active ? "text-[var(--navy)]" : "text-[var(--charcoal-light)]"
+    `text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${
+      active ? "text-[var(--navy)] border-b-2 border-[var(--accent)] pb-1" : "text-[var(--charcoal-light)] hover:text-[var(--navy)]"
     }`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[var(--surface)]/95 backdrop-blur supports-[backdrop-filter]:bg-[var(--surface)]/80 text-[var(--foreground)]">
-      <div className="mx-auto flex h-[68px] max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="relative flex items-center gap-2 text-xl font-semibold tracking-tight text-[var(--header-logo-text)]"
-        >
-          <Image
-            src="/images/best-logo.png"
-            alt="Best Corporate Real Estate"
-            width={240}
-            height={80}
-            className="hero-img-light h-[66px] w-auto bg-transparent"
-            priority
-            unoptimized
-          />
-          <Image
-            src="/images/best-logo-dark-mode.png"
-            alt="Best Corporate Real Estate"
-            width={240}
-            height={80}
-            className="hero-img-dark h-[66px] w-auto bg-transparent brightness-0 invert"
-            priority
-            unoptimized
-          />
-        </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white">
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
+        <div className="flex items-center gap-16">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/images/best-logo.png"
+              alt="Best Corporate Real Estate"
+              width={180}
+              height={60}
+              className="h-12 w-auto"
+              priority
+              unoptimized
+            />
+          </Link>
 
-        <nav className="hidden md:flex md:items-center md:gap-1">
+        <nav className="hidden lg:flex lg:items-center lg:gap-10">
           <Link href="/" className={`px-3 py-2 ${linkClass(pathname === "/")}`}>
             Home
           </Link>
@@ -81,149 +69,112 @@ export default function Header() {
               </svg>
             </button>
             {openDropdown === "listings" && (
-              <div className="absolute left-0 top-full pt-1">
-                <div className="grid min-w-[280px] max-w-[min(380px,90vw)] grid-cols-2 gap-x-6 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-lg sm:min-w-[380px]">
-                  <div>
-                    <p className="py-1 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                      Listing type
-                    </p>
-                    {LISTING_TYPES.map((type) => (
-                      <Link
-                        key={type}
-                        href={`/listings?listingType=${encodeURIComponent(type)}`}
-                        className="block py-1.5 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
-                      >
-                        {type}
-                      </Link>
-                    ))}
-                  </div>
-                  <div>
-                    <p className="py-1 text-xs font-semibold uppercase tracking-wider text-[var(--muted)]">
-                      By asset type
-                    </p>
-                    {PROPERTY_TYPES.map((type) => (
-                      <Link
-                        key={type}
-                        href={`/listings?propertyType=${encodeURIComponent(type)}`}
-                        className="block py-1.5 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
-                      >
-                        {type}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Services dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenDropdown("services")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
-            <button
-              type="button"
-              className={`flex items-center gap-0.5 px-3 py-2 ${linkClass(isServices)}`}
-              aria-expanded={openDropdown === "services"}
-              aria-haspopup="true"
-            >
-              Services
-              <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {openDropdown === "services" && (
-              <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
-                  {SERVICE_CATEGORIES.map(({ href, label }) => (
+              <div className="absolute left-0 top-full pt-3">
+                <div className="min-w-[420px] overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-2xl shadow-[var(--navy)]/10">
+                  {/* Header */}
+                  <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/60 px-5 py-3">
                     <Link
-                      key={href}
-                      href={href}
-                      className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
+                      href="/listings"
+                      className="group flex w-full items-center justify-end gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--accent)] transition-colors hover:text-[var(--navy)]"
                     >
-                      {label}
+                      View all
+                      <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
                     </Link>
-                  ))}
+                  </div>
+
+                  {/* Columns */}
+                  <div className="grid grid-cols-2 gap-0">
+                    {/* Listing type */}
+                    <div className="border-r border-[var(--border)] p-5">
+                      <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
+                        Listing Type
+                      </p>
+                      <ul className="space-y-0.5">
+                        {LISTING_TYPES.map((type) => (
+                          <li key={type}>
+                            <Link
+                              href={`/listings?listingType=${encodeURIComponent(type)}`}
+                              className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
+                            >
+                              <span className="flex h-2 w-2 shrink-0 rounded-full bg-[var(--accent)] opacity-60 group-hover:opacity-100 group-hover:ring-2 group-hover:ring-[var(--accent)]/30" />
+                              {type}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Asset type */}
+                    <div className="p-5">
+                      <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
+                        Asset Type
+                      </p>
+                      <ul className="space-y-0.5">
+                        {PROPERTY_TYPES.map((type) => {
+                          const colorVar = type === "Retail" ? "var(--property-retail)"
+                            : type === "Industrial" ? "var(--property-industrial)"
+                            : type === "Office" ? "var(--property-office)"
+                            : type === "Multifamily" ? "var(--property-multifamily)"
+                            : type === "Land" ? "var(--property-land)"
+                            : type === "Specialty" ? "var(--property-specialty)"
+                            : "var(--property-business)";
+                          return (
+                            <li key={type}>
+                              <Link
+                                href={`/listings?propertyType=${encodeURIComponent(type)}`}
+                                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
+                              >
+                                <span
+                                  className="h-2 w-2 shrink-0 rounded-full transition-all group-hover:scale-125 group-hover:ring-2 group-hover:ring-offset-1"
+                                  style={{ backgroundColor: colorVar }}
+                                />
+                                {type}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Footer accent */}
+                  <div className="h-1 w-full bg-gradient-to-r from-[var(--navy)] via-[var(--accent)] to-[var(--navy)]" />
                 </div>
               </div>
             )}
           </div>
 
-          {/* Team dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenDropdown("team")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
-            <button
-              type="button"
-              className={`flex items-center gap-0.5 px-3 py-2 ${linkClass(isTeam)}`}
-              aria-expanded={openDropdown === "team"}
-              aria-haspopup="true"
-            >
-              Team
-              <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {openDropdown === "team" && (
-              <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
-                  <Link
-                    href="/team"
-                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
-                  >
-                    Our Team
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+          <Link href="/deals" className={`px-3 py-2 ${linkClass(isDeals)}`}>
+            Transactions
+          </Link>
 
-          {/* News dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenDropdown("news")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
-            <button
-              type="button"
-              className={`flex items-center gap-0.5 px-3 py-2 ${linkClass(isNews)}`}
-              aria-expanded={openDropdown === "news"}
-              aria-haspopup="true"
-            >
-              News
-              <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {openDropdown === "news" && (
-              <div className="absolute left-0 top-full pt-1">
-                <div className="min-w-[200px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-2 shadow-lg">
-                  <Link
-                    href="/news"
-                    className="block px-4 py-2 text-sm text-[var(--charcoal)] hover:bg-[var(--surface-hover)] hover:text-[var(--navy)]"
-                  >
-                    News & Insights
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+          <Link href="/services" className={`px-3 py-2 ${linkClass(isServices)}`}>
+            Services
+          </Link>
+
+          <Link href="/team" className={`px-3 py-2 ${linkClass(isTeam)}`}>
+            Team
+          </Link>
+
+          <Link href="/news" className={`px-3 py-2 ${linkClass(isNews)}`}>
+            News
+          </Link>
         </nav>
+        </div>
 
         <div className="flex items-center gap-4">
           <Link
             href="/contact"
-            className="hidden rounded-md bg-[var(--navy)] px-4 py-2.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90 dark:text-gray-900 md:inline-block"
+            className="hidden bg-[var(--navy)] px-8 py-4 font-bold text-[11px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--navy-light)] lg:inline-block"
           >
-            Contact Us
+            Contact Expert
           </Link>
 
           <button
             type="button"
-            className="rounded p-2 text-[var(--charcoal)] hover:bg-[var(--surface-hover)] md:hidden"
+            className="rounded p-2 text-[var(--charcoal)] hover:bg-[var(--surface-muted)] lg:hidden"
             aria-label="Toggle menu"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
@@ -240,27 +191,27 @@ export default function Header() {
 
       {/* Mobile menu with submenus */}
       {mobileOpen && (
-        <div className="border-t border-[var(--border)] bg-[var(--surface)] px-4 py-4 md:hidden">
+        <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] px-4 py-4 lg:hidden">
           <nav className="flex flex-col gap-0">
             <Link
               href="/"
-              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Home
             </Link>
 
             {/* Listings - expandable */}
-            <div className="rounded">
+            <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-lg">
               <button
                 type="button"
-                className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+                className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-bold text-[var(--navy)]"
                 onClick={() => setMobileListingsOpen((o) => !o)}
                 aria-expanded={mobileListingsOpen}
               >
-                Listings
+                <span className="uppercase tracking-wider">Browse Listings</span>
                 <svg
-                  className={`h-4 w-4 transition-transform ${mobileListingsOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 text-[var(--accent)] transition-transform ${mobileListingsOpen ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -269,133 +220,98 @@ export default function Header() {
                 </svg>
               </button>
               {mobileListingsOpen && (
-                <div className="border-l-2 border-[var(--border)] pl-3 ml-3 space-y-1">
+                <div className="border-t border-[var(--border)] bg-[var(--surface-muted)]/40 p-4 space-y-4">
                   <Link
                     href="/listings"
-                    className="block py-1.5 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
+                    className="flex items-center gap-3 rounded-lg bg-[var(--navy)] px-4 py-3 text-sm font-semibold text-white"
                     onClick={() => setMobileOpen(false)}
                   >
-                    All Listings
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    View all listings
                   </Link>
                   <div>
-                    <button
-                      type="button"
-                      className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-[var(--charcoal)] hover:text-[var(--navy)]"
-                      onClick={() => setMobileListingsTypeOpen((o) => !o)}
-                      aria-expanded={mobileListingsTypeOpen}
-                    >
-                      By Listing Type
-                      <svg
-                        className={`h-3.5 w-3.5 transition-transform ${mobileListingsTypeOpen ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {mobileListingsTypeOpen && (
-                      <div className="pl-2 space-y-0.5">
-                        {LISTING_TYPES.map((type) => (
-                          <Link
-                            key={type}
-                            href={`/listings?listingType=${encodeURIComponent(type)}`}
-                            className="block py-1.5 text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {type}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">
+                      Listing Type
+                    </p>
+                    <div className="space-y-0.5">
+                      {LISTING_TYPES.map((type) => (
+                        <Link
+                          key={type}
+                          href={`/listings?listingType=${encodeURIComponent(type)}`}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]" />
+                          {type}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                   <div>
-                    <button
-                      type="button"
-                      className="flex w-full items-center justify-between py-1.5 text-left text-sm font-medium text-[var(--charcoal)] hover:text-[var(--navy)]"
-                      onClick={() => setMobileListingsAssetOpen((o) => !o)}
-                      aria-expanded={mobileListingsAssetOpen}
-                    >
-                      By Asset Type
-                      <svg
-                        className={`h-3.5 w-3.5 transition-transform ${mobileListingsAssetOpen ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    {mobileListingsAssetOpen && (
-                      <div className="pl-2 space-y-0.5">
-                        {PROPERTY_TYPES.map((type) => (
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">
+                      Asset Type
+                    </p>
+                    <div className="space-y-0.5">
+                      {PROPERTY_TYPES.map((type) => {
+                        const colorVar = type === "Retail" ? "var(--property-retail)"
+                          : type === "Industrial" ? "var(--property-industrial)"
+                          : type === "Office" ? "var(--property-office)"
+                          : type === "Multifamily" ? "var(--property-multifamily)"
+                          : type === "Land" ? "var(--property-land)"
+                          : type === "Specialty" ? "var(--property-specialty)"
+                          : "var(--property-business)";
+                        return (
                           <Link
                             key={type}
                             href={`/listings?propertyType=${encodeURIComponent(type)}`}
-                            className="block py-1.5 text-sm text-[var(--charcoal-light)] hover:text-[var(--navy)]"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
                             onClick={() => setMobileOpen(false)}
                           >
+                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colorVar }} />
                             {type}
                           </Link>
-                        ))}
-                      </div>
-                    )}
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* Services - expandable */}
-            <div className="rounded">
-              <button
-                type="button"
-                className="flex w-full items-center justify-between px-3 py-2.5 text-left text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-                onClick={() => setMobileServicesOpen((o) => !o)}
-                aria-expanded={mobileServicesOpen}
-              >
-                Services
-                <svg
-                  className={`h-4 w-4 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {mobileServicesOpen && (
-                <div className="border-l-2 border-[var(--border)] pl-3 ml-3 space-y-0.5">
-                  {SERVICE_CATEGORIES.map(({ href, label }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className="block py-1.5 text-sm text-[var(--charcoal)] hover:text-[var(--navy)]"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      {label}
-                    </Link>
-                  ))}
                 </div>
               )}
             </div>
 
             <Link
+              href="/services"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Services
+            </Link>
+
+            <Link
+              href="/deals"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Transactions
+            </Link>
+            <Link
               href="/team"
-              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Team
             </Link>
             <Link
               href="/news"
-              className="rounded px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               News
             </Link>
             <Link
               href="/contact"
-              className="mt-2 rounded-md bg-[var(--navy)] px-4 py-2.5 text-center text-sm font-medium text-white dark:text-gray-900"
+              className="mt-2 rounded bg-[var(--navy)] px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-[var(--navy-light)]"
               onClick={() => setMobileOpen(false)}
             >
               Contact Us

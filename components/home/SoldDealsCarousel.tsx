@@ -1,13 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Listing } from "@/types/listing";
 import { getSoldLeasedLabel } from "@/lib/listings";
-
-const ROTATE_INTERVAL_MS = 4500;
-const CARD_GAP = 24;
 
 interface SoldDealsCarouselProps {
   listings: Listing[];
@@ -16,191 +13,155 @@ interface SoldDealsCarouselProps {
 function SoldDealCard({ listing }: { listing: Listing }) {
   const [imgError, setImgError] = useState(false);
   const showRealImage = (listing.heroImage.startsWith("/") || listing.heroImage.startsWith("https://")) && !imgError;
-  const stats = [
-    listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
-    listing.acreage && `${listing.acreage} Acreage`,
-  ].filter(Boolean);
 
   const isLeased = getSoldLeasedLabel(listing) === "Leased";
-  const priceDisplay = isLeased && listing.leasePricePerSf != null && listing.leaseType
-    ? `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`
-    : listing.soldPrice != null
-      ? `$${listing.soldPrice.toLocaleString()}`
-      : listing.price != null
-        ? `$${listing.price.toLocaleString()}`
-        : null;
+  const priceDisplay =
+    isLeased && listing.leasePricePerSf != null && listing.leaseType
+      ? `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`
+      : listing.soldPrice != null
+        ? `$${listing.soldPrice.toLocaleString()}`
+        : listing.price != null
+          ? `$${listing.price.toLocaleString()}`
+          : null;
+
+  function getPropertyCategory() {
+    const label = getSoldLeasedLabel(listing);
+    return label === "Leased" ? `${listing.propertyType} Lease` : `${listing.propertyType} Sale`;
+  }
 
   return (
     <Link
       href={`/deals/${listing.slug}`}
-      className="group flex h-full w-full flex-col overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-all hover:border-[var(--navy)]/30 hover:shadow-lg"
+      className="group flex flex-col overflow-hidden rounded-sm bg-[var(--surface)] shadow-xl transition-all duration-500 hover:-translate-y-2 xl:flex-row"
     >
-      <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-[var(--surface-muted)]">
+      <div className="relative h-72 w-full shrink-0 overflow-hidden xl:h-auto xl:w-[350px]">
         {showRealImage ? (
           <Image
             src={listing.heroImage}
             alt={listing.title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="320px"
+            className="object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+            sizes="(max-width: 1280px) 100vw, 350px"
             onError={() => setImgError(true)}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-[var(--charcoal-light)]">
+          <div className="flex h-full w-full items-center justify-center bg-[var(--surface-muted)] text-sm font-medium text-[var(--charcoal-light)]">
             Property Image
           </div>
         )}
-        <span className="absolute left-3 top-3 rounded bg-[var(--navy)] px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
-          {getSoldLeasedLabel(listing)}
-        </span>
       </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="text-base font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)]">
+      <div className="flex flex-1 flex-col p-8">
+        <span className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)]">
+          {getPropertyCategory()}
+        </span>
+        <h3 className="mb-4 font-display text-2xl font-bold text-[var(--charcoal)] transition-colors group-hover:text-[var(--navy)] sm:text-3xl">
           {listing.title}
         </h3>
-        <p className="mt-0.5 text-sm text-[var(--charcoal-light)]">
-          {listing.address}, {listing.city}
+        <p className="mb-6 flex-1 text-base leading-relaxed text-[var(--charcoal-light)] line-clamp-3">
+          {listing.description?.slice(0, 180) || `${listing.address}, ${listing.city}`}
+          {listing.description && listing.description.length > 180 ? "…" : ""}
         </p>
-        {stats.length > 0 && (
-          <p className="mt-2 text-xs text-[var(--muted)]">{stats.join(" • ")}</p>
-        )}
-        {priceDisplay && (
-          <p className="mt-2 text-sm font-semibold text-[var(--navy)]">
-            {priceDisplay}
-          </p>
-        )}
+        <div className="flex flex-wrap gap-8 text-xs font-bold uppercase tracking-tight text-[var(--charcoal-light)]">
+          {priceDisplay && (
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[var(--navy)]">Value</span>
+              <span>{priceDisplay}</span>
+            </div>
+          )}
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[var(--navy)]">Market</span>
+            <span>
+              {listing.city}
+              {listing.state ? `, ${listing.state}` : ""}
+            </span>
+          </div>
+        </div>
       </div>
     </Link>
   );
 }
 
 export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) {
-  const [isPaused, setIsPaused] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const goNext = useCallback(() => {
-    if (listings.length <= 1) return;
-    setActiveIndex((i) => (i + 1) % listings.length);
-  }, [listings.length]);
-
-  useEffect(() => {
-    if (listings.length <= 1 || isPaused) return;
-    const id = setInterval(goNext, ROTATE_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [listings.length, isPaused, goNext]);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || listings.length <= 1) return;
-    const firstCard = el.querySelector<HTMLElement>("[data-carousel-card]");
-    const cardWidth = firstCard ? firstCard.offsetWidth : (el.clientWidth - 2 * CARD_GAP) / 3;
-    const scrollLeft = activeIndex * (cardWidth + CARD_GAP);
-    el.scrollTo({ left: scrollLeft, behavior: "smooth" });
-  }, [activeIndex, listings.length]);
-
   const hasDeals = listings.length > 0;
+  const displayListings = listings.slice(0, 4);
 
   return (
-    <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-16 sm:py-20">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
-          Transactions & Testimonials
-        </h2>
-        <p className="mt-2 text-base text-[var(--charcoal-light)] lg:text-lg">
-          Past deals we&apos;ve completed and what clients say.
-        </p>
+    <section className="relative overflow-hidden border-y border-[var(--border)] bg-[var(--surface-muted)] py-20 sm:py-28">
+      <div className="absolute right-0 top-0 h-96 w-96 opacity-10" style={{ backgroundImage: "radial-gradient(circle, #004733 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
+      <div className="relative z-10 mx-auto max-w-[1600px] px-6 sm:px-8">
+        <div className="mb-16 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <div className="max-w-2xl">
+            <span className="mb-4 block text-xs font-black uppercase tracking-[0.4em] text-[var(--navy)]">
+              Proven Results
+            </span>
+            <h2 className="font-display text-4xl font-bold tracking-tight text-[var(--charcoal)] sm:text-5xl md:text-6xl">
+              Recent Transactions
+            </h2>
+            <div className="mt-6 h-1 w-24 bg-[var(--accent)]" />
+          </div>
+          <Link
+            href="/deals"
+            className="hidden shrink-0 border-b-2 border-[var(--accent)] pb-2 text-xs font-black uppercase tracking-widest text-[var(--navy)] transition-colors hover:text-[var(--navy)]/80 lg:block"
+          >
+            View Portfolio
+          </Link>
+        </div>
 
-        <div
-          className="mt-10"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocusCapture={() => setIsPaused(true)}
-          onBlurCapture={() => setIsPaused(false)}
-        >
-          <div className="flex flex-col gap-10">
-            <div>
-              {hasDeals ? (
-                <>
-                  <div
-                    ref={scrollRef}
-                    className="flex gap-6 overflow-x-auto overflow-y-hidden pb-4 scroll-smooth scrollbar-hide"
-                    style={{ scrollSnapType: "x mandatory" }}
-                  >
-                    {listings.map((listing) => (
-                      <div
-                        key={listing.id}
-                        data-carousel-card
-                        className="shrink-0 w-[280px] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-2*1.5rem)/3)]"
-                        style={{ scrollSnapAlign: "start" }}
-                      >
-                        <SoldDealCard listing={listing} />
-                      </div>
-                    ))}
-                  </div>
-                  {listings.length > 1 && (
-                    <div className="mt-4 flex justify-center gap-1.5">
-                      {listings.map((_, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => {
-                            setActiveIndex(i);
-                            setIsPaused(true);
-                          }}
-                          aria-label={`View deal ${i + 1}`}
-                          className={`h-2 rounded-full transition-all ${
-                            activeIndex === i
-                              ? "w-6 bg-[var(--navy)]"
-                              : "w-2 bg-[var(--border)] hover:bg-[var(--charcoal-light)]"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-8 text-center">
-                  <p className="text-[var(--charcoal-light)]">
-                    Transactions will appear here once listings are marked as sold or leased.
-                  </p>
-                </div>
-              )}
+        <div className="flex flex-col gap-12">
+          {hasDeals ? (
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+              {displayListings.map((listing) => (
+                <SoldDealCard key={listing.id} listing={listing} />
+              ))}
             </div>
+          ) : (
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-12 text-center">
+              <p className="text-lg text-[var(--charcoal-light)]">
+                Transactions will appear here once listings are marked as sold or leased.
+              </p>
+            </div>
+          )}
 
-            <div className="w-full">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
-                What Clients Say
-              </h3>
-              <div className="mt-4 flex flex-col gap-6">
-                {[
-                  {
-                    quote:
-                      "Best Corporate Real Estate delivered a seamless sale process and achieved above our expectations.",
-                    author: "Private Owner",
-                    context: "Industrial disposition, Columbus",
-                  },
-                  {
-                    quote:
-                      "Their knowledge of the Central Ohio market and attention to detail made our lease negotiation efficient and successful.",
-                    author: "Corporate Tenant",
-                    context: "Office lease, Arena District",
-                  },
-                ].map((t, i) => (
-                  <blockquote
-                    key={i}
-                    className="border-l-2 border-[var(--navy)] pl-4"
-                  >
-                    <p className="text-[var(--charcoal)]">&quot;{t.quote}&quot;</p>
-                    <footer className="mt-2 text-sm text-[var(--charcoal-light)]">
-                      — {t.author}, {t.context}
-                    </footer>
-                  </blockquote>
-                ))}
-              </div>
+          <div className="mt-4 pt-16">
+            <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+              What Clients Say
+            </h3>
+            <div className="grid gap-8 md:grid-cols-2">
+              {[
+                {
+                  quote:
+                    "Best Corporate Real Estate delivered a seamless sale process and achieved above our expectations.",
+                  author: "Private Owner",
+                  context: "Industrial disposition, Columbus",
+                },
+                {
+                  quote:
+                    "Their knowledge of the Central Ohio market and attention to detail made our lease negotiation efficient and successful.",
+                  author: "Corporate Tenant",
+                  context: "Office lease, Arena District",
+                },
+              ].map((t, i) => (
+                <blockquote key={i} className="border-l-2 border-[var(--navy)] pl-4">
+                  <p className="text-[var(--charcoal)]">&quot;{t.quote}&quot;</p>
+                  <footer className="mt-2 text-sm text-[var(--charcoal-light)]">
+                    — {t.author}, {t.context}
+                  </footer>
+                </blockquote>
+              ))}
             </div>
           </div>
         </div>
+
+        {hasDeals && (
+          <div className="mt-12 text-center lg:hidden">
+            <Link
+              href="/deals"
+              className="inline-block border-b-2 border-[var(--accent)] pb-2 text-sm font-black uppercase tracking-widest text-[var(--navy)] hover:underline"
+            >
+              View Portfolio
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

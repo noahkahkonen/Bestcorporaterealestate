@@ -1,0 +1,393 @@
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0fbd49",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                        "accent-deep": "#082a15",
+                        "neutral-cream": "#fdfdfb",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .sticky-sidebar {
+            top: 2rem;
+            position: sticky;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<!-- Top Navigation Bar -->
+<header class="w-full bg-neutral-cream dark:bg-accent-deep border-b border-primary/10 px-6 py-4 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-10">
+<div class="flex items-center gap-3">
+<div class="text-primary">
+<svg class="size-8" fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-accent-deep dark:text-white uppercase">CRE Advisor</span>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Market Intelligence</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Property Search</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Portfolio Analysis</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-2 text-slate-400">search</span>
+<input class="pl-10 pr-4 py-2 bg-background-light dark:bg-background-dark/50 border border-primary/20 rounded-lg text-sm focus:ring-primary focus:border-primary" placeholder="Search markets..." type="text"/>
+</div>
+<button class="bg-primary text-accent-deep px-5 py-2 rounded-lg font-bold text-sm hover:opacity-90 transition-opacity">Client Login</button>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8">
+<!-- Photo Gallery -->
+<div class="grid grid-cols-4 grid-rows-2 gap-3 h-[500px] mb-10 overflow-hidden rounded-xl">
+<div class="col-span-2 row-span-2 relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Modern glass skyscraper architecture in business district" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDUS6xsCsn3MPu7UQ1IfMMRIWWWUG0S6LNSmXeT5dGZgjtuUeU8SQ838LppIteYVhL6h5NAzJxkdtAD2Sr5GPGKFbqcb7sUGqavaCS_dpRN7ogJDteGRLDqsN4MURblvly7-o0WjxWpf-LjqYXHZaqYgBmiIPLviC6n9NGd6aOsr3BpNpFd7ts7yfq2RbAUiPWPt7sWgJENoUkMCNGIm5hnbDsavRnpuBerFMs_5uqg2hVN113N3WvkPbOu80DDuCBhlJ6lbDdlKpc')"></div>
+<div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all"></div>
+</div>
+<div class="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Modern office lobby interior design" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDDop6j5jRjZPUeI0eMaMdYCVBZo0C8yQukF4y30kCqLYz0pT2TbC4QJWFfWvTOttt4KPGCqwiwAOmQfLhga5ClpjabEDWBBbO2aNArmpbP1Z8ztdSfi7A6xkJAfBaA8XSFQpLVHDZIWe-Fp4Co3KX1mYd-v89iGxtuUQpvOdn-fOoNXbtB6ap8sSgbgAKqbZM41Mmiui8SVVbcR5H0f83HKVHV9XQykzNwmPXx2wAap3GYstiPwHBNIes0Lv9d3e1w_wQVKsoG4xU')"></div>
+</div>
+<div class="col-span-1 row-span-1 relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Professional meeting room with city view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRijpejt8Lmd1HowM2KsvvSIPmgO_du0MeUhhmpgXIl1KJXt46s1BRQ_IeA-sD5NvO5oAHMf-3z5s1qP7-jeFocOjSMRDB3QTt0Vr9MFXSzouQi62lJVckftjo107vz9QFgt5tfkzRXwv1MJBm7-dkFMh9so9s4L0gHASicwowp3aekE_Grt_8ALqQzFPYMvvAckTiFkDD2e5i1oSP1HQRT0KX8wfn3ku0aLiizS0M7t9Io3m7o8On8EgK3LbqvEaAMQsClGYd94Y')"></div>
+</div>
+<div class="col-span-2 row-span-1 relative group cursor-pointer overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="Aerial view of metropolitan office complex" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMPHLMYz1mg78ML4GQqUwzaDPixPWkqyULQ37YJ5WQRUqYhQLmsojPXXJi82jGY5NGVjmde9dsp0ibONPS2spFYW730KsdzmnEg8n5nf2YbdnD0dIfXYaIeaJWT1cjFENIFRvCylB22UwK6aRkidJ5_g48mVXlKjhxeBRK97F2BEqqlT2qgy13p_Yzu0S_Yr_b3pjg5Iy6ry_9ZV_dPQ1sF15YsTW8wHK8uz9AhXjhBEeFqFIATYelVGppBayVBUj0iwYUVPANwVk')"></div>
+<div class="absolute bottom-4 right-4 bg-white/90 dark:bg-accent-deep/90 backdrop-blur px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">grid_view</span>
+                    View All Photos (24)
+                </div>
+</div>
+</div>
+<!-- Property Info Header -->
+<div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-12">
+<div>
+<nav class="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-widest mb-4">
+<span>Listings</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>New York</span>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span>Financial District</span>
+</nav>
+<h1 class="text-5xl font-extrabold text-accent-deep dark:text-white mb-2 leading-tight">Metropolitan Plaza</h1>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<p class="text-lg">1200 Financial District, New York, NY 10005</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 bg-neutral-cream dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-6 py-3 rounded-lg font-bold hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-primary">share</span>
+                    Share
+                </button>
+<button class="flex items-center gap-2 bg-neutral-cream dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-6 py-3 rounded-lg font-bold hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-primary">favorite</span>
+                    Save
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+<!-- Left Column: Details -->
+<div class="lg:col-span-2 space-y-12">
+<!-- Specs Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 bg-neutral-cream dark:bg-accent-deep border border-primary/10 rounded-xl shadow-sm">
+<div class="flex flex-col">
+<span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Total SF</span>
+<span class="text-2xl font-extrabold text-accent-deep dark:text-white">450,000</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Occupancy</span>
+<span class="text-2xl font-extrabold text-accent-deep dark:text-white">94.2%</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Year Built</span>
+<span class="text-2xl font-extrabold text-accent-deep dark:text-white">2018</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Lot Size</span>
+<span class="text-2xl font-extrabold text-accent-deep dark:text-white">2.4 AC</span>
+</div>
+</div>
+<!-- Description -->
+<section>
+<h3 class="text-2xl font-extrabold text-accent-deep dark:text-white mb-6 border-b-2 border-primary w-fit pb-1">Property Overview</h3>
+<div class="prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed text-lg">
+<p class="mb-4">
+                            Metropolitan Plaza is a Class A office building situated in the heart of New York's Financial District. Completed in 2018, this 42-story tower offers state-of-the-art office spaces with floor-to-ceiling windows, offering panoramic views of the Manhattan skyline and the East River.
+                        </p>
+<p>
+                            The property features an award-winning lobby designed by leading architects, a 15,000 SF fitness center, and a rooftop garden terrace. With high-efficiency building systems and LEED Platinum certification, Metropolitan Plaza represents the pinnacle of modern workspace sustainability and employee wellness.
+                        </p>
+</div>
+</section>
+<!-- Investment Highlights -->
+<section>
+<h3 class="text-2xl font-extrabold text-accent-deep dark:text-white mb-6">Investment Highlights</h3>
+<ul class="grid md:grid-cols-2 gap-4">
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border-l-4 border-primary shadow-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span class="font-medium">Prime transit-oriented location with subway access within 2 blocks.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border-l-4 border-primary shadow-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span class="font-medium">Strong tenant roster including top-tier financial and tech firms.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border-l-4 border-primary shadow-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span class="font-medium">WALT of 8.5 years provides long-term cash flow security.</span>
+</li>
+<li class="flex items-start gap-3 p-4 bg-white dark:bg-slate-800/50 rounded-lg border-l-4 border-primary shadow-sm">
+<span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+<span class="font-medium">Potential for rental upside upon upcoming lease expirations.</span>
+</li>
+</ul>
+</section>
+<!-- Demographics & Analytics -->
+<section class="bg-accent-deep text-white p-10 rounded-xl">
+<h3 class="text-2xl font-extrabold mb-8">Demographics &amp; Analytics</h3>
+<div class="grid md:grid-cols-2 gap-12">
+<div>
+<p class="text-primary text-sm font-bold uppercase tracking-widest mb-6">Population Growth (5mi Radius)</p>
+<div class="h-48 flex items-end gap-4 border-b border-white/20 pb-2">
+<div class="w-full bg-primary/30 h-[40%] rounded-t"></div>
+<div class="w-full bg-primary/50 h-[60%] rounded-t"></div>
+<div class="w-full bg-primary/70 h-[75%] rounded-t"></div>
+<div class="w-full bg-primary h-[100%] rounded-t"></div>
+</div>
+<div class="flex justify-between mt-4 text-xs font-bold opacity-60">
+<span>2021</span>
+<span>2022</span>
+<span>2023</span>
+<span>2024 (Est)</span>
+</div>
+</div>
+<div>
+<p class="text-primary text-sm font-bold uppercase tracking-widest mb-6">Avg. Household Income</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span>1 Mile</span>
+<span class="font-bold">$184,200</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-2">
+<div class="bg-primary h-full rounded-full" style="width: 90%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span>3 Miles</span>
+<span class="font-bold">$142,500</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-2">
+<div class="bg-primary/80 h-full rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span>5 Miles</span>
+<span class="font-bold">$121,900</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-2">
+<div class="bg-primary/60 h-full rounded-full" style="width: 60%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Sidebar -->
+<aside class="space-y-8">
+<div class="sticky-sidebar space-y-6">
+<!-- Action Card -->
+<div class="bg-neutral-cream dark:bg-accent-deep border border-primary/20 rounded-xl p-6 shadow-lg">
+<h4 class="text-xl font-extrabold text-accent-deep dark:text-white mb-4">Interested in this property?</h4>
+<div class="space-y-4">
+<button class="w-full bg-primary text-accent-deep py-4 rounded-lg font-extrabold flex items-center justify-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">description</span>
+                                Offering Memorandum
+                            </button>
+<button class="w-full bg-accent-deep dark:bg-white text-white dark:text-accent-deep py-4 rounded-lg font-extrabold flex items-center justify-center gap-2 border border-primary/20 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">event</span>
+                                Schedule a Tour
+                            </button>
+</div>
+<div class="mt-8 pt-8 border-t border-primary/10">
+<h5 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Contact Representative</h5>
+<div class="flex items-center gap-4 mb-6">
+<div class="size-14 rounded-full bg-cover bg-center" data-alt="Professional commercial real estate agent portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCohdqx3w9cFolE2F-1sALWXXpEc0COQ3jhe2rJeG9Z7nAEGUHLoCNbO_7pvKeSaFiV3-sIpQjPrjODm_LcuBBPHL44TYyKtBS4-vEp8B3RRV-NP7Fs0a22yvM-txhbt1B4cEDk6IurOQN07H9QLjZYQBNB2lsFAw8Vu0tLM74HYHiIiD_fRmoojlB9wOhPqy9u6EQa-AQFkHI4ucVMwR-w-nURSr7vaye8ro8gBeOYPEoowgEIuSLnaOp_qpGIKS1PpZ9hI60mmbg')"></div>
+<div>
+<p class="font-extrabold text-accent-deep dark:text-white">Alexander Sterling</p>
+<p class="text-xs text-slate-500 font-medium">Senior Managing Director</p>
+</div>
+</div>
+<form class="space-y-3">
+<input class="w-full bg-background-light dark:bg-slate-800 border-none rounded-lg p-3 text-sm" placeholder="Full Name" type="text"/>
+<input class="w-full bg-background-light dark:bg-slate-800 border-none rounded-lg p-3 text-sm" placeholder="Email Address" type="email"/>
+<textarea class="w-full bg-background-light dark:bg-slate-800 border-none rounded-lg p-3 text-sm" placeholder="I'm interested in receiving more information about..." rows="3"></textarea>
+<button class="w-full bg-primary/20 text-accent-deep dark:text-primary py-3 rounded-lg font-bold text-sm hover:bg-primary hover:text-white transition-all" type="submit">Send Inquiry</button>
+</form>
+</div>
+</div>
+<!-- Market Stats -->
+<div class="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm">
+<h4 class="font-extrabold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+                            Market Insights
+                        </h4>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-sm text-slate-500">Market Rent</span>
+<span class="font-bold">$78/SF</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-slate-500">Submarket Vacancy</span>
+<span class="font-bold">6.2%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-slate-500">Absorption (Annual)</span>
+<span class="font-bold">+120k SF</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Similar Listings Section -->
+<section class="mt-24">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="text-3xl font-extrabold text-accent-deep dark:text-white mb-2">Similar Investment Opportunities</h3>
+<p class="text-slate-500">Curated listings based on Metropolitan Plaza profile</p>
+</div>
+<a class="text-primary font-bold flex items-center gap-2 hover:underline" href="#">
+                    View Market Report
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<div class="grid md:grid-cols-3 gap-6">
+<!-- Listing Card 1 -->
+<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+<div class="h-48 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Modern office building facade" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-JYoTMk2R3WIDH9rdhPUXw9vL87kmht0STSH9Z7APQio-qM47Dkmgi30uQ2KALZv2LlRAEqOSC-sEtEKGVPHNEyTRF86T8GIghkUtRbY_l8AyYy2A0pyJq6fwVw_M1a6uLtXSk9q7kZHzB1Bin5pZLQpeSaVD33WdUQQ1KT89AxnqGJLz7l9Pmy_J3FL5fKFvBVFVVsIPfCkI4emdXHxB9ihOHh3dp5b8Q3XNXZ7pVev_zACIIs48146ffxX280Q-YHh4Qzm_pyU')"></div>
+<div class="absolute top-4 left-4 bg-primary text-accent-deep px-3 py-1 rounded-md text-xs font-black">NEW LISTING</div>
+</div>
+<div class="p-5">
+<h4 class="font-extrabold text-lg mb-1 group-hover:text-primary transition-colors">One Broadway Tower</h4>
+<p class="text-sm text-slate-500 mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span>
+                            1 Broadway, New York, NY
+                        </p>
+<div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700">
+<span class="text-accent-deep dark:text-white font-extrabold">315,000 SF</span>
+<span class="text-primary font-bold">Class A</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 2 -->
+<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+<div class="h-48 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Reflective glass building exterior" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCgAnWoLz-lRkI8q1AB83rT4zzRxOTDcczFrriJvYGu2Y61FETIL0XBevfGk14p6poGb-iwlVtD9OKrSRKsJ3UlQ6GWvSXEX79vWidF4KbBVfJ_heiywZXaDO6eLkpcm_mCdO8W8r6H3GdVDTDI76VDvE-pV4kSPZPqCSSir4M-wyNpoxCuAaxkDSaa_494Drp6kzQ_HDG17uCXq6cyc2X6XedM6JygCEN3Sj6bC8r5aTlPIAfToOOT_EVBb5CJ8-oRg_o55_q2PaU')"></div>
+</div>
+<div class="p-5">
+<h4 class="font-extrabold text-lg mb-1 group-hover:text-primary transition-colors">The Greenwich Center</h4>
+<p class="text-sm text-slate-500 mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span>
+                            50 Greenwich St, New York, NY
+                        </p>
+<div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700">
+<span class="text-accent-deep dark:text-white font-extrabold">285,000 SF</span>
+<span class="text-primary font-bold">Class A+</span>
+</div>
+</div>
+</div>
+<!-- Listing Card 3 -->
+<div class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 dark:border-slate-700">
+<div class="h-48 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Corporate office building plaza" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhlqf_jnZE8Njs_8GA6sZ24Yh1_c3bVkjIhl0oRqDBwgS94v2kkbqZr74maxsuAQnYeGd_WmTv4uR-O8_7ny5ftjEHPErVY6EuM828_oU3At9gbhWmT4UqRYUpQ8AU1L99wEjlHPV-1FJ27DMd1G2leU1m4_dAjK2pWPup_3bq_lnOYHUsRr5kZSx-31Nxpe78LVdlg9msHuZBUrSu8EBih9GwzQ2BDf10zLSIY7VZonHhI4LLWjJ_W2kz5A-gFFujGOLDK6YopDg')"></div>
+</div>
+<div class="p-5">
+<h4 class="font-extrabold text-lg mb-1 group-hover:text-primary transition-colors">Financial District Hub</h4>
+<p class="text-sm text-slate-500 mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span>
+                            200 Liberty St, New York, NY
+                        </p>
+<div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-700">
+<span class="text-accent-deep dark:text-white font-extrabold">520,000 SF</span>
+<span class="text-primary font-bold">Class A</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-accent-deep text-white/60 py-16 mt-24">
+<div class="max-w-7xl mx-auto px-6">
+<div class="grid md:grid-cols-4 gap-12 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-3 text-white mb-6">
+<svg class="size-6" fill="currentColor" viewbox="0 0 48 48">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+<span class="text-lg font-bold tracking-tight uppercase">CRE Advisor</span>
+</div>
+<p class="max-w-md mb-6 leading-relaxed">
+                        The leading source for commercial real estate data, market intelligence, and advisory services. Providing insights that power the industry's most successful investments.
+                    </p>
+</div>
+<div>
+<h5 class="text-white font-bold mb-4">Quick Links</h5>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary" href="#">Our Research</a></li>
+<li><a class="hover:text-primary" href="#">Market Reports</a></li>
+<li><a class="hover:text-primary" href="#">Investment Sales</a></li>
+<li><a class="hover:text-primary" href="#">Leasing Advisory</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-4">Legal</h5>
+<ul class="space-y-2 text-sm">
+<li><a class="hover:text-primary" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary" href="#">Disclaimer</a></li>
+<li><a class="hover:text-primary" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-white/10 flex flex-col md:row justify-between items-center gap-4 text-xs font-medium">
+<p>© 2024 CRE Advisor. All rights reserved. Member of NAREIT.</p>
+<div class="flex gap-6">
+<a class="hover:text-white transition-colors" href="#">LinkedIn</a>
+<a class="hover:text-white transition-colors" href="#">Twitter</a>
+<a class="hover:text-white transition-colors" href="#">YouTube</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

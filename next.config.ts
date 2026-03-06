@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     qualities: [75, 90],
     remotePatterns: [
       { protocol: "https", hostname: "**.blob.vercel-storage.com", pathname: "/**" },
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
   },
 };
