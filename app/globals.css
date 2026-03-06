@@ -47,9 +47,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-display), ui-serif, serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
 }
 
 html {
@@ -101,6 +101,18 @@ a, button {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Custom thin scrollbar for map sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
 }
 
 /* Hero image: system dark mode detection */
@@ -198,4 +210,17 @@ a, button {
     animation: none;
     stroke-dasharray: none;
   }
+}
+
+/* Market reports / insight cards */
+.insight-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 71, 51, 0.08), 0 10px 25px -5px rgba(0, 71, 51, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 71, 51, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+.insight-accent {
+  border-left: 4px solid var(--navy);
 }

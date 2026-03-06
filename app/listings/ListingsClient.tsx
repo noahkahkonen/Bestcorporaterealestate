@@ -68,7 +68,7 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     <div className="flex flex-col">
       <div className="border-b border-[var(--border)] bg-[var(--surface)] py-8 sm:py-10">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
             Listings
           </h1>
           <p className="mt-2 text-[var(--charcoal-light)]">
@@ -95,7 +95,7 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
         </div>
       )}
       <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-[var(--charcoal)]">
+        <h2 className="font-display text-2xl font-bold text-[var(--charcoal)]">
           Listings {filtered.length > 0 && `(${filtered.length})`}
         </h2>
         {filtered.length === 0 ? (

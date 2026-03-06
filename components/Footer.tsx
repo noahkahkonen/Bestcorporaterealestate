@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 function LinkedInIcon({ className }: { className?: string }) {
   return (
@@ -53,30 +54,31 @@ const FOOTER_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-[#003627] pt-32 pb-12">
-      <div className="mx-auto max-w-[1600px] px-8">
-        <div className="mb-32 grid grid-cols-1 gap-20 lg:grid-cols-6">
-          <div className="lg:col-span-2">
-            <div className="mb-12 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-sm bg-[var(--accent)]">
-                <span className="font-display text-2xl font-black text-[var(--navy)]">B</span>
-              </div>
-              <span className="font-display text-3xl font-black uppercase tracking-tighter text-white">
-                Best<span className="text-[var(--accent)]">CRE</span>
-              </span>
-            </div>
-            <p className="mb-12 max-w-sm text-sm leading-relaxed text-slate-400">
+    <footer className="border-t border-[var(--border)] bg-[#065f46] text-white">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <Link href="/" className="mb-4 inline-flex items-center gap-2">
+              <Image
+                src="/images/best-logo.png"
+                alt="Best Corporate Real Estate"
+                width={240}
+                height={80}
+                className="h-16 w-auto brightness-0 invert"
+              />
+            </Link>
+            <p className="text-sm text-gray-300">
               Commercial real estate advisory in Central Ohio. Columbus, OH.
             </p>
           </div>
           <div>
-            <h4 className="mb-10 font-bold text-[11px] uppercase tracking-[0.3em] text-[var(--accent)]">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
               Quick Links
-            </h4>
-            <ul className="space-y-5 text-[11px] font-bold uppercase tracking-[0.15em] text-slate-400">
+            </h3>
+            <ul className="space-y-2">
               {FOOTER_LINKS.map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="transition-colors hover:text-[var(--accent)]">
+                  <Link href={href} className="text-sm text-gray-300 hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -84,50 +86,52 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="mb-10 font-bold text-[11px] uppercase tracking-[0.3em] text-[var(--accent)]">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
               Contact
-            </h4>
-            <address className="not-italic text-sm leading-relaxed text-slate-400">
+            </h3>
+            <address className="not-italic text-sm text-gray-300">
               <p>4608 Sawmill Road</p>
               <p>Columbus, OH 43220</p>
               <p className="mt-4">
-                <a href="tel:+16145593350" className="transition-colors hover:text-[var(--accent)]">
+                <a href="tel:+16145593350" className="hover:text-white">
                   (614) 559-3350
                 </a>
               </p>
               <p className="mt-4">
-                <Link href="/contact" className="transition-colors hover:text-[var(--accent)]">
+                <Link href="/contact" className="hover:text-white">
                   Contact Us
                 </Link>
               </p>
             </address>
           </div>
           <div>
-            <h4 className="mb-10 font-bold text-[11px] uppercase tracking-[0.3em] text-[var(--accent)]">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-400">
               Follow
-            </h4>
-            <div className="flex gap-5">
-              <a href="#" target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center border border-white/10 transition-all hover:bg-[var(--accent)] hover:text-[var(--navy)]" aria-label="LinkedIn">
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="LinkedIn">
                 <LinkedInIcon className="h-6 w-6" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center border border-white/10 transition-all hover:bg-[var(--accent)] hover:text-[var(--navy)]" aria-label="Instagram">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="Instagram">
                 <InstagramIcon className="h-6 w-6" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center border border-white/10 transition-all hover:bg-[var(--accent)] hover:text-[var(--navy)]" aria-label="Facebook">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="Facebook">
                 <FacebookIcon className="h-6 w-6" />
               </a>
-              <a href="#" target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center border border-white/10 transition-all hover:bg-[var(--accent)] hover:text-[var(--navy)]" aria-label="X">
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="YouTube">
+                <YouTubeIcon className="h-6 w-6" />
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="TikTok">
+                <TikTokIcon className="h-6 w-6" />
+              </a>
+              <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:text-white/80 transition-colors" aria-label="X">
                 <XIcon className="h-6 w-6" />
               </a>
             </div>
           </div>
         </div>
-        <div className="flex flex-col justify-between gap-4 border-t border-white/5 pt-12 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-500 md:flex-row md:items-center">
-          <div className="flex flex-wrap justify-center gap-10 md:mb-0">
-            <span>© {new Date().getFullYear()} Best Corporate Real Estate</span>
-            <Link href="/contact" className="transition-colors hover:text-white">Privacy</Link>
-            <Link href="/contact" className="transition-colors hover:text-white">Terms</Link>
-          </div>
+        <div className="mt-10 border-t border-white/10 pt-8 text-center text-sm text-gray-400">
+          © {new Date().getFullYear()} Best Corporate Real Estate. All rights reserved.
         </div>
       </div>
     </footer>

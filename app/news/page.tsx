@@ -21,7 +21,7 @@ export default async function NewsPage() {
     <div className="pb-16">
       <div className="border-b border-[var(--border)] bg-[var(--surface)] py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
+          <h1 className="font-display text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
             News & Insights
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-[var(--charcoal-light)]">

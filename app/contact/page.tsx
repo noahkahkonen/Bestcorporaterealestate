@@ -17,7 +17,7 @@ export default async function ContactPage({ searchParams }: Props) {
     <div className="pb-20">
       <div className="border-b border-[var(--border)] bg-[#065f46] py-16 text-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
             Contact Us
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/90">

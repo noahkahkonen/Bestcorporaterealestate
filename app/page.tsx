@@ -1,6 +1,7 @@
 import Link from "next/link";
 import HomeHero from "@/components/home/HomeHero";
 import FeaturedListings from "@/components/home/FeaturedListings";
+import MarketSectors from "@/components/home/MarketSectors";
 import ComprehensiveSolutions from "@/components/home/ComprehensiveSolutions";
 
 // Dynamic: homepage fetches listings from DB, skip prerender at build (no DB in Docker build)
@@ -22,12 +23,13 @@ export default async function HomePage() {
   return (
     <>
       <HomeHero />
+      <MarketSectors />
       <FeaturedListings listings={listingsToShow} />
       <ComprehensiveSolutions />
       <section className="border-b border-[var(--border)] bg-[var(--surface)] py-14 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
+            <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
               About Us
             </h2>
             <p className="mt-4 text-base text-[var(--charcoal-light)] lg:text-lg">
@@ -43,8 +45,8 @@ export default async function HomePage() {
         </div>
       </section>
       <SoldDealsCarousel listings={soldListings} />
-      <EmailSignup />
       <NewsPreview articles={news.slice(0, 3)} />
+      <EmailSignup />
     </>
   );
 }

@@ -30,7 +30,7 @@ export default function EmailSignup() {
   return (
     <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface)] py-14 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)] sm:text-3xl lg:text-4xl">
+        <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--foreground)] sm:text-3xl lg:text-4xl">
           Stay up to date
         </h2>
         <p className="mt-3 text-base text-[var(--charcoal-light)] lg:text-lg">

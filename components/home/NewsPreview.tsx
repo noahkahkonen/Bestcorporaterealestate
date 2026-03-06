@@ -13,55 +13,108 @@ interface NewsPreviewProps {
 
 export default function NewsPreview({ articles }: NewsPreviewProps) {
   return (
-    <section className="border-b border-[var(--border)] bg-[var(--surface)] py-16 sm:py-20">
+    <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface-muted)] py-20 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+        <div className="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
+            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+              Latest from Best CRE
+            </span>
+            <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
               News & Insights
             </h2>
-            <p className="mt-2 text-base text-[var(--charcoal-light)] lg:text-lg">
-              Market updates and thought leadership from our team.
+            <p className="mt-4 max-w-xl text-[var(--charcoal-light)]">
+              Market updates, reports, and thought leadership from our team.
             </p>
           </div>
-          <Link
-            href="/news"
-            className="text-sm font-semibold text-[var(--navy)] hover:underline"
-          >
-            View all →
-          </Link>
+          <div className="flex items-center gap-6">
+            <Link
+              href="/reports"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--navy)] transition-all hover:gap-3 hover:underline"
+            >
+              Market Reports
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+            <Link
+              href="/news"
+              className="text-sm font-semibold text-[var(--navy)] hover:underline"
+            >
+              View all news →
+            </Link>
+          </div>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {articles.length === 0 ? (
-            <p className="col-span-full text-[var(--charcoal-light)]">No news stories yet.</p>
+            <div className="col-span-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-12 text-center">
+              <p className="text-[var(--charcoal-light)]">No news stories yet. Check back soon.</p>
+              <Link
+                href="/reports"
+                className="mt-4 inline-block text-sm font-semibold text-[var(--navy)] hover:underline"
+              >
+                View Market Reports
+              </Link>
+            </div>
           ) : (
             articles.map((item) => (
               <Link
                 key={item.slug}
                 href={`/news/${item.slug}`}
-                className="group flex overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] transition-shadow hover:shadow-md sm:flex-col"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-all hover:border-[var(--navy)]/20 hover:shadow-lg"
               >
-                <div className="relative h-40 w-full flex-shrink-0 sm:h-44">
+                <div className="relative h-48 w-full overflow-hidden">
                   <Image
                     src={item.imageUrl || "/images/news/news-story.png"}
                     alt=""
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                     quality={90}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
-                <div className="p-5">
-                  <p className="text-xs font-medium text-[var(--muted)]">
+                <div className="flex flex-1 flex-col border-l-4 border-[var(--navy)] p-6">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
                     {formatDate(item.publishedAt || item.createdAt)}
                   </p>
-                  <h3 className="mt-2 font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)]">
+                  <h3 className="mt-3 font-display text-lg font-bold text-[var(--charcoal)] transition-colors group-hover:text-[var(--navy)]">
                     {item.title}
                   </h3>
+                  {item.excerpt && (
+                    <p className="mt-2 line-clamp-2 text-sm text-[var(--charcoal-light)]">
+                      {item.excerpt}
+                    </p>
+                  )}
+                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--navy)]">
+                    Read more
+                    <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </span>
                 </div>
               </Link>
             ))
           )}
+        </div>
+
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-6 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-6">
+          <div>
+            <h3 className="font-bold text-[var(--charcoal)]">Investor resources</h3>
+            <p className="mt-1 text-sm text-[var(--charcoal-light)]">
+              Market reports, interactive map, and exclusive opportunities
+            </p>
+          </div>
+          <Link
+            href="/investor-portal"
+            className="inline-flex items-center gap-2 rounded-lg bg-[var(--navy)] px-6 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            Investor Portal
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
       </div>
     </section>

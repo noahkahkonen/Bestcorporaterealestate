@@ -20,10 +20,13 @@ export default function Header() {
   const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
 
   const isListings = pathname === "/listings";
+  const isMap = pathname === "/map";
   const isDeals = pathname.startsWith("/deals");
   const isServices = pathname === "/services";
+  const isReports = pathname === "/reports";
   const isTeam = pathname === "/team";
   const isNews = pathname === "/news";
+  const isInvestorPortal = pathname === "/investor-portal";
 
   const linkClass = (active: boolean) =>
     `text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${
@@ -146,6 +149,10 @@ export default function Header() {
             )}
           </div>
 
+          <Link href="/map" className={`px-3 py-2 ${linkClass(isMap)}`}>
+            Map
+          </Link>
+
           <Link href="/deals" className={`px-3 py-2 ${linkClass(isDeals)}`}>
             Transactions
           </Link>
@@ -154,12 +161,23 @@ export default function Header() {
             Services
           </Link>
 
+          <Link href="/reports" className={`px-3 py-2 ${linkClass(isReports)}`}>
+            Reports
+          </Link>
+
           <Link href="/team" className={`px-3 py-2 ${linkClass(isTeam)}`}>
             Team
           </Link>
 
           <Link href="/news" className={`px-3 py-2 ${linkClass(isNews)}`}>
             News
+          </Link>
+
+          <Link
+            href="/investor-portal"
+            className={`px-3 py-2 ${linkClass(isInvestorPortal)}`}
+          >
+            Investor Portal
           </Link>
         </nav>
         </div>
@@ -281,13 +299,26 @@ export default function Header() {
             </div>
 
             <Link
+              href="/map"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Map
+            </Link>
+            <Link
               href="/services"
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Services
             </Link>
-
+            <Link
+              href="/reports"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Reports
+            </Link>
             <Link
               href="/deals"
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
@@ -308,6 +339,13 @@ export default function Header() {
               onClick={() => setMobileOpen(false)}
             >
               News
+            </Link>
+            <Link
+              href="/investor-portal"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Investor Portal
             </Link>
             <Link
               href="/contact"
