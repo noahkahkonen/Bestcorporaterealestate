@@ -23,8 +23,6 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     ...getDefaultFilters(),
     ...initialFilters,
   }));
-  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
-
   // Sync filters from URL when URL changes (navigation, back/forward, or programmatic)
   useEffect(() => {
     const propertyType = searchParams.get("propertyType") ?? "";
@@ -46,19 +44,6 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     () => filterListings(listings, filters),
     [listings, filters]
   );
-
-  // Clear selected listing when it's no longer in filtered results
-  useEffect(() => {
-    if (selectedListing && !filtered.some((l) => l.id === selectedListing.id)) {
-      setSelectedListing(null);
-    }
-  }, [filtered, selectedListing]);
-
-  useEffect(() => {
-    if (!selectedListing) return;
-    const el = document.getElementById(`listings-map-card-${selectedListing.id}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [selectedListing]);
 
   function handleFiltersChange(next: FilterState) {
     setFilters(next);
@@ -92,7 +77,7 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
       {filters.propertyType !== "Business" && (
         <div className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
           <div className="h-[480px] w-full lg:h-[580px] rounded-lg overflow-hidden">
-            <ListingsMap listings={filtered} onSelectListing={setSelectedListing} />
+            <ListingsMap listings={filtered} onSelectListing={() => {}} />
           </div>
         </div>
       )}
@@ -107,13 +92,7 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((listing) => (
-              <div
-                key={listing.id}
-                id={`listings-map-card-${listing.id}`}
-                className="scroll-mt-6"
-              >
-                <ListingCard listing={listing} />
-              </div>
+              <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
         )}

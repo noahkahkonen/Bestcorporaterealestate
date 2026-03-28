@@ -24,6 +24,15 @@ interface MapPageClientProps {
   initialCity?: string;
 }
 
+/** Scroll `node` to the top of `container` only (does not scroll the window). */
+function scrollNodeToTopWithin(container: HTMLElement, node: HTMLElement): void {
+  const top =
+    node.getBoundingClientRect().top -
+    container.getBoundingClientRect().top +
+    container.scrollTop;
+  container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+}
+
 function formatPrice(listing: Listing): string {
   const isForLease =
     listing.listingType === "For Lease" || listing.listingType === "Sale/Lease";
@@ -82,10 +91,11 @@ export default function MapPageClient({
   }, [filtered, selectedListing]);
 
   useEffect(() => {
-    if (!selectedListing || !sidebarScrollRef.current) return;
-    const node = sidebarScrollRef.current.querySelector(`[data-map-listing="${selectedListing.id}"]`);
+    const container = sidebarScrollRef.current;
+    if (!selectedListing || !container) return;
+    const node = container.querySelector(`[data-map-listing="${selectedListing.id}"]`);
     if (node instanceof HTMLElement) {
-      node.scrollIntoView({ behavior: "smooth", block: "start" });
+      scrollNodeToTopWithin(container, node);
     }
   }, [selectedListing]);
 
