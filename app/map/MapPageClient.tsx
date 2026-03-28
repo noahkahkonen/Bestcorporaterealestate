@@ -143,7 +143,7 @@ export default function MapPageClient({
                   className="group block overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
                   onClick={() => setSelectedListing(listing)}
                 >
-                  <div className="relative h-40 w-full overflow-hidden">
+                  <div className="relative aspect-[4/3] w-full min-h-[12rem] overflow-hidden">
                     <span className="absolute left-3 top-3 z-10 rounded px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
                       {listing.propertyType}
                     </span>
