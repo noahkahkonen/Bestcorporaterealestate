@@ -25,7 +25,7 @@ export default function FeaturedListings({ listings }: FeaturedListingsProps) {
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
-              Premium Listings
+              Featured Listings
             </h2>
             <p className="mt-2 text-base text-[var(--charcoal-light)] lg:text-lg">
               Exclusive commercial opportunities selected for performance and potential.

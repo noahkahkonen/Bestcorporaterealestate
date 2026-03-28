@@ -11,7 +11,7 @@ interface ListingCardProps {
   listing: Listing;
   priority?: boolean;
   showApplyButton?: boolean;
-  /** When false, hides SF / acreage badges (e.g. homepage Premium Listings). */
+  /** When false, hides SF / acreage badges (e.g. homepage Featured Listings). */
   showSizeBadges?: boolean;
 }
 

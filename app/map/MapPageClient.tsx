@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -50,6 +50,7 @@ export default function MapPageClient({
   const [listingTypeFilter, setListingTypeFilter] = useState(initialListingType);
   const [cityFilter, setCityFilter] = useState(initialCity);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const sidebarScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sector = searchParams.get("sector")?.toLowerCase() ?? "";
@@ -74,6 +75,20 @@ export default function MapPageClient({
     return list;
   }, [listings, currentSector, listingTypeFilter, cityFilter]);
 
+  useEffect(() => {
+    if (selectedListing && !filtered.some((l) => l.id === selectedListing.id)) {
+      setSelectedListing(null);
+    }
+  }, [filtered, selectedListing]);
+
+  useEffect(() => {
+    if (!selectedListing || !sidebarScrollRef.current) return;
+    const node = sidebarScrollRef.current.querySelector(`[data-map-listing="${selectedListing.id}"]`);
+    if (node instanceof HTMLElement) {
+      node.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedListing]);
+
   function handleSectorChange(value: string) {
     const next = value === "all" ? "" : value;
     setCurrentSector(next);
@@ -92,11 +107,7 @@ export default function MapPageClient({
         {/* Map */}
         <div className="relative min-w-0 flex-1">
           <div className="h-full w-full">
-            <ListingsMap
-              listings={filtered}
-              selectedListing={selectedListing}
-              onSelectListing={setSelectedListing}
-            />
+            <ListingsMap listings={filtered} onSelectListing={setSelectedListing} />
           </div>
         </div>
 
@@ -130,7 +141,10 @@ export default function MapPageClient({
               ))}
             </div>
           </div>
-          <div className="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-6">
+          <div
+            ref={sidebarScrollRef}
+            className="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-6"
+          >
             {filtered.length === 0 ? (
               <p className="text-[var(--charcoal-light)]">
                 No listings match this sector. Try another filter.
@@ -140,7 +154,8 @@ export default function MapPageClient({
                 <Link
                   key={listing.id}
                   href={`/listings/${listing.slug}`}
-                  className="group block overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
+                  data-map-listing={listing.id}
+                  className="group block scroll-mt-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
                   onClick={() => setSelectedListing(listing)}
                 >
                   <div className="relative aspect-[4/3] w-full min-h-[12rem] overflow-hidden">

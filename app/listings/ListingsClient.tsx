@@ -54,6 +54,12 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     }
   }, [filtered, selectedListing]);
 
+  useEffect(() => {
+    if (!selectedListing) return;
+    const el = document.getElementById(`listings-map-card-${selectedListing.id}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [selectedListing]);
+
   function handleFiltersChange(next: FilterState) {
     setFilters(next);
     const params = new URLSearchParams();
@@ -86,11 +92,7 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
       {filters.propertyType !== "Business" && (
         <div className="mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
           <div className="h-[480px] w-full lg:h-[580px] rounded-lg overflow-hidden">
-            <ListingsMap
-              listings={filtered}
-              selectedListing={selectedListing}
-              onSelectListing={setSelectedListing}
-            />
+            <ListingsMap listings={filtered} onSelectListing={setSelectedListing} />
           </div>
         </div>
       )}
@@ -105,7 +107,13 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((listing) => (
-              <ListingCard key={listing.id} listing={listing} />
+              <div
+                key={listing.id}
+                id={`listings-map-card-${listing.id}`}
+                className="scroll-mt-6"
+              >
+                <ListingCard listing={listing} />
+              </div>
             ))}
           </div>
         )}

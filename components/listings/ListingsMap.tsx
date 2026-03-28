@@ -93,12 +93,10 @@ function MapMarkers({
 
 function MapWithMarkers({
   listings,
-  selectedListing,
   onSelectListing,
 }: {
   listings: Listing[];
-  selectedListing: Listing | null;
-  onSelectListing: (listing: Listing | null) => void;
+  onSelectListing: (listing: Listing) => void;
 }) {
   const handleSelect = useCallback(
     (listing: Listing) => onSelectListing(listing),
@@ -122,60 +120,17 @@ function MapWithMarkers({
       >
         <MapMarkers listings={listings} onSelectListing={handleSelect} />
       </GoogleMap>
-      {selectedListing && (
-        <div
-          className="absolute bottom-4 left-4 right-4 z-10 max-w-md rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 shadow-lg sm:left-6"
-          role="dialog"
-          aria-label="Listing info"
-        >
-          <div className="flex gap-3">
-            <div className="h-20 w-24 flex-shrink-0 overflow-hidden rounded bg-[var(--surface-muted)]">
-              <div className="placeholder-img h-full w-full" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold text-[var(--charcoal)]">
-                {selectedListing.title}
-              </p>
-              <p className="text-sm text-[var(--charcoal-light)]">
-                {selectedListing.address}, {selectedListing.city},{" "}
-                {selectedListing.state}
-              </p>
-              <a
-                href={`/listings/${selectedListing.slug}`}
-                className="mt-2 inline-block text-sm font-semibold text-[var(--navy)] hover:underline"
-              >
-                View property →
-              </a>
-            </div>
-          </div>
-          <button
-            type="button"
-            className="absolute right-2 top-2 rounded p-1 text-[var(--muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--charcoal)]"
-            aria-label="Close"
-            onClick={() => onSelectListing(null)}
-          >
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
 
 export default function ListingsMap({
   listings,
-  selectedListing,
   onSelectListing,
 }: {
   listings: Listing[];
-  selectedListing: Listing | null;
-  onSelectListing: (listing: Listing | null) => void;
+  /** Called when a map marker is clicked (parent handles UI, e.g. scroll sidebar). */
+  onSelectListing: (listing: Listing) => void;
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -191,11 +146,7 @@ export default function ListingsMap({
 
   return (
     <LoadScriptNext googleMapsApiKey={apiKey}>
-      <MapWithMarkers
-        listings={listings}
-        selectedListing={selectedListing}
-        onSelectListing={onSelectListing}
-      />
+      <MapWithMarkers listings={listings} onSelectListing={onSelectListing} />
     </LoadScriptNext>
   );
 }
