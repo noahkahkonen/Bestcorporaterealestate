@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import ListingsMap from "@/components/listings/ListingsMap";
+import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 import type { Listing } from "@/types/listing";
 
 const SECTOR_FILTERS = [
@@ -33,12 +34,6 @@ function formatPrice(listing: Listing): string {
   if (listing.investmentMetrics?.price != null)
     return `$${listing.investmentMetrics.price.toLocaleString()}`;
   return "—";
-}
-
-function formatCapRate(listing: Listing): string {
-  if (listing.investmentMetrics?.capRate != null)
-    return `${(listing.investmentMetrics.capRate * 100).toFixed(1)}%`;
-  return "-";
 }
 
 export default function MapPageClient({
@@ -176,30 +171,20 @@ export default function MapPageClient({
                       {listing.address}, {listing.city}, {listing.state}
                     </p>
                     <div className="mt-3 grid grid-cols-3 gap-2 border-y border-[var(--border)] py-3">
-                      <div className="text-center">
-                        <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
-                          Cap Rate
-                        </p>
-                        <p className="text-sm font-bold text-[var(--navy)]">
-                          {formatCapRate(listing)}
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
-                          Sq Ft
-                        </p>
-                        <p className="text-sm font-bold text-[var(--charcoal)]">
-                          {(listing.squareFeet ?? 0).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
-                          Occupancy
-                        </p>
-                        <p className="text-sm font-bold text-[var(--charcoal)]">
-                          {listing.occupancy ?? "-"}
-                        </p>
-                      </div>
+                      {getListingSpecTrio(listing).map(({ label, value }) => (
+                        <div key={label} className="text-center">
+                          <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
+                            {label}
+                          </p>
+                          <p
+                            className={`text-sm font-bold ${
+                              label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"
+                            }`}
+                          >
+                            {value}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </Link>

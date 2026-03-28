@@ -37,6 +37,8 @@ export interface Listing {
   squareFeet: number | null;
   acreage: number | null;
   occupancy?: string | null; // Owner User, Investment, Owner User/Investment
+  /** Cap rate as decimal (e.g. 0.08); from DB when full investmentMetrics is not built */
+  capRate?: number | null;
   features: string[];
   heroImage: string;
   galleryImages: string[];

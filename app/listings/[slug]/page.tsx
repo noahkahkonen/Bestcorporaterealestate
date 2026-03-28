@@ -20,6 +20,7 @@ import ListingCard from "@/components/ListingCard";
 import ShareListingButton from "@/components/ShareListingButton";
 import { formatPhone } from "@/lib/format-phone";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
+import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -65,29 +66,7 @@ export default async function PropertyPage({ params }: Props) {
 
   const headerPrice = isForLease && leaseDisplay ? leaseDisplay : salePriceDisplay;
 
-  // Specs grid – Stitch style (Total SF, Acreage, Cap Rate, Occupancy)
-  const specs = [
-    listing_.squareFeet && {
-      label: "Total SF",
-      value: listing_.squareFeet.toLocaleString(),
-    },
-    listing_.acreage != null && {
-      label: "Lot Size",
-      value: `${listing_.acreage} AC`,
-    },
-    listing_.investmentMetrics?.capRate != null && {
-      label: "Cap Rate",
-      value: `${(listing_.investmentMetrics.capRate * 100).toFixed(1)}%`,
-    },
-    listing_.occupancy && {
-      label: "Occupancy",
-      value: listing_.occupancy,
-    },
-    isForLease && listing_.leasePricePerSf != null && listing_.leaseType && {
-      label: "Lease Rate",
-      value: `$${Number(listing_.leasePricePerSf).toLocaleString()}/SF ${listing_.leaseType}`,
-    },
-  ].filter(Boolean) as { label: string; value: string }[];
+  const specs = getListingSpecTrio(listing_);
 
   return (
     <div className="pb-16">
@@ -143,7 +122,7 @@ export default async function PropertyPage({ params }: Props) {
           <div className="space-y-12 lg:col-span-2">
             {/* Specs Grid – Stitch style */}
             {specs.length > 0 && (
-              <div className="grid grid-cols-2 gap-6 rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-8 shadow-sm md:grid-cols-4">
+              <div className="grid grid-cols-1 gap-6 rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-8 shadow-sm sm:grid-cols-3">
                 {specs.map(({ label, value }) => (
                   <div key={label} className="flex flex-col">
                     <span className="mb-1 text-xs font-bold uppercase tracking-wider text-[var(--charcoal-light)]">

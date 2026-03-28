@@ -203,6 +203,7 @@ function dbToListing(row: {
     soldPrice: row.soldPrice ?? undefined,
     soldDate: row.soldDate ? row.soldDate.toISOString().slice(0, 10) : undefined,
     soldNotes: row.soldNotes ?? undefined,
+    capRate: row.capRate ?? undefined,
   };
 
   if (row.noi != null && row.price != null && row.capRate != null) {
