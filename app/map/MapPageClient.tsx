@@ -19,6 +19,8 @@ const SECTOR_FILTERS = [
 interface MapPageClientProps {
   listings: Listing[];
   initialSector: string;
+  initialListingType?: string;
+  initialCity?: string;
 }
 
 function formatPrice(listing: Listing): string {
@@ -42,34 +44,49 @@ function formatCapRate(listing: Listing): string {
 export default function MapPageClient({
   listings,
   initialSector,
+  initialListingType = "",
+  initialCity = "",
 }: MapPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentSector, setCurrentSector] = useState(
     () => (initialSector?.toLowerCase() === "all" || !initialSector ? "" : initialSector.toLowerCase())
   );
+  const [listingTypeFilter, setListingTypeFilter] = useState(initialListingType);
+  const [cityFilter, setCityFilter] = useState(initialCity);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
   useEffect(() => {
     const sector = searchParams.get("sector")?.toLowerCase() ?? "";
     setCurrentSector(sector);
+    setListingTypeFilter(searchParams.get("listingType") ?? "");
+    setCityFilter(searchParams.get("city") ?? "");
   }, [searchParams]);
 
   const filtered = useMemo(() => {
+    let list = listings.filter((l) => l.status !== "Sold");
     const active = currentSector === "all" || !currentSector;
-    if (active) return listings.filter((l) => l.status !== "Sold");
-    return listings.filter(
-      (l) =>
-        l.status !== "Sold" &&
-        l.propertyType.toLowerCase() === currentSector
-    );
-  }, [listings, currentSector]);
+    if (!active) {
+      list = list.filter((l) => l.propertyType.toLowerCase() === currentSector);
+    }
+    if (listingTypeFilter) {
+      list = list.filter((l) => l.listingType === listingTypeFilter);
+    }
+    if (cityFilter.trim()) {
+      const c = cityFilter.trim().toLowerCase();
+      list = list.filter((l) => l.city.toLowerCase().includes(c));
+    }
+    return list;
+  }, [listings, currentSector, listingTypeFilter, cityFilter]);
 
   function handleSectorChange(value: string) {
     const next = value === "all" ? "" : value;
     setCurrentSector(next);
-    const url = next ? `/map?sector=${next}` : "/map";
-    router.replace(url, { scroll: false });
+    const p = new URLSearchParams(searchParams.toString());
+    if (next) p.set("sector", next);
+    else p.delete("sector");
+    const path = p.toString() ? `/map?${p.toString()}` : "/map";
+    router.replace(path, { scroll: false });
   }
 
   const isAllActive = currentSector === "all" || !currentSector;
@@ -85,21 +102,6 @@ export default function MapPageClient({
               selectedListing={selectedListing}
               onSelectListing={setSelectedListing}
             />
-          </div>
-          <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-2">
-            <p className="mb-2 text-xs font-bold text-[var(--charcoal)]">Quick links</p>
-            <Link
-              href="/reports"
-              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--charcoal)] shadow-lg transition-colors hover:bg-[var(--surface-muted)]"
-            >
-              Market Reports
-            </Link>
-            <Link
-              href="/investor-portal"
-              className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--charcoal)] shadow-lg transition-colors hover:bg-[var(--surface-muted)]"
-            >
-              Investor Portal
-            </Link>
           </div>
         </div>
 
@@ -203,22 +205,6 @@ export default function MapPageClient({
                 </Link>
               ))
             )}
-          </div>
-          <div className="border-t border-[var(--border)] p-4">
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/investor-portal"
-                className="text-sm font-semibold text-[var(--navy)] hover:underline"
-              >
-                Investor Portal
-              </Link>
-              <Link
-                href="/reports"
-                className="text-sm font-semibold text-[var(--navy)] hover:underline"
-              >
-                Market Reports
-              </Link>
-            </div>
           </div>
         </aside>
       </div>

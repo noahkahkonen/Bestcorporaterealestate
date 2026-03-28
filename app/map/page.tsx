@@ -4,19 +4,23 @@ import { getListings } from "@/lib/listings";
 import MapPageClient from "./MapPageClient";
 
 export const metadata: Metadata = {
-  title: "Interactive Map",
+  title: "Listings",
   description:
-    "Explore commercial real estate listings across Columbus and Central Ohio. Filter by sector: retail, office, industrial, land, multifamily.",
+    "Explore commercial real estate listings across Columbus and Central Ohio on the map. Filter by sector: retail, office, industrial, land, multifamily.",
 };
 
 export const dynamic = "force-dynamic";
 
-type Props = { searchParams: Promise<{ sector?: string }> };
+type Props = {
+  searchParams: Promise<{ sector?: string; listingType?: string; city?: string }>;
+};
 
 export default async function MapPage({ searchParams }: Props) {
   const listings = await getListings();
   const params = await searchParams;
   const initialSector = params.sector ?? "";
+  const initialListingType = params.listingType ?? "";
+  const initialCity = params.city ?? "";
 
   return (
     <Suspense
@@ -26,7 +30,12 @@ export default async function MapPage({ searchParams }: Props) {
         </div>
       }
     >
-      <MapPageClient listings={listings} initialSector={initialSector} />
+      <MapPageClient
+        listings={listings}
+        initialSector={initialSector}
+        initialListingType={initialListingType}
+        initialCity={initialCity}
+      />
     </Suspense>
   );
 }

@@ -25,7 +25,7 @@ export default async function NewsPage() {
             News & Insights
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-[var(--charcoal-light)]">
-            Market updates, reports, and thought leadership from our team.
+            Market updates and thought leadership from our team.
           </p>
         </div>
       </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
+import { propertyTypeToMapSector } from "@/lib/property-type-to-map-sector";
 
 export default function Header() {
   const pathname = usePathname();
@@ -19,14 +20,10 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
 
-  const isListings = pathname === "/listings";
-  const isMap = pathname === "/map";
-  const isDeals = pathname.startsWith("/deals");
+  const isListings = pathname === "/listings" || pathname === "/map";
   const isServices = pathname === "/services";
-  const isReports = pathname === "/reports";
   const isTeam = pathname === "/team";
   const isNews = pathname === "/news";
-  const isInvestorPortal = pathname === "/investor-portal";
 
   const linkClass = (active: boolean) =>
     `text-[11px] font-bold uppercase tracking-[0.15em] transition-colors ${
@@ -77,7 +74,7 @@ export default function Header() {
                   {/* Header */}
                   <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/60 px-5 py-3">
                     <Link
-                      href="/listings"
+                      href="/map"
                       className="group flex w-full items-center justify-end gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--accent)] transition-colors hover:text-[var(--navy)]"
                     >
                       View all
@@ -98,7 +95,7 @@ export default function Header() {
                         {LISTING_TYPES.map((type) => (
                           <li key={type}>
                             <Link
-                              href={`/listings?listingType=${encodeURIComponent(type)}`}
+                              href={`/map?listingType=${encodeURIComponent(type)}`}
                               className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
                             >
                               <span className="flex h-2 w-2 shrink-0 rounded-full bg-[var(--accent)] opacity-60 group-hover:opacity-100 group-hover:ring-2 group-hover:ring-[var(--accent)]/30" />
@@ -123,10 +120,12 @@ export default function Header() {
                             : type === "Land" ? "var(--property-land)"
                             : type === "Specialty" ? "var(--property-specialty)"
                             : "var(--property-business)";
+                          const sector = propertyTypeToMapSector(type);
+                          const href = sector ? `/map?sector=${sector}` : "/map";
                           return (
                             <li key={type}>
                               <Link
-                                href={`/listings?propertyType=${encodeURIComponent(type)}`}
+                                href={href}
                                 className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
                               >
                                 <span
@@ -149,20 +148,8 @@ export default function Header() {
             )}
           </div>
 
-          <Link href="/map" className={`px-3 py-2 ${linkClass(isMap)}`}>
-            Map
-          </Link>
-
-          <Link href="/deals" className={`px-3 py-2 ${linkClass(isDeals)}`}>
-            Transactions
-          </Link>
-
           <Link href="/services" className={`px-3 py-2 ${linkClass(isServices)}`}>
             Services
-          </Link>
-
-          <Link href="/reports" className={`px-3 py-2 ${linkClass(isReports)}`}>
-            Reports
           </Link>
 
           <Link href="/team" className={`px-3 py-2 ${linkClass(isTeam)}`}>
@@ -172,13 +159,6 @@ export default function Header() {
           <Link href="/news" className={`px-3 py-2 ${linkClass(isNews)}`}>
             News
           </Link>
-
-          <Link
-            href="/investor-portal"
-            className={`px-3 py-2 ${linkClass(isInvestorPortal)}`}
-          >
-            Investor Portal
-          </Link>
         </nav>
         </div>
 
@@ -187,7 +167,7 @@ export default function Header() {
             href="/contact"
             className="hidden bg-[var(--navy)] px-8 py-4 font-bold text-[11px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--navy-light)] lg:inline-block"
           >
-            Contact Expert
+            Contact Us
           </Link>
 
           <button
@@ -240,7 +220,7 @@ export default function Header() {
               {mobileListingsOpen && (
                 <div className="border-t border-[var(--border)] bg-[var(--surface-muted)]/40 p-4 space-y-4">
                   <Link
-                    href="/listings"
+                    href="/map"
                     className="flex items-center gap-3 rounded-lg bg-[var(--navy)] px-4 py-3 text-sm font-semibold text-white"
                     onClick={() => setMobileOpen(false)}
                   >
@@ -257,7 +237,7 @@ export default function Header() {
                       {LISTING_TYPES.map((type) => (
                         <Link
                           key={type}
-                          href={`/listings?listingType=${encodeURIComponent(type)}`}
+                          href={`/map?listingType=${encodeURIComponent(type)}`}
                           className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
                           onClick={() => setMobileOpen(false)}
                         >
@@ -280,10 +260,12 @@ export default function Header() {
                           : type === "Land" ? "var(--property-land)"
                           : type === "Specialty" ? "var(--property-specialty)"
                           : "var(--property-business)";
+                        const sector = propertyTypeToMapSector(type);
+                        const href = sector ? `/map?sector=${sector}` : "/map";
                         return (
                           <Link
                             key={type}
-                            href={`/listings?propertyType=${encodeURIComponent(type)}`}
+                            href={href}
                             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
                             onClick={() => setMobileOpen(false)}
                           >
@@ -299,32 +281,11 @@ export default function Header() {
             </div>
 
             <Link
-              href="/map"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-              onClick={() => setMobileOpen(false)}
-            >
-              Map
-            </Link>
-            <Link
               href="/services"
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
               onClick={() => setMobileOpen(false)}
             >
               Services
-            </Link>
-            <Link
-              href="/reports"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-              onClick={() => setMobileOpen(false)}
-            >
-              Reports
-            </Link>
-            <Link
-              href="/deals"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-              onClick={() => setMobileOpen(false)}
-            >
-              Transactions
             </Link>
             <Link
               href="/team"
@@ -339,13 +300,6 @@ export default function Header() {
               onClick={() => setMobileOpen(false)}
             >
               News
-            </Link>
-            <Link
-              href="/investor-portal"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-              onClick={() => setMobileOpen(false)}
-            >
-              Investor Portal
             </Link>
             <Link
               href="/contact"
