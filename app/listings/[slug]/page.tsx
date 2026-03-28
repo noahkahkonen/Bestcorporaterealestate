@@ -10,7 +10,6 @@ import PropertyGallery from "@/components/PropertyGallery";
 import PropertyMap from "@/components/PropertyMap";
 import PropertyTypeTag from "@/components/PropertyTypeTag";
 import InvestmentMetricsSection from "@/components/InvestmentMetricsSection";
-import MortgageCalculator from "@/components/MortgageCalculator";
 import CashOnCashCalculator from "@/components/CashOnCashCalculator";
 import MonthlyRentCalculator from "@/components/MonthlyRentCalculator";
 import InteractiveSitePlan from "@/components/InteractiveSitePlan";
@@ -52,20 +51,6 @@ export default async function PropertyPage({ params }: Props) {
   const similar = await getSimilarListings(slug, listing.propertyType);
   const listing_ = listing;
 
-  const isForLease = listing_.listingType === "For Lease" || listing_.listingType === "Sale/Lease";
-  const leaseDisplay =
-    isForLease && listing_.leasePricePerSf != null && listing_.leaseType
-      ? `$${Number(listing_.leasePricePerSf).toLocaleString()}/SF ${listing_.leaseType}`
-      : null;
-  const salePriceDisplay =
-    (listing_.price != null || listing_.investmentMetrics?.price != null || listing_.priceNegotiable)
-      ? listing_.priceNegotiable
-        ? "Negotiable"
-        : `$${(listing_.price ?? listing_.investmentMetrics?.price ?? 0).toLocaleString()}`
-      : null;
-
-  const headerPrice = isForLease && leaseDisplay ? leaseDisplay : salePriceDisplay;
-
   const specs = getListingSpecTrio(listing_);
 
   return (
@@ -103,17 +88,8 @@ export default async function PropertyPage({ params }: Props) {
               </p>
             </div>
           </div>
-          <div className="flex shrink-0 gap-3">
+          <div className="flex shrink-0 justify-end">
             <ShareListingButton slug={slug} />
-            <Link
-              href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing_.title)}`}
-              className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-6 py-3 font-bold transition-colors hover:bg-[var(--surface-muted)]"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-              Save / Inquire
-            </Link>
           </div>
         </div>
 
@@ -246,6 +222,15 @@ export default async function PropertyPage({ params }: Props) {
                     </svg>
                     Schedule a Tour
                   </Link>
+                  <Link
+                    href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing_.title)}`}
+                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--navy)] py-4 font-extrabold text-white transition-opacity hover:opacity-90"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    Save / Inquire
+                  </Link>
                 </div>
 
                 {/* Contact Representative */}
@@ -301,12 +286,6 @@ export default async function PropertyPage({ params }: Props) {
                       Contact our team for more information.
                     </p>
                   )}
-                  <Link
-                    href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing_.title)}`}
-                    className="mt-4 flex w-full items-center justify-center rounded-lg bg-[var(--navy)] px-4 py-3 text-sm font-bold text-white transition-opacity hover:opacity-90"
-                  >
-                    Send Inquiry
-                  </Link>
                 </div>
               </div>
 
@@ -314,12 +293,7 @@ export default async function PropertyPage({ params }: Props) {
                 <RequestFinancialsButton listingSlug={slug} listingTitle={listing_.title} />
               )}
 
-              {/* Mortgage / Cash-on-Cash / Rent calculators */}
-              {(listing_.listingType === "For Sale" || listing_.listingType === "Sale/Lease") &&
-                (listing_.occupancy === "Owner User" || listing_.occupancy === "Owner User/Investment") &&
-                (listing_.price != null || listing_.investmentMetrics?.price != null) && (
-                <MortgageCalculator purchasePrice={listing_.price ?? listing_.investmentMetrics?.price ?? 0} />
-              )}
+              {/* Cash-on-Cash / Rent calculators */}
               {(listing_.listingType === "For Sale" || listing_.listingType === "Sale/Lease") &&
                 (listing_.occupancy === "Investment" || listing_.occupancy === "Owner User/Investment") &&
                 (listing_.price != null || listing_.investmentMetrics?.price != null) &&
@@ -331,13 +305,13 @@ export default async function PropertyPage({ params }: Props) {
               )}
               {(listing_.listingType === "For Lease" || listing_.listingType === "Sale/Lease") && (
                 <>
-                  {listing_.leaseType === "NNN" && (
-                    <MonthlyRentCalculator
-                      baseRentPerSf={listing_.leasePricePerSf ?? 0}
-                      camPerSf={listing_.leaseNnnCharges ?? 0}
-                      squareFeet={listing_.squareFeet ?? 0}
-                    />
-                  )}
+                  <MonthlyRentCalculator
+                    baseRentPerSf={listing_.leasePricePerSf ?? 0}
+                    camPerSf={
+                      listing_.leaseType === "NNN" ? listing_.leaseNnnCharges ?? 0 : 0
+                    }
+                    squareFeet={listing_.squareFeet ?? 0}
+                  />
                   <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-6">
                     <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
                       Interested in Leasing?
