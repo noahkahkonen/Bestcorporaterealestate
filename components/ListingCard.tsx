@@ -11,9 +11,16 @@ interface ListingCardProps {
   listing: Listing;
   priority?: boolean;
   showApplyButton?: boolean;
+  /** When false, hides SF / acreage badges (e.g. homepage Premium Listings). */
+  showSizeBadges?: boolean;
 }
 
-export default function ListingCard({ listing, priority, showApplyButton = true }: ListingCardProps) {
+export default function ListingCard({
+  listing,
+  priority,
+  showApplyButton = true,
+  showSizeBadges = true,
+}: ListingCardProps) {
   const [imgError, setImgError] = useState(false);
   const stats = [
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
@@ -84,7 +91,7 @@ export default function ListingCard({ listing, priority, showApplyButton = true 
               {listing.zipCode && ` ${listing.zipCode}`}
             </p>
           </div>
-          {stats.length > 0 && (
+          {showSizeBadges && stats.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               {stats.map((s) => (
                 <span

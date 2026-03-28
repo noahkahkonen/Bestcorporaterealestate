@@ -7,6 +7,9 @@ import { useState, useEffect } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
 import { propertyTypeToMapSector } from "@/lib/property-type-to-map-sector";
 
+/** Nav dropdown omits Sale/Lease; map/admin still support the full type. */
+const LISTING_TYPES_NAV = LISTING_TYPES.filter((t) => t !== "Sale/Lease");
+
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
@@ -92,7 +95,7 @@ export default function Header() {
                         Listing Type
                       </p>
                       <ul className="space-y-0.5">
-                        {LISTING_TYPES.map((type) => (
+                        {LISTING_TYPES_NAV.map((type) => (
                           <li key={type}>
                             <Link
                               href={`/map?listingType=${encodeURIComponent(type)}`}
@@ -234,7 +237,7 @@ export default function Header() {
                       Listing Type
                     </p>
                     <div className="space-y-0.5">
-                      {LISTING_TYPES.map((type) => (
+                      {LISTING_TYPES_NAV.map((type) => (
                         <Link
                           key={type}
                           href={`/map?listingType=${encodeURIComponent(type)}`}
