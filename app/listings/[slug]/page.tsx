@@ -8,7 +8,6 @@ import { getListings, getListingBySlug, getSimilarListings } from "@/lib/listing
 import type { Listing } from "@/types/listing";
 import PropertyGallery from "@/components/PropertyGallery";
 import PropertyMap from "@/components/PropertyMap";
-import PropertyTypeTag from "@/components/PropertyTypeTag";
 import InvestmentMetricsSection from "@/components/InvestmentMetricsSection";
 import CashOnCashCalculator from "@/components/CashOnCashCalculator";
 import MonthlyRentCalculator from "@/components/MonthlyRentCalculator";
@@ -177,14 +176,6 @@ export default async function PropertyPage({ params }: Props) {
                 </div>
               </section>
             )}
-
-            {/* Full Gallery – carousel for all photos */}
-            {listing_.galleryImages.length > 1 && (
-              <section id="gallery">
-                <h3 className="mb-4 text-xl font-extrabold text-[var(--charcoal)]">All Photos</h3>
-                <PropertyGallery images={listing_.galleryImages} title={listing_.title} />
-              </section>
-            )}
           </div>
 
           {/* Right Column – Sidebar (Stitch style) */}
@@ -195,7 +186,7 @@ export default async function PropertyPage({ params }: Props) {
                 <h4 className="mb-4 text-xl font-extrabold text-[var(--charcoal)]">
                   Interested in this property?
                 </h4>
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                   {listing_.brochure ? (
                     <a
                       href={listing_.brochure}
@@ -215,21 +206,12 @@ export default async function PropertyPage({ params }: Props) {
                   )}
                   <Link
                     href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing_.title)}`}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--navy)]/20 bg-[var(--surface)] py-4 font-extrabold text-[var(--charcoal)] transition-opacity hover:opacity-90"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[var(--navy)] bg-[var(--surface)] py-4 font-extrabold text-[var(--navy)] transition-opacity hover:opacity-90"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    Schedule a Tour
-                  </Link>
-                  <Link
-                    href={`/contact?listingSlug=${encodeURIComponent(slug)}&listingTitle=${encodeURIComponent(listing_.title)}`}
-                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--navy)] py-4 font-extrabold text-white transition-opacity hover:opacity-90"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                    Save / Inquire
+                    Inquire
                   </Link>
                 </div>
 
