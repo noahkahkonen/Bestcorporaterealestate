@@ -8,13 +8,21 @@ import ListingsMap from "@/components/listings/ListingsMap";
 import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 import type { Listing } from "@/types/listing";
 
+const LISTING_KIND_FILTERS = [
+  { value: "", label: "All" },
+  { value: "For Sale", label: "For Sale" },
+  { value: "For Lease", label: "For Lease" },
+] as const;
+
 const SECTOR_FILTERS = [
-  { value: "all", label: "All" },
   { value: "office", label: "Office" },
   { value: "industrial", label: "Industrial" },
   { value: "retail", label: "Retail" },
   { value: "multifamily", label: "Multifamily" },
   { value: "land", label: "Land" },
+  { value: "specialty", label: "Specialty" },
+  { value: "residential", label: "Residential" },
+  { value: "business", label: "Business" },
 ] as const;
 
 interface MapPageClientProps {
@@ -100,7 +108,8 @@ export default function MapPageClient({
   }, [selectedListing]);
 
   function handleSectorChange(value: string) {
-    const next = value === "all" ? "" : value;
+    const turningOff = currentSector === value;
+    const next = turningOff ? "" : value;
     setCurrentSector(next);
     const p = new URLSearchParams(searchParams.toString());
     if (next) p.set("sector", next);
@@ -109,7 +118,21 @@ export default function MapPageClient({
     router.replace(path, { scroll: false });
   }
 
-  const isAllActive = currentSector === "all" || !currentSector;
+  function handleListingKindChange(value: string) {
+    setListingTypeFilter(value);
+    const p = new URLSearchParams(searchParams.toString());
+    if (value) p.set("listingType", value);
+    else p.delete("listingType");
+    const path = p.toString() ? `/map?${p.toString()}` : "/map";
+    router.replace(path, { scroll: false });
+  }
+
+  const pillBtn = (active: boolean) =>
+    `rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+      active
+        ? "bg-[var(--navy)] text-white"
+        : "bg-[var(--surface-muted)] text-[var(--charcoal-light)] hover:bg-[var(--surface-hover)]"
+    }`;
 
   return (
     <div className="relative flex h-[calc(100vh-6rem)] w-full flex-col overflow-hidden sm:h-[calc(100vh-5rem)]">
@@ -124,27 +147,38 @@ export default function MapPageClient({
         {/* Sidebar Listings */}
         <aside className="flex w-full flex-col border-l border-[var(--border)] bg-[var(--surface)] md:w-[420px] lg:w-[480px]">
           <div className="border-b border-[var(--border)] p-6">
-            <h3 className="text-lg font-bold text-[var(--charcoal)]">
-              Commercial Listings
-            </h3>
-            <p className="mt-1 text-sm text-[var(--charcoal-light)]">
-              {filtered.length} {filtered.length === 1 ? "Property" : "Properties"}
-            </p>
+            <div className="flex items-baseline justify-between gap-4">
+              <h3 className="text-lg font-bold text-[var(--charcoal)]">Commercial Listings</h3>
+              <p className="shrink-0 text-sm font-medium tabular-nums text-[var(--charcoal-light)]">
+                {filtered.length} {filtered.length === 1 ? "Listing" : "Listings"}
+              </p>
+            </div>
             <div className="mt-4 flex flex-wrap gap-2">
+              {LISTING_KIND_FILTERS.map(({ value, label }) => {
+                const active =
+                  value === "" ? !listingTypeFilter : listingTypeFilter === value;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => handleListingKindChange(value)}
+                    className={pillBtn(active)}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--charcoal-light)]">
+              Type
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
               {SECTOR_FILTERS.map(({ value, label }) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => handleSectorChange(value)}
-                  className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
-                    value === "all"
-                      ? isAllActive
-                        ? "bg-[var(--navy)] text-white"
-                        : "bg-[var(--surface-muted)] text-[var(--charcoal-light)] hover:bg-[var(--surface-hover)]"
-                      : currentSector === value
-                        ? "bg-[var(--navy)] text-white"
-                        : "bg-[var(--surface-muted)] text-[var(--charcoal-light)] hover:bg-[var(--surface-hover)]"
-                  }`}
+                  className={pillBtn(currentSector === value)}
                 >
                   {label}
                 </button>
@@ -157,7 +191,7 @@ export default function MapPageClient({
           >
             {filtered.length === 0 ? (
               <p className="text-[var(--charcoal-light)]">
-                No listings match this sector. Try another filter.
+                No listings match these filters. Try adjusting your selection.
               </p>
             ) : (
               filtered.map((listing) => (
@@ -184,7 +218,7 @@ export default function MapPageClient({
                     ) : (
                       <div className="placeholder-img h-full w-full" />
                     )}
-                    <span className="absolute bottom-3 right-3 z-10 rounded bg-[var(--navy)]/90 px-3 py-1.5 text-xs font-bold text-white">
+                    <span className="absolute bottom-3 right-3 z-10 rounded-md bg-[var(--navy)]/90 px-3 py-1.5 text-xs font-bold text-white sm:text-sm">
                       {formatPrice(listing)}
                     </span>
                   </div>

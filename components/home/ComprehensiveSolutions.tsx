@@ -23,7 +23,7 @@ const SOLUTIONS = [
     alt: "Professional office interior",
   },
   {
-    title: "Advisory & Property Management",
+    title: "Property Management",
     href: "/services/property-management",
     description:
       "Independent rigorous analysis and full-service property management. We provide clarity on asset worth and streamline operations for commercial and multifamily investors.",
@@ -71,10 +71,12 @@ export default function ComprehensiveSolutions() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#003627] via-[#003627]/60 to-transparent" />
               <div className="absolute bottom-0 left-0 w-full translate-y-12 p-12 transition-all duration-700 group-hover:translate-y-0">
-                <div className="mb-8 h-1.5 w-16 bg-[var(--accent)]" />
-                <h3 className="mb-6 min-h-[2.8em] font-display text-3xl font-bold text-white sm:text-4xl">
-                  {item.title}
-                </h3>
+                <div className="mb-8 h-1.5 w-16 shrink-0 bg-[var(--accent)]" />
+                <div className="mb-6 flex h-[5.75rem] items-end sm:h-[6.75rem]">
+                  <h3 className="font-display text-3xl font-bold leading-snug text-white sm:text-4xl">
+                    {item.title}
+                  </h3>
+                </div>
                 <p className="mb-10 text-lg leading-relaxed text-slate-300 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
                   {item.description}
                 </p>
