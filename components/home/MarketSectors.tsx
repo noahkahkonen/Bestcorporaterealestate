@@ -59,6 +59,17 @@ const SECTOR_COPY: Record<
   },
 };
 
+const ADVISOR_CHAT_CTA: Record<SectorName, string> = {
+  Retail: "Chat with a Retail Advisor",
+  Industrial: "Chat with an Industrial Advisor",
+  Office: "Chat with an Office Advisor",
+  Multifamily: "Chat with a Multifamily Advisor",
+  Land: "Chat with a Land Advisor",
+  Specialty: "Chat with a Specialist",
+  Business: "Chat with a Business Advisor",
+  Residential: "Chat with a Realtor®",
+};
+
 export default function MarketSectors() {
   const [active, setActive] = useState<SectorName>("Retail");
 
@@ -73,6 +84,9 @@ export default function MarketSectors() {
           const { tagline, imageSrc, overlayClassName } = SECTOR_COPY[name];
           const isActive = active === name;
           const href = `/map?sector=${encodeURIComponent(name.toLowerCase())}`;
+          const advisorSlug = name.toLowerCase();
+          const advisorCta = ADVISOR_CHAT_CTA[name];
+          const contactAdvisorHref = `/contact?advisor=${encodeURIComponent(advisorSlug)}`;
 
           return (
             <div
@@ -112,15 +126,23 @@ export default function MarketSectors() {
                 <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">
                   {tagline}
                 </p>
-                <Link
-                  href={href}
-                  className="group mt-10 inline-flex w-fit items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
-                >
-                  Explore on map
-                  <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>
-                    →
-                  </span>
-                </Link>
+                <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
+                  <Link
+                    href={href}
+                    className="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
+                  >
+                    Explore on map
+                    <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>
+                      →
+                    </span>
+                  </Link>
+                  <Link
+                    href={contactAdvisorHref}
+                    className="inline-flex w-fit items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
+                  >
+                    {advisorCta}
+                  </Link>
+                </div>
               </div>
             </div>
           );

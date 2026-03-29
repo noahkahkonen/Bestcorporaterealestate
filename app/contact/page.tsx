@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
+import { getAdvisorPrefillMessage } from "@/lib/advisor-inquiry";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get in touch with Best Corporate Real Estate for commercial real estate advisory in Columbus, Ohio.",
 };
 
-type Props = { searchParams: Promise<{ listingSlug?: string; listingTitle?: string }> };
+type Props = {
+  searchParams: Promise<{ listingSlug?: string; listingTitle?: string; advisor?: string }>;
+};
 
 export default async function ContactPage({ searchParams }: Props) {
   const params = await searchParams;
   const listingSlug = params.listingSlug ?? undefined;
   const listingTitle = params.listingTitle ?? undefined;
+  const advisorPrefill = getAdvisorPrefillMessage(params.advisor);
   return (
     <div className="pb-20">
       <div className="border-b border-[var(--border)] bg-[#065f46] py-16 text-white">
@@ -78,7 +82,11 @@ export default async function ContactPage({ searchParams }: Props) {
                 Fill out the form below and we’ll get back to you shortly.
               </p>
               <div className="mt-8">
-                <ContactForm listingSlug={listingSlug} listingTitle={listingTitle} />
+                <ContactForm
+                  listingSlug={listingSlug}
+                  listingTitle={listingTitle}
+                  defaultMessage={advisorPrefill}
+                />
               </div>
             </div>
           </div>

@@ -3,85 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
 import { propertyTypeToMapSector } from "@/lib/property-type-to-map-sector";
 
 /** Nav dropdown omits Sale/Lease; map/admin still support the full type. */
 const LISTING_TYPES_NAV = LISTING_TYPES.filter((t) => t !== "Sale/Lease");
 
-/** Pixels scrolled down (from the last scroll-up position) to go from full header to fully faded. */
-const HEADER_FADE_SCROLL_RANGE_PX = 160;
-
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  /** 0 = header fully visible, 1 = fully faded (driven by scroll since reveal anchor). */
-  const [hideT, setHideT] = useState(0);
-  const [headerHeight, setHeaderHeight] = useState(96);
-  const headerRef = useRef<HTMLElement>(null);
-  const lastScrollY = useRef(0);
-  /** Scroll position when the header was last revealed; fade measures `(scrollY - anchor) / range`. */
-  const revealAnchorY = useRef(0);
-  const rafRef = useRef<number | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
-
-  useLayoutEffect(() => {
-    const y = typeof window !== "undefined" ? window.scrollY : 0;
-    revealAnchorY.current = y;
-    lastScrollY.current = y;
-  }, []);
-
-  useLayoutEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => setHeaderHeight(el.offsetHeight));
-    ro.observe(el);
-    setHeaderHeight(el.offsetHeight);
-    return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const applyScroll = () => {
-      const y = window.scrollY;
-      if (mobileOpen || openDropdown) {
-        setHideT(0);
-        lastScrollY.current = y;
-        revealAnchorY.current = y;
-        return;
-      }
-
-      const prev = lastScrollY.current;
-      lastScrollY.current = y;
-
-      if (y < prev) {
-        revealAnchorY.current = y;
-        setHideT(0);
-        return;
-      }
-
-      if (y > prev) {
-        const traveled = Math.max(0, y - revealAnchorY.current);
-        setHideT(Math.min(1, traveled / HEADER_FADE_SCROLL_RANGE_PX));
-      }
-    };
-
-    const onScroll = () => {
-      if (rafRef.current != null) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        applyScroll();
-      });
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    applyScroll();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [mobileOpen, openDropdown]);
 
   const isListings = pathname === "/listings" || pathname === "/map";
   const isServices = pathname === "/services";
@@ -93,41 +26,24 @@ export default function Header() {
       active ? "text-[var(--navy)] border-b-2 border-[var(--accent)] pb-1" : "text-[var(--charcoal-light)] hover:text-[var(--navy)]"
     }`;
 
-  const suspendFade = mobileOpen || !!openDropdown;
-  const hideProgress = suspendFade ? 0 : hideT;
-  // Smoothstep for a softer fade without the old “ease-in only” lumpiness.
-  const fadeAmount =
-    hideProgress <= 0 ? 0 : hideProgress >= 1 ? 1 : hideProgress * hideProgress * (3 - 2 * hideProgress);
-  const headerOpacity = 1 - fadeAmount;
-  const spacerHeight = headerHeight * (1 - fadeAmount);
-
   return (
-    <>
-      <div className="shrink-0" style={{ height: spacerHeight }} aria-hidden />
-      <header
-        ref={headerRef}
-        style={{
-          opacity: headerOpacity,
-          pointerEvents: headerOpacity < 0.04 ? "none" : "auto",
-        }}
-        className="fixed top-0 left-0 right-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white"
-      >
-      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
-        <div className="flex items-center gap-16">
-          <Link href="/" className="flex items-center gap-3">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white">
+      <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-6">
+        <div className="flex min-w-0 items-center gap-8 lg:gap-10">
+          <Link href="/" className="flex shrink-0 items-center gap-2">
             <Image
               src="/images/best-logo.png"
               alt="Best Corporate Real Estate"
               width={180}
               height={60}
-              className="h-12 w-auto"
+              className="h-10 w-auto"
               priority
               unoptimized
             />
           </Link>
 
-        <nav className="hidden lg:flex lg:items-center lg:gap-10">
-          <Link href="/" className={`px-3 py-2 ${linkClass(pathname === "/")}`}>
+        <nav className="hidden min-w-0 lg:flex lg:items-center lg:gap-6">
+          <Link href="/" className={`px-2 py-2 ${linkClass(pathname === "/")}`}>
             Home
           </Link>
 
@@ -139,7 +55,7 @@ export default function Header() {
           >
             <Link
               href="/map"
-              className={`flex items-center gap-0.5 px-3 py-2 ${linkClass(isListings)}`}
+              className={`flex items-center gap-0.5 px-2 py-2 ${linkClass(isListings)}`}
               aria-expanded={openDropdown === "listings"}
               aria-haspopup="true"
             >
@@ -152,7 +68,7 @@ export default function Header() {
               <div className="absolute left-0 top-full pt-3">
                 <div className="min-w-[420px] overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-2xl shadow-[var(--navy)]/10">
                   {/* Header */}
-                  <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/60 px-5 py-3">
+                  <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/60 px-4 py-2.5">
                     <Link
                       href="/map"
                       className="group flex w-full items-center justify-end gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--accent)] transition-colors hover:text-[var(--navy)]"
@@ -167,8 +83,8 @@ export default function Header() {
                   {/* Columns */}
                   <div className="grid grid-cols-2 gap-0">
                     {/* Listing type */}
-                    <div className="border-r border-[var(--border)] p-5">
-                      <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
+                    <div className="border-r border-[var(--border)] p-4">
+                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
                         Listing Type
                       </p>
                       <ul className="space-y-0.5">
@@ -186,8 +102,8 @@ export default function Header() {
                     </div>
 
                     {/* Asset type */}
-                    <div className="p-5">
-                      <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
+                    <div className="p-4">
+                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
                         Asset Type
                       </p>
                       <ul className="space-y-0.5">
@@ -216,24 +132,24 @@ export default function Header() {
             )}
           </div>
 
-          <Link href="/services" className={`px-3 py-2 ${linkClass(isServices)}`}>
+          <Link href="/services" className={`px-2 py-2 ${linkClass(isServices)}`}>
             Services
           </Link>
 
-          <Link href="/team" className={`px-3 py-2 ${linkClass(isTeam)}`}>
+          <Link href="/team" className={`px-2 py-2 ${linkClass(isTeam)}`}>
             Team
           </Link>
 
-          <Link href="/news" className={`px-3 py-2 ${linkClass(isNews)}`}>
+          <Link href="/news" className={`px-2 py-2 ${linkClass(isNews)}`}>
             News
           </Link>
         </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex shrink-0 items-center gap-3">
           <Link
             href="/contact"
-            className="hidden bg-[var(--navy)] px-8 py-4 font-bold text-[11px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--navy-light)] lg:inline-block"
+            className="hidden bg-[var(--navy)] px-5 py-2.5 font-bold text-[11px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--navy-light)] lg:inline-block"
           >
             Contact Us
           </Link>
@@ -371,6 +287,5 @@ export default function Header() {
         </div>
       )}
     </header>
-    </>
   );
 }

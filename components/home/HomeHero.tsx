@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 
 const HERO_VIDEO = "/videos/hero-video.mp4";
@@ -83,17 +82,6 @@ export default function HomeHero() {
         >
           Full-service brokerage and advisory for office, retail, industrial, multifamily, and land. Your partner in Central Ohio commercial real estate.
         </p>
-        <div
-          className={`mt-4 sm:mt-8 ${reveal} ${inView ? `${visible} translate-y-0 scale-100` : `${hidden} translate-y-4 scale-[0.98]`}`}
-          style={{ transitionDelay: inView ? "380ms" : "0ms" }}
-        >
-          <Link
-            href="/listings"
-            className="inline-flex rounded-md bg-white px-4 py-2 text-sm font-semibold text-[#065f46] transition-opacity hover:opacity-90 sm:px-6 sm:py-3 sm:text-base"
-          >
-            View Listings
-          </Link>
-        </div>
       </div>
     </section>
   );

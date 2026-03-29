@@ -19,9 +19,10 @@ const inputClass =
 interface ContactFormProps {
   listingSlug?: string;
   listingTitle?: string;
+  defaultMessage?: string;
 }
 
-export default function ContactForm({ listingSlug, listingTitle }: ContactFormProps) {
+export default function ContactForm({ listingSlug, listingTitle, defaultMessage }: ContactFormProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [recaptchaError, setRecaptchaError] = useState(false);
@@ -143,6 +144,7 @@ export default function ContactForm({ listingSlug, listingTitle }: ContactFormPr
           rows={5}
           required
           placeholder="How can we help?"
+          defaultValue={defaultMessage ?? ""}
           className={inputClass + " resize-y min-h-[120px]"}
         />
       </div>

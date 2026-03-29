@@ -19,7 +19,7 @@ export default async function HomePage() {
     getSoldListings(),
     getNews(),
   ]);
-  const listingsToShow = featuredListings.length > 0 ? featuredListings : allListings.slice(0, 6);
+  const listingsToShow = (featuredListings.length > 0 ? featuredListings : allListings).slice(0, 3);
   return (
     <>
       <HomeHero />
@@ -30,16 +30,16 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl lg:text-4xl">
-              About Us
+              Meet the Team
             </h2>
             <p className="mt-4 text-base text-[var(--charcoal-light)] lg:text-lg">
-              Best Corporate Real Estate provides institutional-quality advisory and brokerage services across Central Ohio. We represent owners, investors, tenants, and buyers with a focus on transparency, market expertise, and results.
+              Best Corporate Real Estate provides institutional-quality advisory and brokerage services across Central Ohio. Our brokers and advisors represent owners, investors, tenants, and buyers with a focus on transparency, market expertise, and results.
             </p>
             <Link
-              href="/contact"
+              href="/team"
               className="mt-6 inline-block text-sm font-semibold text-[var(--navy)] hover:underline"
             >
-              Get in touch →
+              Meet the team →
             </Link>
           </div>
         </div>
