@@ -4,11 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-const SERVICES_MENU_CLOSE_DELAY_MS = 280;
 import HeaderServicesFlyout from "@/components/services/HeaderServicesFlyout";
 import { SERVICE_GROUPS } from "@/lib/service-groups";
 import { getServiceBySlug } from "@/lib/services";
+
+const SERVICES_MENU_CLOSE_DELAY_MS = 280;
 
 export default function Header() {
   const pathname = usePathname();
@@ -40,7 +40,7 @@ export default function Header() {
   useEffect(() => () => clearServicesMenuCloseTimer(), []);
 
   const isListings = pathname === "/listings" || pathname === "/map";
-  const isServices = pathname === "/services" || pathname.startsWith("/services/");
+  const isServices = pathname.startsWith("/services/");
   const isTeam = pathname === "/team";
   const isNews = pathname === "/news";
 
@@ -75,9 +75,9 @@ export default function Header() {
           </Link>
 
           <div className="relative" onMouseEnter={openServicesMenu} onMouseLeave={scheduleServicesMenuClose}>
-            <Link
-              href="/services"
-              className={`flex items-center gap-0.5 px-2 py-2 ${linkClass(isServices)}`}
+            <button
+              type="button"
+              className={`flex cursor-pointer items-center gap-0.5 border-0 bg-transparent px-2 py-2 ${linkClass(isServices)}`}
               aria-expanded={openDropdown === "services"}
               aria-haspopup="true"
             >
@@ -85,7 +85,7 @@ export default function Header() {
               <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-            </Link>
+            </button>
             {openDropdown === "services" && (
               <div className="fixed inset-x-0 top-[calc(4.25rem+1px)] z-[60] hidden pt-5 -mt-5 lg:block">
                 <HeaderServicesFlyout />
@@ -148,35 +148,26 @@ export default function Header() {
               Listings
             </Link>
 
-            <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-lg">
+            <div className="flex flex-col">
               <button
                 type="button"
-                className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-bold text-[var(--navy)]"
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
                 onClick={() => setMobileServicesOpen((o) => !o)}
                 aria-expanded={mobileServicesOpen}
               >
-                <span className="uppercase tracking-wider">Services</span>
+                Services
                 <svg
-                  className={`h-4 w-4 text-[var(--accent)] transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 shrink-0 text-[var(--charcoal-light)] transition-transform duration-200 ${mobileServicesOpen ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
               {mobileServicesOpen && (
-                <div className="border-t border-[var(--border)] bg-[var(--surface-muted)]/40 p-4 space-y-5">
-                  <Link
-                    href="/services"
-                    className="flex items-center gap-3 rounded-lg bg-[var(--navy)] px-4 py-3 text-sm font-semibold text-white"
-                    onClick={() => {
-                      setMobileOpen(false);
-                      setMobileServicesOpen(false);
-                    }}
-                  >
-                    Services overview
-                  </Link>
+                <div className="space-y-5 rounded-lg bg-[var(--surface-muted)]/50 p-4">
                   {SERVICE_GROUPS.map((g) => (
                     <div key={g.id}>
                       <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">

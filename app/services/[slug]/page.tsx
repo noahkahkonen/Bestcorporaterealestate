@@ -32,7 +32,6 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   const visual = getServiceGroupItemBySlug(slug);
   const localParagraphs = getServiceLocalCopy(slug);
-  const otherServices = SERVICES.filter((s) => s.slug !== slug);
 
   return (
     <div className="pb-20">
@@ -56,9 +55,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/25" aria-hidden />
             <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-10 pt-24 sm:px-8 sm:pb-12 lg:px-12">
               <nav className="mb-5 flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-white/80">
-                <Link href="/services" className="transition-colors hover:text-white">
-                  Services
-                </Link>
+                <span className="text-white/80">Services</span>
                 <span aria-hidden className="text-white/50">
                   ›
                 </span>
@@ -121,27 +118,6 @@ export default async function ServiceDetailPage({ params }: Props) {
             </svg>
           </Link>
         </div>
-
-        {otherServices.length > 0 && (
-          <div className="mt-16">
-            <h2 className="font-display text-xl font-bold text-[var(--charcoal)]">Related services</h2>
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-              {otherServices.map((s) => (
-                <li key={s.slug}>
-                  <Link
-                    href={`/services/${s.slug}`}
-                    className="group flex items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-5 py-4 transition-colors hover:border-[var(--navy)]/30 hover:bg-[var(--surface-muted)]/50"
-                  >
-                    <span className="font-semibold text-[var(--charcoal)] group-hover:text-[var(--navy)]">{s.title}</span>
-                    <span className="text-[var(--accent)] transition-transform group-hover:translate-x-0.5" aria-hidden>
-                      →
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </article>
     </div>
   );

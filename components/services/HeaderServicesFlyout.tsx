@@ -50,14 +50,7 @@ export default function HeaderServicesFlyout() {
                 sizes="240px"
               />
             </div>
-            <Link
-              href="/services"
-              className="mt-4 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[var(--navy)] hover:underline"
-            >
-              All services overview
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
+        </div>
 
           <div className="p-4 sm:p-5">
             <ul className="grid gap-3">

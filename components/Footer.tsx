@@ -46,7 +46,6 @@ function XIcon({ className }: { className?: string }) {
 
 const FOOTER_LINKS = [
   { href: "/listings", label: "Listings" },
-  { href: "/services", label: "Services" },
   { href: "/team", label: "Team" },
   { href: "/news", label: "News" },
   { href: "/contact", label: "Contact" },
