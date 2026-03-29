@@ -230,15 +230,16 @@ export default function MapPageClient({
                       {listing.address}, {listing.city}, {listing.state}
                     </p>
                     <div className="mt-3 grid grid-cols-3 gap-2 border-y border-[var(--border)] py-3">
-                      {getListingSpecTrio(listing).map(({ label, value }) => (
+                      {getListingSpecTrio(listing).map(({ label, value, valueColor }) => (
                         <div key={label} className="text-center">
                           <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
                             {label}
                           </p>
                           <p
                             className={`text-sm font-bold ${
-                              label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"
+                              valueColor ? "" : label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"
                             }`}
+                            style={valueColor ? { color: valueColor } : undefined}
                           >
                             {value}
                           </p>

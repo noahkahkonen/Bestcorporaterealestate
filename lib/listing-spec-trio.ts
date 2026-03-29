@@ -1,4 +1,7 @@
 import type { Listing } from "@/types/listing";
+import { sanitizeListingTextColor } from "@/lib/sanitize-listing-color";
+
+export type ListingSpecTrioItem = { label: string; value: string; valueColor?: string };
 
 /** Pull a human zoning value from free-form feature bullets (e.g. "Zoning: C-3"). */
 export function getZoningFromFeatures(features: string[]): string | null {
@@ -47,21 +50,27 @@ function formatNnn(listing: Listing): string {
   return "—";
 }
 
+function zoningValue(listing: Listing): Pick<ListingSpecTrioItem, "value" | "valueColor"> {
+  const z = listing.zoning?.trim() || getZoningFromFeatures(listing.features);
+  const color = sanitizeListingTextColor(listing.zoningColor);
+  if (!z) return { value: "—" };
+  return color ? { value: z, valueColor: color } : { value: z };
+}
+
 /**
  * Three headline stats for listing cards / detail specs, by listing type and occupancy.
  */
-export function getListingSpecTrio(listing: Listing): { label: string; value: string }[] {
+export function getListingSpecTrio(listing: Listing): ListingSpecTrioItem[] {
   const occ = (listing.occupancy ?? "").trim();
   const isLand = listing.propertyType === "Land";
   const isForLeaseOnly = listing.listingType === "For Lease";
   const isForSale = listing.listingType === "For Sale" || listing.listingType === "Sale/Lease";
-  const zoning = getZoningFromFeatures(listing.features);
 
   if (isLand) {
     const sub = listing.landSubcategory?.trim() || "—";
     return [
       { label: "Acres", value: formatAcres(listing) },
-      { label: "Zoning", value: zoning ?? "—" },
+      { label: "Zoning", ...zoningValue(listing) },
       { label: "Land subcategory", value: sub },
     ];
   }
@@ -79,7 +88,7 @@ export function getListingSpecTrio(listing: Listing): { label: string; value: st
       return [
         { label: "Sq Ft", value: formatSqFt(listing) },
         { label: "Acres", value: formatAcres(listing) },
-        { label: "Zoning", value: zoning ?? "—" },
+        { label: "Zoning", ...zoningValue(listing) },
       ];
     }
     if (occ === "Investment" || occ === "Owner User/Investment") {
@@ -99,7 +108,7 @@ export function getListingSpecTrio(listing: Listing): { label: string; value: st
     return [
       { label: "Sq Ft", value: formatSqFt(listing) },
       { label: "Acres", value: formatAcres(listing) },
-      { label: "Zoning", value: zoning ?? "—" },
+      { label: "Zoning", ...zoningValue(listing) },
     ];
   }
 

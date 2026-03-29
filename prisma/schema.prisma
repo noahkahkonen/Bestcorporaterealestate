@@ -61,6 +61,8 @@ model Listing {
   listingType     String   // For Sale, For Lease, Sale/Lease
   propertyType    String   // Retail, Industrial, etc.
   landSubcategory String?  // When Land: Retail, Office, Industrial, Specialty, Residential, Multifamily
+  zoning          String?  // e.g. C-3, M-1 — shown in listing specs; optional text color via zoningColor
+  zoningColor     String?  // Optional CSS hex for zoning value only (#rgb or #rrggbb)
   squareFeet      Int?
   acreage         Float?
   isMultiTenant   Boolean  @default(false)

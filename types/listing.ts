@@ -27,6 +27,10 @@ export interface Listing {
   longitude: number;
   propertyType: string;
   landSubcategory?: string;
+  /** Dedicated zoning line (overrides parsing from features when set). */
+  zoning?: string | null;
+  /** Optional #hex color for zoning value on listing specs only. */
+  zoningColor?: string | null;
   listingType: string;
   price?: number | null;
   priceNegotiable?: boolean;
