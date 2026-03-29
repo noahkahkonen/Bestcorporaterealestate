@@ -37,14 +37,20 @@ function formatAcres(listing: Listing): string {
 }
 
 function capRateDecimal(listing: Listing): number | null {
+  if (listing.capRatePricingCall) return null;
   const m = listing.investmentMetrics?.capRate ?? listing.capRate;
   return m != null && !Number.isNaN(m) ? m : null;
 }
 
 function formatCapRate(listing: Listing): string {
+  if (listing.capRatePricingCall) return "Call";
   const cr = capRateDecimal(listing);
   if (cr == null) return "—";
   return `${(cr * 100).toFixed(1)}%`;
+}
+
+function showCapRateInSaleSpecs(listing: Listing): boolean {
+  return capRateDecimal(listing) != null || listing.capRatePricingCall === true;
 }
 
 function formatNnn(listing: Listing): string {
@@ -117,7 +123,7 @@ export function getListingSpecTrio(listing: Listing): ListingSpecTrioItem[] {
       ];
       return appendZoningIfMissing(specs, listing);
     }
-    if (capRateDecimal(listing) != null) {
+    if (showCapRateInSaleSpecs(listing)) {
       specs = [
         { label: "Cap Rate", value: formatCapRate(listing) },
         { label: "Sq Ft", value: formatSqFt(listing) },

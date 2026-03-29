@@ -60,6 +60,7 @@ export default function EditListingPage() {
     leaseNnnCharges: string;
     noi: string;
     capRate: string;
+    capRatePricingCall: boolean;
     occupancy: string;
     brokerIds: string[];
     status: "Active" | "Pending" | "Sold";
@@ -127,6 +128,7 @@ export default function EditListingPage() {
         leaseNnnCharges: l.leaseNnnCharges != null ? String(l.leaseNnnCharges) : "",
         noi: l.noi != null ? formatNumberWithCommas(String(Math.round(l.noi))) : "",
         capRate: l.capRate != null ? String((l.capRate * 100).toFixed(2).replace(/\.?0+$/, "")) : "",
+        capRatePricingCall: !!l.capRatePricingCall,
         occupancy: l.occupancy || "",
         brokerIds,
         status: l.status || "Active",
@@ -222,8 +224,9 @@ export default function EditListingPage() {
           leaseType: form.leaseType || null,
           leasePricePerSf: form.leasePricePerSf ? parseFloat(form.leasePricePerSf.replace(/,/g, "")) : null,
           leaseNnnCharges: form.leaseNnnCharges ? parseFloat(form.leaseNnnCharges) : null,
-          noi: form.noi ? parseFormattedNumber(form.noi) || null : null,
-          capRate: form.capRate ? parseFloat(form.capRate) / 100 : null,
+          noi: form.capRatePricingCall ? null : form.noi ? parseFormattedNumber(form.noi) || null : null,
+          capRate: form.capRatePricingCall ? null : form.capRate ? parseFloat(form.capRate) / 100 : null,
+          capRatePricingCall: form.capRatePricingCall,
           occupancy: form.occupancy || null,
           brokerIds: form.brokerIds,
           status: form.status,
@@ -618,62 +621,112 @@ export default function EditListingPage() {
                 </label>
               </div>
               {!form.priceNegotiable && (
-                <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                  <div>
-                    <label className="block text-sm font-medium">Price</label>
-                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
-                      <span className="pl-3 text-[var(--muted)]">$</span>
+                <>
+                  <fieldset className="mt-4 space-y-2">
+                    <legend className="text-sm font-medium text-[var(--charcoal)]">Cap rate on listing</legend>
+                    <label className="flex cursor-pointer items-center gap-2 text-sm">
                       <input
-                        type="text"
-                        inputMode="numeric"
-                        value={form.price}
-                        onChange={(e) => {
-                          const price = formatPriceInput(e.target.value);
-                        setForm((f) => {
-                          const next = { ...f!, price };
-                          const p = parseFormattedNumber(price);
-                          const n = parseFormattedNumber(f!.noi);
-                          if (p > 0 && !Number.isNaN(p) && n > 0 && !Number.isNaN(n)) {
-                            next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
-                          }
-                          return next;
-                        });
-                      }}
-                        placeholder="1,500,000"
-                        className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
+                        type="radio"
+                        name="cap-rate-mode-for-sale"
+                        checked={!form.capRatePricingCall}
+                        onChange={() => setForm((f) => (f ? { ...f, capRatePricingCall: false } : f))}
+                      />
+                      Enter NOI &amp; cap rate
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 text-sm">
+                      <input
+                        type="radio"
+                        name="cap-rate-mode-for-sale"
+                        checked={form.capRatePricingCall}
+                        onChange={() =>
+                          setForm((f) => (f ? { ...f, capRatePricingCall: true, noi: "", capRate: "" } : f))
+                        }
+                      />
+                      Call for pricing (shows &quot;Call&quot; in headline specs)
+                    </label>
+                  </fieldset>
+                  <div
+                    className={`mt-4 grid gap-4 sm:grid-cols-3 ${form.capRatePricingCall ? "opacity-50" : ""}`}
+                  >
+                    <div>
+                      <label className="block text-sm font-medium">Price</label>
+                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
+                        <span className="pl-3 text-[var(--muted)]">$</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={form.price}
+                          onChange={(e) => {
+                            const price = formatPriceInput(e.target.value);
+                            setForm((f) => {
+                              if (!f) return f;
+                              const next = { ...f, price };
+                              const p = parseFormattedNumber(price);
+                              const n = parseFormattedNumber(f.noi);
+                              if (
+                                !f.capRatePricingCall &&
+                                p > 0 &&
+                                !Number.isNaN(p) &&
+                                n > 0 &&
+                                !Number.isNaN(n)
+                              ) {
+                                next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
+                              }
+                              return next;
+                            });
+                          }}
+                          placeholder="1,500,000"
+                          className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">NOI</label>
+                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
+                        <span className="pl-3 text-[var(--muted)]">$</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          value={form.noi}
+                          disabled={form.capRatePricingCall}
+                          onChange={(e) => {
+                            const noi = formatNumberWithCommas(e.target.value);
+                            setForm((f) => {
+                              if (!f) return f;
+                              const next = { ...f, noi };
+                              const p = parseFormattedNumber(f.price);
+                              const n = parseFormattedNumber(noi);
+                              if (
+                                !f.capRatePricingCall &&
+                                p > 0 &&
+                                !Number.isNaN(p) &&
+                                n > 0 &&
+                                !Number.isNaN(n)
+                              ) {
+                                next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
+                              }
+                              return next;
+                            });
+                          }}
+                          placeholder="120,000"
+                          className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium">Cap Rate (%)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={form.capRate}
+                        disabled={form.capRatePricingCall}
+                        onChange={(e) => setForm((f) => ({ ...f!, capRate: e.target.value }))}
+                        className="mt-1 w-full rounded-lg border bg-[var(--surface-muted)] px-3 py-2 disabled:cursor-not-allowed"
+                        placeholder="Auto (NOI ÷ Price)"
                       />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium">NOI</label>
-                    <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
-                      <span className="pl-3 text-[var(--muted)]">$</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={form.noi}
-                        onChange={(e) => {
-                          const noi = formatNumberWithCommas(e.target.value);
-                          setForm((f) => {
-                            const next = { ...f!, noi };
-                            const p = parseFormattedNumber(f!.price);
-                            const n = parseFormattedNumber(noi);
-                            if (p > 0 && !Number.isNaN(p) && n > 0 && !Number.isNaN(n)) {
-                              next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
-                            }
-                            return next;
-                          });
-                        }}
-                        placeholder="120,000"
-                        className="w-full border-0 bg-transparent py-2 pr-2 focus:outline-none focus:ring-0"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium">Cap Rate (%)</label>
-                    <input type="number" step="0.01" value={form.capRate} onChange={(e) => setForm((f) => ({ ...f!, capRate: e.target.value }))} className="mt-1 w-full rounded-lg border px-3 py-2 bg-[var(--surface-muted)]" placeholder="Auto (NOI ÷ Price)" />
-                  </div>
-                </div>
+                </>
               )}
             </>
           )}
@@ -744,62 +797,112 @@ export default function EditListingPage() {
                   </label>
                 </div>
                 {!form.priceNegotiable && (
-                  <div className="mt-3 grid gap-4 sm:grid-cols-3">
-                    <div>
-                      <label className="block text-xs font-medium text-[var(--charcoal-light)]">Sale Price</label>
-                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
-                        <span className="pl-3 text-xs text-[var(--muted)]">$</span>
+                  <>
+                    <fieldset className="mt-3 space-y-2">
+                      <legend className="text-sm font-medium text-[var(--charcoal)]">Cap rate on listing</legend>
+                      <label className="flex cursor-pointer items-center gap-2 text-sm">
                         <input
-                          type="text"
-                          inputMode="numeric"
-                          value={form.price}
-                        onChange={(e) => {
-                          const price = formatPriceInput(e.target.value);
-                          setForm((f) => {
-                            const next = { ...f!, price };
-                            const p = parseFormattedNumber(price);
-                            const n = parseFormattedNumber(f!.noi);
-                            if (p > 0 && !Number.isNaN(p) && n > 0 && !Number.isNaN(n)) {
-                              next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
-                            }
-                            return next;
-                          });
-                        }}
-                        placeholder="1,500,000"
-                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0"
+                          type="radio"
+                          name="cap-rate-mode-sale-lease"
+                          checked={!form.capRatePricingCall}
+                          onChange={() => setForm((f) => (f ? { ...f, capRatePricingCall: false } : f))}
+                        />
+                        Enter NOI &amp; cap rate
+                      </label>
+                      <label className="flex cursor-pointer items-center gap-2 text-sm">
+                        <input
+                          type="radio"
+                          name="cap-rate-mode-sale-lease"
+                          checked={form.capRatePricingCall}
+                          onChange={() =>
+                            setForm((f) => (f ? { ...f, capRatePricingCall: true, noi: "", capRate: "" } : f))
+                          }
+                        />
+                        Call for pricing (shows &quot;Call&quot; in headline specs)
+                      </label>
+                    </fieldset>
+                    <div
+                      className={`mt-3 grid gap-4 sm:grid-cols-3 ${form.capRatePricingCall ? "opacity-50" : ""}`}
+                    >
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--charcoal-light)]">Sale Price</label>
+                        <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
+                          <span className="pl-3 text-xs text-[var(--muted)]">$</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={form.price}
+                            onChange={(e) => {
+                              const price = formatPriceInput(e.target.value);
+                              setForm((f) => {
+                                if (!f) return f;
+                                const next = { ...f, price };
+                                const p = parseFormattedNumber(price);
+                                const n = parseFormattedNumber(f.noi);
+                                if (
+                                  !f.capRatePricingCall &&
+                                  p > 0 &&
+                                  !Number.isNaN(p) &&
+                                  n > 0 &&
+                                  !Number.isNaN(n)
+                                ) {
+                                  next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
+                                }
+                                return next;
+                              });
+                            }}
+                            placeholder="1,500,000"
+                            className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--charcoal-light)]">NOI</label>
+                        <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
+                          <span className="pl-3 text-xs text-[var(--muted)]">$</span>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={form.noi}
+                            disabled={form.capRatePricingCall}
+                            onChange={(e) => {
+                              const noi = formatNumberWithCommas(e.target.value);
+                              setForm((f) => {
+                                if (!f) return f;
+                                const next = { ...f, noi };
+                                const p = parseFormattedNumber(f.price);
+                                const n = parseFormattedNumber(noi);
+                                if (
+                                  !f.capRatePricingCall &&
+                                  p > 0 &&
+                                  !Number.isNaN(p) &&
+                                  n > 0 &&
+                                  !Number.isNaN(n)
+                                ) {
+                                  next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
+                                }
+                                return next;
+                              });
+                            }}
+                            placeholder="120,000"
+                            className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0 disabled:cursor-not-allowed"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--charcoal-light)]">Cap Rate (%)</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={form.capRate}
+                          disabled={form.capRatePricingCall}
+                          onChange={(e) => setForm((f) => ({ ...f!, capRate: e.target.value }))}
+                          className="mt-1 w-full rounded-lg border bg-[var(--surface-muted)] px-3 py-2 disabled:cursor-not-allowed"
+                          placeholder="Auto (NOI ÷ Price)"
                         />
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-medium text-[var(--charcoal-light)]">NOI</label>
-                      <div className="mt-1 flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface)] focus-within:outline-none focus-within:ring-2 focus-within:ring-[var(--navy)] focus-within:ring-inset">
-                        <span className="pl-3 text-xs text-[var(--muted)]">$</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={form.noi}
-                        onChange={(e) => {
-                          const noi = formatNumberWithCommas(e.target.value);
-                          setForm((f) => {
-                            const next = { ...f!, noi };
-                            const p = parseFormattedNumber(f!.price);
-                            const n = parseFormattedNumber(noi);
-                            if (p > 0 && !Number.isNaN(p) && n > 0 && !Number.isNaN(n)) {
-                              next.capRate = ((n / p) * 100).toFixed(2).replace(/\.?0+$/, "");
-                            }
-                            return next;
-                          });
-                        }}
-                        placeholder="120,000"
-                          className="w-full border-0 bg-transparent py-2 pr-2 text-sm focus:outline-none focus:ring-0"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-medium text-[var(--charcoal-light)]">Cap Rate (%)</label>
-                      <input type="number" step="0.01" value={form.capRate} onChange={(e) => setForm((f) => ({ ...f!, capRate: e.target.value }))} className="mt-1 w-full rounded-lg border px-3 py-2 bg-[var(--surface-muted)]" placeholder="Auto (NOI ÷ Price)" />
-                    </div>
-                  </div>
+                  </>
                 )}
               </div>
               <div className="mt-6 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] p-4">

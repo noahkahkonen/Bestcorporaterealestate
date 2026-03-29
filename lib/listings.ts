@@ -128,6 +128,7 @@ function dbToListing(row: {
   leasePricePerSf: number | null;
   leaseNnnCharges: number | null;
   capRate: number | null;
+  capRatePricingCall?: boolean | null;
   status?: string;
   transactionOutcome?: string | null;
   soldPrice?: number | null;
@@ -206,9 +207,15 @@ function dbToListing(row: {
     soldDate: row.soldDate ? row.soldDate.toISOString().slice(0, 10) : undefined,
     soldNotes: row.soldNotes ?? undefined,
     capRate: row.capRate ?? undefined,
+    capRatePricingCall: !!row.capRatePricingCall,
   };
 
-  if (row.noi != null && row.price != null && row.capRate != null) {
+  if (
+    !listing.capRatePricingCall &&
+    row.noi != null &&
+    row.price != null &&
+    row.capRate != null
+  ) {
     listing.investmentMetrics = {
       noi: row.noi,
       price: row.price,

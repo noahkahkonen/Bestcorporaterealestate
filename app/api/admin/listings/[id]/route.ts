@@ -11,7 +11,7 @@ const LISTING_UPDATE_KEYS = [
   "description", "featuresJson", "heroImage", "galleryImagesJson",
   "floorPlan", "sitePlan", "brochure", "financialDocPath", "youtubeLink",
   "noi", "price", "priceNegotiable", "leaseType", "leasePricePerSf", "leaseNnnCharges",
-  "capRate", "occupancy", "published", "featured", "status",
+  "capRate", "capRatePricingCall", "occupancy", "published", "featured", "status",
   "soldPrice", "soldDate", "soldNotes", "transactionOutcome",
 ] as const;
 
@@ -178,6 +178,9 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       const v = body.capRate;
       const n = v != null && v !== "" ? parseFloat(String(v)) : NaN;
       data.capRate = Number.isFinite(n) ? n : null;
+    }
+    if ("capRatePricingCall" in body && typeof body.capRatePricingCall === "boolean") {
+      data.capRatePricingCall = body.capRatePricingCall;
     }
     if ("occupancy" in body) data.occupancy = body.occupancy != null && String(body.occupancy).trim() ? String(body.occupancy).trim() : null;
     if ("published" in body && typeof body.published === "boolean") data.published = body.published;

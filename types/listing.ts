@@ -41,6 +41,8 @@ export interface Listing {
   occupancy?: string | null; // Owner User, Investment, Owner User/Investment
   /** Cap rate as decimal (e.g. 0.08); from DB when full investmentMetrics is not built */
   capRate?: number | null;
+  /** Show "Call" for cap rate in specs instead of numeric values */
+  capRatePricingCall?: boolean;
   features: string[];
   heroImage: string;
   galleryImages: string[];

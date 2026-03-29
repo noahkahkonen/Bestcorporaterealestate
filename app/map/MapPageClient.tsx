@@ -391,7 +391,7 @@ export default function MapPageClient({
             </div>
 
             <p className={`mt-2.5 ${filterMetaClass} tracking-[0.18em]`}>Type</p>
-            <div className="mt-1 flex flex-wrap gap-1.5">
+            <div className="mt-1 grid grid-cols-4 gap-1.5">
               {SECTOR_FILTERS.map(({ value, label }) => {
                 const active = currentSector === value;
                 if (value === "residential") {

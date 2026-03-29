@@ -39,11 +39,25 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
         imageAlt: "Commercial building facade",
       },
       {
+        slug: "brokers-price-opinion",
+        cardSummary: "Defensible value ranges from local comps and property fundamentals.",
+        image:
+          "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=85&w=900",
+        imageAlt: "Documents and analysis on a desk",
+      },
+      {
         slug: "buyer-representation",
         cardSummary: "Market intelligence and disciplined negotiation for acquirers.",
         image:
           "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=85&w=900",
         imageAlt: "Blueprints and architectural planning",
+      },
+      {
+        slug: "site-analysis",
+        cardSummary: "Zoning, access, and market context before you commit capital.",
+        image:
+          "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=85&w=900",
+        imageAlt: "Aerial view of development land",
       },
     ],
   },
@@ -103,6 +117,13 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
           "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&q=85&w=900",
         imageAlt: "Handshake closing a business deal",
       },
+      {
+        slug: "business-evaluation",
+        cardSummary: "Earnings, risk, and transferable value framed for owners and buyers.",
+        image:
+          "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=85&w=900",
+        imageAlt: "Financial review and calculator",
+      },
     ],
   },
   {
@@ -119,6 +140,13 @@ export const SERVICE_GROUPS: ServiceGroup[] = [
         image:
           "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=85&w=900",
         imageAlt: "Contemporary home with yard",
+      },
+      {
+        slug: "market-value-analysis",
+        cardSummary: "Recent sales and neighborhood trends to bracket residential value.",
+        image:
+          "https://images.unsplash.com/photo-1600047509358-9dc75507daeb?auto=format&fit=crop&q=85&w=900",
+        imageAlt: "Residential neighborhood homes",
       },
     ],
   },

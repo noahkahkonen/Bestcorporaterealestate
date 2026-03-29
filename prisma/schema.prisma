@@ -82,6 +82,8 @@ model Listing {
   leasePricePerSf  Float?   // $/SF/Y for lease listings
   leaseNnnCharges   Float?   // $/SF for NNN charges (when lease type is NNN)
   capRate         Float?
+  /// When true, specs show "Call" for cap rate instead of numeric NOI/cap.
+  capRatePricingCall Boolean @default(false)
   occupancy       String?  // Owner User, Investment, Owner User/Investment (For Sale & Sale/Lease only)
   published       Boolean  @default(true)
   featured        Boolean  @default(false)
