@@ -187,6 +187,62 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
       document.body,
     );
 
+  const viewAllTile = (
+    <button
+      type="button"
+      onClick={openLightboxFirst}
+      className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]"
+      aria-label="View all photos"
+    >
+      {tile4Bg && isRealImage(tile4Bg) ? (
+        <Image
+          src={tile4Bg}
+          alt=""
+          fill
+          className="object-cover object-center"
+          sizes="200px"
+          quality={85}
+        />
+      ) : (
+        <PlaceholderTile />
+      )}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-white/75 px-2 backdrop-blur-[2px]">
+        <span className="text-center text-sm font-extrabold uppercase tracking-wider text-[var(--charcoal)] sm:text-base">
+          View all
+        </span>
+        {hasRealImages && realIndices.length > 1 && (
+          <span className="text-xs font-medium text-[var(--charcoal-light)]">
+            {realIndices.length} photos
+          </span>
+        )}
+      </div>
+    </button>
+  );
+
+  const squareTile = (src: string | undefined, displayIdx: number) => (
+    <button
+      key={displayIdx}
+      type="button"
+      onClick={() => openLightboxAtDisplayIndex(displayIdx)}
+      disabled={!src || !isRealImage(src)}
+      className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] disabled:pointer-events-none disabled:opacity-50"
+      aria-label={src && isRealImage(src) ? `Open gallery, photo ${displayIdx + 1}` : undefined}
+    >
+      {src && isRealImage(src) ? (
+        <Image
+          src={src}
+          alt={`${title} – photo ${displayIdx + 1}`}
+          fill
+          className="object-cover object-center transition hover:opacity-95"
+          sizes="200px"
+          quality={85}
+        />
+      ) : (
+        <PlaceholderTile />
+      )}
+    </button>
+  );
+
   return (
     <div className="w-full">
       <div className="flex flex-col gap-3 md:flex-row md:items-stretch">
@@ -194,7 +250,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           type="button"
           onClick={() => openLightboxAtDisplayIndex(0)}
           disabled={!hasRealImages || !isRealImage(heroSrc)}
-          className="relative min-h-[220px] w-full flex-1 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] text-left md:min-h-0 md:min-w-0 disabled:cursor-default disabled:opacity-80"
+          className="relative aspect-[21/9] min-h-[180px] w-full flex-1 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] text-left md:aspect-auto md:min-h-0 md:min-w-0 disabled:cursor-default disabled:opacity-80"
           aria-label={isRealImage(heroSrc) ? "Open gallery, main photo" : undefined}
         >
           {isRealImage(heroSrc) ? (
@@ -216,64 +272,20 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           )}
         </button>
 
-        <div className="grid w-full shrink-0 grid-cols-2 gap-3 md:w-[min(42%,420px)] md:max-w-md">
+        {/* Mobile: one square + view all */}
+        <div className="grid w-full grid-cols-2 gap-3 md:hidden">
+          {squareTile(tile1, 1)}
+          {viewAllTile}
+        </div>
+
+        {/* Tablet/desktop: 2×2 thumbs */}
+        <div className="hidden w-full shrink-0 grid-cols-2 gap-3 md:grid md:w-[min(42%,420px)] md:max-w-md">
           {[
             { src: tile1, displayIdx: 1 },
             { src: tile2, displayIdx: 2 },
             { src: tile3, displayIdx: 3 },
-          ].map(({ src, displayIdx }) => (
-            <button
-              key={displayIdx}
-              type="button"
-              onClick={() => openLightboxAtDisplayIndex(displayIdx)}
-              disabled={!src || !isRealImage(src)}
-              className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] disabled:pointer-events-none disabled:opacity-50"
-              aria-label={src && isRealImage(src) ? `Open gallery, photo ${displayIdx + 1}` : undefined}
-            >
-              {src && isRealImage(src) ? (
-                <Image
-                  src={src}
-                  alt={`${title} – photo ${displayIdx + 1}`}
-                  fill
-                  className="object-cover object-center transition hover:opacity-95"
-                  sizes="200px"
-                  quality={85}
-                />
-              ) : (
-                <PlaceholderTile />
-              )}
-            </button>
-          ))}
-
-          <button
-            type="button"
-            onClick={openLightboxFirst}
-            className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]"
-            aria-label="View all photos"
-          >
-            {tile4Bg && isRealImage(tile4Bg) ? (
-              <Image
-                src={tile4Bg}
-                alt=""
-                fill
-                className="object-cover object-center"
-                sizes="200px"
-                quality={85}
-              />
-            ) : (
-              <PlaceholderTile />
-            )}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-white/75 px-2 backdrop-blur-[2px]">
-              <span className="text-center text-sm font-extrabold uppercase tracking-wider text-[var(--charcoal)] sm:text-base">
-                View all
-              </span>
-              {hasRealImages && realIndices.length > 1 && (
-                <span className="text-xs font-medium text-[var(--charcoal-light)]">
-                  {realIndices.length} photos
-                </span>
-              )}
-            </div>
-          </button>
+          ].map(({ src, displayIdx }) => squareTile(src, displayIdx))}
+          {viewAllTile}
         </div>
       </div>
 

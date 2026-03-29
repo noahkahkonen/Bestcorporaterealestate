@@ -3,41 +3,33 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import HeaderServicesFlyout from "@/components/services/HeaderServicesFlyout";
 import { SERVICE_GROUPS } from "@/lib/service-groups";
 import { getServiceBySlug } from "@/lib/services";
-
-const SERVICES_MENU_CLOSE_DELAY_MS = 280;
 
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
-  const servicesMenuCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const clearServicesMenuCloseTimer = () => {
-    if (servicesMenuCloseTimerRef.current) {
-      clearTimeout(servicesMenuCloseTimerRef.current);
-      servicesMenuCloseTimerRef.current = null;
-    }
+  const toggleServicesMenu = () => {
+    setOpenDropdown((d) => (d === "services" ? null : "services"));
   };
 
-  const openServicesMenu = () => {
-    clearServicesMenuCloseTimer();
-    setOpenDropdown("services");
-  };
+  useEffect(() => {
+    setOpenDropdown(null);
+  }, [pathname]);
 
-  const scheduleServicesMenuClose = () => {
-    clearServicesMenuCloseTimer();
-    servicesMenuCloseTimerRef.current = setTimeout(() => {
-      setOpenDropdown(null);
-      servicesMenuCloseTimerRef.current = null;
-    }, SERVICES_MENU_CLOSE_DELAY_MS);
-  };
-
-  useEffect(() => () => clearServicesMenuCloseTimer(), []);
+  useEffect(() => {
+    if (openDropdown !== "services") return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [openDropdown]);
 
   const isListings = pathname === "/listings" || pathname === "/map";
   const isServices = pathname.startsWith("/services/");
@@ -74,11 +66,13 @@ export default function Header() {
             Listings
           </Link>
 
-          <div className="relative" onMouseEnter={openServicesMenu} onMouseLeave={scheduleServicesMenuClose}>
+          <div className="relative">
             <button
               type="button"
+              onClick={toggleServicesMenu}
               className={`flex cursor-pointer items-center gap-0.5 border-0 bg-transparent px-2 py-2 ${linkClass(isServices)}`}
               aria-expanded={openDropdown === "services"}
+              aria-controls="header-services-flyout"
               aria-haspopup="true"
             >
               Services
@@ -87,7 +81,10 @@ export default function Header() {
               </svg>
             </button>
             {openDropdown === "services" && (
-              <div className="fixed inset-x-0 top-[calc(4.25rem+1px)] z-[60] hidden pt-5 -mt-5 lg:block">
+              <div
+                id="header-services-flyout"
+                className="fixed inset-x-0 top-[calc(4.25rem+1px)] z-[60] -mt-5 hidden max-h-[calc(100vh-4.25rem-1px)] overflow-y-auto overscroll-y-contain pt-5 [-ms-overflow-style:none] [scrollbar-gutter:stable] [scrollbar-width:thin] lg:block [&::-webkit-scrollbar]:w-2"
+              >
                 <HeaderServicesFlyout />
               </div>
             )}

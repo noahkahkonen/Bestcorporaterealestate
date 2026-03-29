@@ -36,7 +36,7 @@ export default function HeaderServicesFlyout() {
           })}
         </div>
 
-        <div className="grid max-h-[min(70vh,560px)] overflow-y-auto lg:grid-cols-[minmax(0,240px)_1fr]">
+        <div className="grid lg:grid-cols-[minmax(0,240px)_1fr]">
           <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/30 p-5 lg:border-b-0 lg:border-r">
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--accent)]">{activeGroup.label}</p>
             <p className="mt-3 font-display text-lg font-bold leading-snug text-[var(--charcoal)]">{activeGroup.tagline}</p>

@@ -56,46 +56,64 @@ export default async function PropertyPage({ params }: Props) {
 
   return (
     <div className="pb-16">
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Photo Gallery */}
-        <div className="mb-10">
+        <div className="mb-8 sm:mb-10">
           <PropertyGallery images={listing_.galleryImages} title={listing_.title} />
         </div>
 
         {/* Property Info Header – Stitch style */}
-        <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div>
-            <nav className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--navy)]">
-              <Link href="/listings" className="hover:underline">Listings</Link>
-              <span aria-hidden>›</span>
-              <span>{listing_.city}</span>
+        <div className="mb-10 sm:mb-12">
+          <div className="mb-3 flex items-start justify-between gap-2 sm:mb-4 sm:items-center sm:gap-4">
+            <nav className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-bold uppercase leading-snug tracking-wide text-[var(--navy)] sm:gap-x-1.5 sm:text-xs sm:tracking-widest">
+              <Link href="/listings" className="shrink-0 hover:underline">
+                Listings
+              </Link>
+              <span aria-hidden className="shrink-0 opacity-60">
+                ›
+              </span>
+              <span className="min-w-0">{listing_.city}</span>
               {listing_.propertyType && (
                 <>
-                  <span aria-hidden>›</span>
-                  <span>{listing_.propertyType}</span>
+                  <span aria-hidden className="shrink-0 opacity-60">
+                    ›
+                  </span>
+                  <span className="min-w-0">{listing_.propertyType}</span>
                 </>
               )}
             </nav>
-            <h1 className="text-4xl font-extrabold leading-tight text-[var(--charcoal)] sm:text-5xl">
+            <ShareListingButton
+              slug={slug}
+              className="shrink-0 px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-5 sm:[&_svg]:w-5"
+            />
+          </div>
+          <div>
+            <h1 className="text-2xl font-extrabold leading-snug text-[var(--charcoal)] sm:text-3xl sm:leading-tight md:text-4xl lg:text-5xl">
               {listing_.title}
             </h1>
-            <div className="mt-2 flex items-center gap-2 text-[var(--charcoal-light)]">
-              <svg className="h-5 w-5 shrink-0 text-[var(--navy)]" fill="currentColor" viewBox="0 0 24 24">
+            <a
+              href="#listing-location"
+              className="group mt-2 inline-flex max-w-full items-center gap-2 text-[var(--charcoal-light)] transition-colors hover:text-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--navy)] focus-visible:ring-offset-2"
+              aria-label="View property on map below"
+            >
+              <svg
+                className="h-4 w-4 shrink-0 text-[var(--navy)] transition-colors group-hover:text-[var(--accent)] sm:h-5 sm:w-5"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
               </svg>
-              <p className="text-lg">
+              <span className="min-w-0 text-base leading-snug underline decoration-transparent underline-offset-2 transition-[text-decoration-color] group-hover:decoration-[var(--navy)] sm:text-lg">
                 {listing_.address}, {listing_.city}, {listing_.state}
                 {listing_.zipCode && ` ${listing_.zipCode}`}
-              </p>
-            </div>
+              </span>
+            </a>
             {priceLine && (
-              <p className="mt-4 text-2xl font-extrabold tracking-tight text-[var(--navy)] sm:text-3xl tabular-nums">
+              <p className="mt-3 text-xl font-extrabold tracking-tight text-[var(--navy)] tabular-nums sm:mt-4 sm:text-2xl md:text-3xl">
                 {priceLine}
               </p>
             )}
-          </div>
-          <div className="flex shrink-0 justify-end">
-            <ShareListingButton slug={slug} />
           </div>
         </div>
 
@@ -104,23 +122,21 @@ export default async function PropertyPage({ params }: Props) {
           <div className="space-y-12 lg:col-span-2">
             {/* Specs Grid – Stitch style */}
             {specs.length > 0 && (
-              <div
-                className={`grid grid-cols-1 gap-6 rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-8 shadow-sm ${
-                  specs.length > 3 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"
-                }`}
-              >
-                {specs.map(({ label, value }) => (
-                  <div key={label} className="flex flex-col">
-                    <span className="mb-1 text-xs font-bold uppercase tracking-wider text-[var(--charcoal-light)]">
-                      {label}
-                    </span>
-                    <span
-                      className={`text-2xl font-extrabold ${label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"}`}
-                    >
-                      {value}
-                    </span>
-                  </div>
-                ))}
+              <div className="rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-4 shadow-sm sm:p-5 md:p-6">
+                <div className="grid grid-cols-3 gap-x-2 gap-y-3 sm:gap-x-4 sm:gap-y-4">
+                  {specs.map(({ label, value }) => (
+                    <div key={label} className="flex min-w-0 flex-col gap-1">
+                      <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-[var(--charcoal-light)] sm:text-xs">
+                        {label}
+                      </span>
+                      <span
+                        className={`text-base font-extrabold tabular-nums leading-tight sm:text-xl md:text-2xl ${label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"}`}
+                      >
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -137,23 +153,23 @@ export default async function PropertyPage({ params }: Props) {
             {/* Investment Highlights – from features, Stitch style */}
             {listing_.features.length > 0 && (
               <section>
-                <h3 className="mb-6 text-2xl font-extrabold text-[var(--charcoal)]">
+                <h3 className="mb-4 text-xl font-extrabold text-[var(--charcoal)] sm:mb-6 sm:text-2xl">
                   Investment Highlights
                 </h3>
-                <ul className="grid gap-4 md:grid-cols-2">
+                <ul className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-4">
                   {listing_.features.map((f) => (
                     <li
                       key={f}
-                      className="flex items-start gap-3 rounded-lg border-l-4 border-[var(--navy)] bg-[var(--surface)] p-4 shadow-sm"
+                      className="flex items-start gap-2 rounded-lg border-l-4 border-[var(--navy)] bg-[var(--surface)] p-2.5 shadow-sm sm:gap-3 sm:p-4"
                     >
                       <svg
-                        className="mt-1 h-6 w-6 shrink-0 text-[var(--navy)]"
+                        className="mt-0.5 h-4 w-4 shrink-0 text-[var(--navy)] sm:mt-1 sm:h-6 sm:w-6"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
                       </svg>
-                      <span className="font-medium text-[var(--charcoal)]">{f}</span>
+                      <span className="text-xs font-medium leading-snug text-[var(--charcoal)] sm:text-base">{f}</span>
                     </li>
                   ))}
                 </ul>
@@ -161,7 +177,7 @@ export default async function PropertyPage({ params }: Props) {
             )}
 
             {/* Location */}
-            <section>
+            <section id="listing-location" className="scroll-mt-24 md:scroll-mt-28">
               <h3 className="mb-4 text-xl font-extrabold text-[var(--charcoal)]">Location</h3>
               <div className="overflow-hidden rounded-xl border border-[var(--border)]">
                 <PropertyMap listing={listing_} />
