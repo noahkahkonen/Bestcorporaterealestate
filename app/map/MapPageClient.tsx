@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,7 +27,7 @@ const SECTOR_FILTERS = [
   { value: "residential", label: "Residential" },
 ] as const;
 
-/** Matches PropertyTypeTag / globals --property-* tokens (Residential uses neutral pillBtn instead) */
+/** Matches PropertyTypeTag / globals --property-* (residential uses pillBtn, not tint) */
 type SectorWithTint = Exclude<(typeof SECTOR_FILTERS)[number]["value"], "residential">;
 const MAP_SECTOR_COLOR_VAR: Record<SectorWithTint, string> = {
   retail: "var(--property-retail)",
@@ -136,8 +137,8 @@ export default function MapPageClient({
     }`;
 
   return (
-    <div className="relative flex h-[calc(100vh-6rem)] w-full flex-col overflow-hidden sm:h-[calc(100vh-5rem)]">
-      <div className="flex flex-1 overflow-hidden">
+    <div className="relative flex h-[calc(100vh-9rem)] w-full max-h-[820px] flex-col overflow-hidden sm:h-[calc(100vh-8rem)] md:max-h-[760px]">
+      <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Map */}
         <div className="relative min-w-0 flex-1">
           <div className="h-full w-full">
@@ -147,14 +148,8 @@ export default function MapPageClient({
 
         {/* Sidebar Listings */}
         <aside className="flex w-full flex-col border-l border-[var(--border)] bg-[var(--surface)] md:w-[420px] lg:w-[480px]">
-          <div className="border-b border-[var(--border)] p-6">
-            <div className="flex items-baseline justify-between gap-4">
-              <h3 className="text-lg font-bold text-[var(--charcoal)]">Commercial Listings</h3>
-              <p className="shrink-0 text-sm font-medium tabular-nums text-[var(--charcoal-light)]">
-                {filtered.length} {filtered.length === 1 ? "Listing" : "Listings"}
-              </p>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
+          <div className="border-b border-[var(--border)] px-4 py-3 sm:px-5 sm:py-4">
+            <div className="flex flex-wrap gap-2">
               {LISTING_KIND_FILTERS.map(({ value, label }) => {
                 const active =
                   value === "" ? !listingTypeFilter : listingTypeFilter === value;
@@ -170,10 +165,10 @@ export default function MapPageClient({
                 );
               })}
             </div>
-            <p className="mt-5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--charcoal-light)]">
+            <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--charcoal-light)]">
               Type
             </p>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-1.5 flex flex-wrap gap-2">
               {SECTOR_FILTERS.map(({ value, label }) => {
                 const active = currentSector === value;
                 if (value === "residential") {
@@ -195,7 +190,7 @@ export default function MapPageClient({
                     onClick={() => handleSectorChange(value)}
                     data-active={active ? "true" : undefined}
                     className="map-sector-pill rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider"
-                    style={{ "--sector": MAP_SECTOR_COLOR_VAR[value] } as React.CSSProperties}
+                    style={{ "--sector": MAP_SECTOR_COLOR_VAR[value] } as CSSProperties}
                   >
                     {label}
                   </button>
@@ -205,7 +200,7 @@ export default function MapPageClient({
           </div>
           <div
             ref={sidebarScrollRef}
-            className="custom-scrollbar flex-1 space-y-6 overflow-y-auto p-6"
+            className="custom-scrollbar flex-1 space-y-4 overflow-y-auto p-4 sm:p-5"
           >
             {filtered.length === 0 ? (
               <p className="text-[var(--charcoal-light)]">
@@ -222,7 +217,7 @@ export default function MapPageClient({
                     className="group block scroll-mt-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
                     onClick={() => setSelectedListing(listing)}
                   >
-                    <div className="relative aspect-[4/3] w-full min-h-[12rem] overflow-hidden">
+                    <div className="relative aspect-[4/3] w-full min-h-[9rem] overflow-hidden sm:min-h-[10rem]">
                       <span className="absolute left-3 top-3 z-10 rounded px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
                         {listing.propertyType}
                       </span>

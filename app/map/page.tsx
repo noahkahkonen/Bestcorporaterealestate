@@ -25,7 +25,7 @@ export default async function MapPage({ searchParams }: Props) {
   return (
     <Suspense
       fallback={
-        <div className="flex h-[calc(100vh-6rem)] items-center justify-center bg-[var(--surface-muted)] text-[var(--charcoal-light)]">
+        <div className="flex h-[calc(100vh-9rem)] max-h-[820px] items-center justify-center bg-[var(--surface-muted)] text-[var(--charcoal-light)] sm:h-[calc(100vh-8rem)] md:max-h-[760px]">
           Loading map...
         </div>
       }

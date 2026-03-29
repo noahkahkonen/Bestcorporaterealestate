@@ -3,25 +3,85 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
 import { propertyTypeToMapSector } from "@/lib/property-type-to-map-sector";
 
 /** Nav dropdown omits Sale/Lease; map/admin still support the full type. */
 const LISTING_TYPES_NAV = LISTING_TYPES.filter((t) => t !== "Sale/Lease");
 
+/** Pixels scrolled down (from the last scroll-up position) to go from full header to fully faded. */
+const HEADER_FADE_SCROLL_RANGE_PX = 160;
+
 export default function Header() {
   const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  /** 0 = header fully visible, 1 = fully faded (driven by scroll since reveal anchor). */
+  const [hideT, setHideT] = useState(0);
+  const [headerHeight, setHeaderHeight] = useState(96);
+  const headerRef = useRef<HTMLElement>(null);
+  const lastScrollY = useRef(0);
+  /** Scroll position when the header was last revealed; fade measures `(scrollY - anchor) / range`. */
+  const revealAnchorY = useRef(0);
+  const rafRef = useRef<number | null>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const y = typeof window !== "undefined" ? window.scrollY : 0;
+    revealAnchorY.current = y;
+    lastScrollY.current = y;
+  }, []);
+
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setHeaderHeight(el.offsetHeight));
+    ro.observe(el);
+    setHeaderHeight(el.offsetHeight);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const applyScroll = () => {
+      const y = window.scrollY;
+      if (mobileOpen || openDropdown) {
+        setHideT(0);
+        lastScrollY.current = y;
+        revealAnchorY.current = y;
+        return;
+      }
+
+      const prev = lastScrollY.current;
+      lastScrollY.current = y;
+
+      if (y < prev) {
+        revealAnchorY.current = y;
+        setHideT(0);
+        return;
+      }
+
+      if (y > prev) {
+        const traveled = Math.max(0, y - revealAnchorY.current);
+        setHideT(Math.min(1, traveled / HEADER_FADE_SCROLL_RANGE_PX));
+      }
+    };
+
+    const onScroll = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        applyScroll();
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    applyScroll();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [mobileOpen, openDropdown]);
 
   const isListings = pathname === "/listings" || pathname === "/map";
   const isServices = pathname === "/services";
@@ -33,8 +93,25 @@ export default function Header() {
       active ? "text-[var(--navy)] border-b-2 border-[var(--accent)] pb-1" : "text-[var(--charcoal-light)] hover:text-[var(--navy)]"
     }`;
 
+  const suspendFade = mobileOpen || !!openDropdown;
+  const hideProgress = suspendFade ? 0 : hideT;
+  // Smoothstep for a softer fade without the old “ease-in only” lumpiness.
+  const fadeAmount =
+    hideProgress <= 0 ? 0 : hideProgress >= 1 ? 1 : hideProgress * hideProgress * (3 - 2 * hideProgress);
+  const headerOpacity = 1 - fadeAmount;
+  const spacerHeight = headerHeight * (1 - fadeAmount);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white">
+    <>
+      <div className="shrink-0" style={{ height: spacerHeight }} aria-hidden />
+      <header
+        ref={headerRef}
+        style={{
+          opacity: headerOpacity,
+          pointerEvents: headerOpacity < 0.04 ? "none" : "auto",
+        }}
+        className="fixed top-0 left-0 right-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white"
+      >
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-16">
           <Link href="/" className="flex items-center gap-3">
@@ -294,5 +371,6 @@ export default function Header() {
         </div>
       )}
     </header>
+    </>
   );
 }

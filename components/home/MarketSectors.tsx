@@ -1,90 +1,164 @@
 "use client";
 
-import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { PROPERTY_TYPES } from "@/types/listing";
 
-const SECTORS = [
-  { name: "Retail", href: "/map?sector=retail", icon: "storefront" },
-  { name: "Office", href: "/map?sector=office", icon: "corporate_fare" },
-  { name: "Industrial", href: "/map?sector=industrial", icon: "factory" },
-  { name: "Land", href: "/map?sector=land", icon: "landscape" },
-  { name: "Multifamily", href: "/map?sector=multifamily", icon: "apartment" },
-] as const;
+type SectorName = (typeof PROPERTY_TYPES)[number];
+
+const DEFAULT_OVERLAY = "from-black/80 via-black/45 to-black/25";
+/** Busy aerials: keep more photo visible while text stays readable. */
+const LIGHT_OVERLAY = "from-black/58 via-black/28 to-black/12";
+
+const SECTOR_COPY: Record<
+  SectorName,
+  {
+    tagline: string;
+    /** Set when a hero photo exists in `public/images/market-sectors/`. */
+    imageSrc?: string;
+    /** Optional `bg-gradient-to-t` stops; defaults to `DEFAULT_OVERLAY`. */
+    overlayClassName?: string;
+  }
+> = {
+  Retail: {
+    tagline:
+      "Strip centers, outparcels, and high-visibility locations built for traffic, tenancy, and durable cash flow.",
+    imageSrc: "/images/market-sectors/retail.png",
+  },
+  Industrial: {
+    tagline: "Flex, warehouse, and logistics facilities aligned with how goods and services move today.",
+    imageSrc: "/images/market-sectors/industrial.png",
+    overlayClassName: LIGHT_OVERLAY,
+  },
+  Office: {
+    tagline: "Workspace and campus assets for companies growing their footprint in Central Ohio.",
+    imageSrc: "/images/market-sectors/office.png",
+  },
+  Multifamily: {
+    tagline: "Investment and workforce housing—from garden wrap to midrise—mapped with institutional rigor.",
+    imageSrc: "/images/market-sectors/multifamily.png",
+    overlayClassName: LIGHT_OVERLAY,
+  },
+  Land: {
+    tagline: "Assemblage, entitlement, and development sites with clear paths from dirt to value.",
+    imageSrc: "/images/market-sectors/land-v2.png",
+  },
+  Specialty: {
+    tagline: "Niche product where the operator story matters as much as the dirt and the deal.",
+    imageSrc: "/images/market-sectors/specialty.png",
+  },
+  Business: {
+    tagline: "Operating companies and owner-user opportunities beyond a simple lease or sale memorandum.",
+    imageSrc: "/images/market-sectors/business.png",
+    overlayClassName: LIGHT_OVERLAY,
+  },
+  Residential: {
+    tagline: "Single-family and residential inventory when your mandate crosses into living, not just working.",
+    imageSrc: "/images/market-sectors/residential.png",
+  },
+};
 
 export default function MarketSectors() {
+  const [active, setActive] = useState<SectorName>("Retail");
+
   return (
-    <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface)] py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 flex flex-col items-end justify-between gap-6 md:flex-row">
-          <div>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
-              Market Sectors
-            </h2>
-            <p className="mt-4 max-w-xl text-[var(--charcoal-light)]">
-              Our specialized teams provide deep-domain expertise across all major property types in the region.
-            </p>
+    <section aria-labelledby="market-sectors-heading" className="relative z-10 border-b border-[var(--border)] bg-black">
+      <h2 id="market-sectors-heading" className="sr-only">
+        Market sectors
+      </h2>
+
+      <div className="relative min-h-[min(88vh,900px)] w-full overflow-hidden">
+        {PROPERTY_TYPES.map((name) => {
+          const { tagline, imageSrc, overlayClassName } = SECTOR_COPY[name];
+          const isActive = active === name;
+          const href = `/map?sector=${encodeURIComponent(name.toLowerCase())}`;
+
+          return (
+            <div
+              key={name}
+              role="tabpanel"
+              id={`sector-panel-${name}`}
+              aria-labelledby={`sector-tab-${name}`}
+              aria-hidden={!isActive}
+              className={`absolute inset-0 transition-opacity duration-500 ease-out ${isActive ? "z-[1] opacity-100" : "z-0 opacity-0 pointer-events-none"}`}
+            >
+              {imageSrc ? (
+                <Image
+                  src={imageSrc}
+                  alt=""
+                  fill
+                  className="object-cover object-center"
+                  sizes="100vw"
+                  priority={name === "Retail"}
+                />
+              ) : (
+                <div
+                  className="absolute inset-0 bg-gradient-to-br from-[#1a2332] via-[#243047] to-[#121820]"
+                  aria-hidden
+                />
+              )}
+              <div
+                className={`absolute inset-0 bg-gradient-to-t ${overlayClassName ?? DEFAULT_OVERLAY}`}
+                aria-hidden
+              />
+              <div className="relative z-10 flex min-h-[min(88vh,900px)] flex-col justify-end px-5 pb-14 pt-36 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+                  Market sectors
+                </p>
+                <h3 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+                  {name}
+                </h3>
+                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">
+                  {tagline}
+                </p>
+                <Link
+                  href={href}
+                  className="group mt-10 inline-flex w-fit items-center gap-2 text-sm font-semibold text-white underline-offset-4 hover:underline"
+                >
+                  Explore on map
+                  <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>
+                    →
+                  </span>
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-[2] bg-gradient-to-b from-black/55 to-transparent pb-16 pt-4 sm:pt-5">
+          <div className="pointer-events-auto mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div
+              role="tablist"
+              aria-label="Property types"
+              className="flex gap-1 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] sm:flex-wrap sm:justify-center [&::-webkit-scrollbar]:hidden"
+            >
+              {PROPERTY_TYPES.map((name) => {
+                const selected = active === name;
+                return (
+                  <button
+                    key={name}
+                    type="button"
+                    role="tab"
+                    id={`sector-tab-${name}`}
+                    aria-selected={selected}
+                    aria-controls={`sector-panel-${name}`}
+                    tabIndex={selected ? 0 : -1}
+                    onClick={() => setActive(name)}
+                    className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors sm:text-[13px] ${
+                      selected
+                        ? "bg-white text-[var(--charcoal)]"
+                        : "bg-white/10 text-white hover:bg-white/20"
+                    }`}
+                  >
+                    {name}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <Link
-            href="/map"
-            className="group inline-flex items-center gap-2 text-sm font-bold text-[var(--navy)] transition-all hover:gap-3"
-          >
-            Explore All Verticals
-            <svg
-              className="h-5 w-5 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {SECTORS.map((sector) => (
-            <Link
-              key={sector.name}
-              href={sector.href}
-              className="group flex cursor-pointer flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-8 shadow-sm transition-all duration-300 hover:border-[var(--navy)]/30 hover:bg-[var(--navy)] hover:shadow-lg hover:shadow-[var(--navy)]/10"
-            >
-              <SectorIcon name={sector.icon} className="mb-6 h-10 w-10 text-[var(--navy)] transition-colors group-hover:text-white" />
-              <h3 className="font-display text-xl font-bold text-[var(--charcoal)] transition-colors group-hover:text-white">
-                {sector.name}
-              </h3>
-            </Link>
-          ))}
         </div>
       </div>
     </section>
   );
-}
-
-function SectorIcon({ name, className }: { name: string; className?: string }) {
-  const icons: Record<string, ReactNode> = {
-    storefront: (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 001-1V9a1 1 0 00-1-1H9a1 1 0 00-1 1v6a1 1 0 001 1h1m-4-1a1 1 0 001-1v-4a1 1 0 00-1-1h-2a1 1 0 00-1 1v4a1 1 0 001 1h2z" />
-      </svg>
-    ),
-    corporate_fare: (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-    factory: (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
-      </svg>
-    ),
-    landscape: (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
-    apartment: (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-  };
-  return icons[name] ?? icons.storefront;
 }
