@@ -5,7 +5,6 @@ const PROPERTY_TYPE_VARS: Record<string, string> = {
   Multifamily: "var(--property-multifamily)",
   Land: "var(--property-land)",
   Specialty: "var(--property-specialty)",
-  Residential: "var(--property-residential)",
   Business: "var(--property-business)",
 };
 
@@ -15,13 +14,22 @@ interface PropertyTypeTagProps {
 }
 
 export default function PropertyTypeTag({ propertyType, className = "" }: PropertyTypeTagProps) {
+  if (propertyType === "Residential") {
+    return (
+      <span
+        className={`inline-block rounded-md bg-[var(--surface-muted)] px-2 py-0.5 font-medium text-[var(--charcoal-light)] ${className}`}
+      >
+        {propertyType}
+      </span>
+    );
+  }
   const color = PROPERTY_TYPE_VARS[propertyType] ?? "var(--charcoal)";
   return (
     <span
       className={`inline-block rounded-md px-2 py-0.5 ${className}`}
       style={{
         color: `color-mix(in srgb, ${color} 75%, white)`,
-        backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
+        backgroundColor: `color-mix(in srgb, ${color} 14%, white)`,
         textShadow: `0 0 2px color-mix(in srgb, ${color} 20%, transparent)`,
       }}
     >

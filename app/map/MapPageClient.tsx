@@ -15,15 +15,27 @@ const LISTING_KIND_FILTERS = [
 ] as const;
 
 const SECTOR_FILTERS = [
-  { value: "office", label: "Office" },
-  { value: "industrial", label: "Industrial" },
   { value: "retail", label: "Retail" },
+  { value: "industrial", label: "Industrial" },
+  { value: "office", label: "Office" },
   { value: "multifamily", label: "Multifamily" },
   { value: "land", label: "Land" },
   { value: "specialty", label: "Specialty" },
-  { value: "residential", label: "Residential" },
   { value: "business", label: "Business" },
+  { value: "residential", label: "Residential" },
 ] as const;
+
+/** Matches PropertyTypeTag / globals --property-* tokens (Residential uses neutral pillBtn instead) */
+type SectorWithTint = Exclude<(typeof SECTOR_FILTERS)[number]["value"], "residential">;
+const MAP_SECTOR_COLOR_VAR: Record<SectorWithTint, string> = {
+  retail: "var(--property-retail)",
+  industrial: "var(--property-industrial)",
+  office: "var(--property-office)",
+  multifamily: "var(--property-multifamily)",
+  land: "var(--property-land)",
+  specialty: "var(--property-specialty)",
+  business: "var(--property-business)",
+};
 
 interface MapPageClientProps {
   listings: Listing[];
@@ -173,16 +185,33 @@ export default function MapPageClient({
               Type
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {SECTOR_FILTERS.map(({ value, label }) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => handleSectorChange(value)}
-                  className={pillBtn(currentSector === value)}
-                >
-                  {label}
-                </button>
-              ))}
+              {SECTOR_FILTERS.map(({ value, label }) => {
+                const active = currentSector === value;
+                if (value === "residential") {
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => handleSectorChange(value)}
+                      className={pillBtn(active)}
+                    >
+                      {label}
+                    </button>
+                  );
+                }
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => handleSectorChange(value)}
+                    data-active={active ? "true" : undefined}
+                    className="map-sector-pill rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider"
+                    style={{ "--sector": MAP_SECTOR_COLOR_VAR[value] } as React.CSSProperties}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <div

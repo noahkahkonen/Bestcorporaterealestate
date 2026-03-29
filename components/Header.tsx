@@ -60,17 +60,17 @@ export default function Header() {
             onMouseEnter={() => setOpenDropdown("listings")}
             onMouseLeave={() => setOpenDropdown(null)}
           >
-            <button
-              type="button"
+            <Link
+              href="/map"
               className={`flex items-center gap-0.5 px-3 py-2 ${linkClass(isListings)}`}
               aria-expanded={openDropdown === "listings"}
               aria-haspopup="true"
             >
               Listings
-              <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
-            </button>
+            </Link>
             {openDropdown === "listings" && (
               <div className="absolute left-0 top-full pt-3">
                 <div className="min-w-[420px] overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-2xl shadow-[var(--navy)]/10">
@@ -99,9 +99,8 @@ export default function Header() {
                           <li key={type}>
                             <Link
                               href={`/map?listingType=${encodeURIComponent(type)}`}
-                              className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
+                              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
                             >
-                              <span className="flex h-2 w-2 shrink-0 rounded-full bg-[var(--accent)] opacity-60 group-hover:opacity-100 group-hover:ring-2 group-hover:ring-[var(--accent)]/30" />
                               {type}
                             </Link>
                           </li>
@@ -116,25 +115,14 @@ export default function Header() {
                       </p>
                       <ul className="space-y-0.5">
                         {PROPERTY_TYPES.map((type) => {
-                          const colorVar = type === "Retail" ? "var(--property-retail)"
-                            : type === "Industrial" ? "var(--property-industrial)"
-                            : type === "Office" ? "var(--property-office)"
-                            : type === "Multifamily" ? "var(--property-multifamily)"
-                            : type === "Land" ? "var(--property-land)"
-                            : type === "Specialty" ? "var(--property-specialty)"
-                            : "var(--property-business)";
                           const sector = propertyTypeToMapSector(type);
                           const href = sector ? `/map?sector=${sector}` : "/map";
                           return (
                             <li key={type}>
                               <Link
                                 href={href}
-                                className="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
+                                className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
                               >
-                                <span
-                                  className="h-2 w-2 shrink-0 rounded-full transition-all group-hover:scale-125 group-hover:ring-2 group-hover:ring-offset-1"
-                                  style={{ backgroundColor: colorVar }}
-                                />
                                 {type}
                               </Link>
                             </li>
@@ -241,10 +229,9 @@ export default function Header() {
                         <Link
                           key={type}
                           href={`/map?listingType=${encodeURIComponent(type)}`}
-                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
+                          className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
                           onClick={() => setMobileOpen(false)}
                         >
-                          <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]" />
                           {type}
                         </Link>
                       ))}
@@ -256,23 +243,15 @@ export default function Header() {
                     </p>
                     <div className="space-y-0.5">
                       {PROPERTY_TYPES.map((type) => {
-                        const colorVar = type === "Retail" ? "var(--property-retail)"
-                          : type === "Industrial" ? "var(--property-industrial)"
-                          : type === "Office" ? "var(--property-office)"
-                          : type === "Multifamily" ? "var(--property-multifamily)"
-                          : type === "Land" ? "var(--property-land)"
-                          : type === "Specialty" ? "var(--property-specialty)"
-                          : "var(--property-business)";
                         const sector = propertyTypeToMapSector(type);
                         const href = sector ? `/map?sector=${sector}` : "/map";
                         return (
                           <Link
                             key={type}
                             href={href}
-                            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
+                            className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
                             onClick={() => setMobileOpen(false)}
                           >
-                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colorVar }} />
                             {type}
                           </Link>
                         );

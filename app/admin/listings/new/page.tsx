@@ -14,7 +14,7 @@ import {
 const LISTING_TYPES = ["For Sale", "For Lease", "Sale/Lease"];
 const OCCUPANCY_OPTIONS = ["Owner User", "Investment", "Owner User/Investment"];
 const LEASE_TYPES = ["NNN", "MG", "FSG", "Modified"];
-const PROPERTY_TYPES = ["Retail", "Industrial", "Office", "Multifamily", "Land", "Specialty", "Residential", "Business"];
+const PROPERTY_TYPES = ["Retail", "Industrial", "Office", "Multifamily", "Land", "Specialty", "Business", "Residential"];
 const LAND_SUBCATEGORIES = ["Retail", "Office", "Industrial", "Specialty", "Residential", "Multifamily"];
 
 function slugify(s: string) {

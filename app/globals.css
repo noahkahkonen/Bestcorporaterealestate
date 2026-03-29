@@ -15,15 +15,15 @@
   --charcoal-light: #64748B;
   --muted: #64748B;
   --border: #e2e8f0;
-  /* Property type tag colors */
+  /* Property type tag colors — saturated so tags & map pills read clearly */
   --property-retail: #10b981;
-  --property-industrial: #38bdf8;
-  --property-office: #f87171;
-  --property-multifamily: #fbbf24;
-  --property-land: #a78bfa;
-  --property-specialty: #fb923c;
-  --property-residential: #94a3b8;
-  --property-business: #94a3b8;
+  --property-industrial: #2667ff;
+  --property-office: #ef4444;
+  --property-multifamily: #eab308;
+  --property-land: #a855f7;
+  --property-specialty: #f97316;
+  --property-residential: #64748b;
+  --property-business: #64748b;
   --header-logo-text: var(--navy);
 }
 
@@ -92,6 +92,30 @@ a, button {
   .placeholder-img {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   }
+}
+
+/* Map sidebar: Type (sector) pills — same color language as PropertyTypeTag */
+.map-sector-pill {
+  --sector: var(--property-retail);
+  transition: color 0.2s ease, background-color 0.2s ease, text-shadow 0.2s ease;
+}
+.map-sector-pill:not([data-active="true"]) {
+  background-color: var(--surface-muted);
+  color: var(--charcoal-light);
+}
+.map-sector-pill:not([data-active="true"]):hover {
+  color: color-mix(in srgb, var(--sector) 75%, white);
+  /* Lighter wash: mix with white so the tint reads brighter, less muddy */
+  background-color: color-mix(in srgb, var(--sector) 14%, white);
+  text-shadow: 0 0 2px color-mix(in srgb, var(--sector) 20%, transparent);
+}
+.map-sector-pill[data-active="true"] {
+  color: color-mix(in srgb, var(--sector) 75%, white);
+  background-color: color-mix(in srgb, var(--sector) 18%, white);
+  text-shadow: 0 0 2px color-mix(in srgb, var(--sector) 20%, transparent);
+}
+.map-sector-pill[data-active="true"]:hover {
+  background-color: color-mix(in srgb, var(--sector) 22%, white);
 }
 
 /* Hide scrollbar but keep scroll functionality */
