@@ -34,7 +34,7 @@ export default function HomeHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex w-full min-h-[42vh] flex-col justify-end overflow-hidden bg-[#065f46] text-white sm:min-h-0 sm:aspect-[21/9]"
+      className="relative flex w-full min-h-[78vh] flex-col justify-end overflow-hidden bg-[#065f46] text-white sm:min-h-0 sm:aspect-[21/9]"
     >
       <div className="absolute inset-0">
         <video

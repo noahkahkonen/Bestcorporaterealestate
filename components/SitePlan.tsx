@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { SitePlanUnit } from "@/types/site-plan";
+import NnnChargesInfoTag from "@/components/NnnChargesInfoTag";
 
 interface SitePlanProps {
   units: SitePlanUnit[];
@@ -202,7 +203,10 @@ export default function SitePlan({ units, roadName = "Kings Highway Cut-Off" }: 
                 <dd className="text-[var(--charcoal)]">{selectedUnit.sizeSf.toLocaleString()} SF</dd>
               </div>
               <div>
-                <dt className="text-[var(--muted)]">Rent (PSF NNN)</dt>
+                <dt className="flex items-center gap-1 text-[var(--muted)]">
+                  Rent (PSF NNN)
+                  <NnnChargesInfoTag size="compact" />
+                </dt>
                 <dd className="text-[var(--charcoal)]">{selectedUnit.rentPsfNnn}</dd>
               </div>
               <div>

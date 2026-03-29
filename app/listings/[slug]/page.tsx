@@ -16,6 +16,7 @@ import YouTubeEmbed from "@/components/YouTubeEmbed";
 import RequestFinancialsButton from "@/components/RequestFinancialsButton";
 import ListingCard from "@/components/ListingCard";
 import ShareListingButton from "@/components/ShareListingButton";
+import NnnChargesInfoTag from "@/components/NnnChargesInfoTag";
 import { formatPhone } from "@/lib/format-phone";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
 import { formatListingDisplayPrice } from "@/lib/format-listing-display-price";
@@ -64,8 +65,8 @@ export default async function PropertyPage({ params }: Props) {
 
         {/* Property Info Header – Stitch style */}
         <div className="mb-10 sm:mb-12">
-          <div className="mb-3 flex items-start justify-between gap-2 sm:mb-4 sm:items-center sm:gap-4">
-            <nav className="flex min-w-0 flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-bold uppercase leading-snug tracking-wide text-[var(--navy)] sm:gap-x-1.5 sm:text-xs sm:tracking-widest">
+          <div className="mb-3 flex items-center justify-between gap-3 sm:mb-4 sm:gap-4">
+            <nav className="flex min-w-0 flex-1 flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-bold uppercase leading-snug tracking-wide text-[var(--navy)] sm:gap-x-1.5 sm:text-xs sm:tracking-widest">
               <Link href="/listings" className="shrink-0 hover:underline">
                 Listings
               </Link>
@@ -84,7 +85,7 @@ export default async function PropertyPage({ params }: Props) {
             </nav>
             <ShareListingButton
               slug={slug}
-              className="shrink-0 px-3 py-2 text-xs sm:px-6 sm:py-3 sm:text-base [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-5 sm:[&_svg]:w-5"
+              className="shrink-0 px-2.5 py-1.5 text-[10px] sm:px-6 sm:py-3 sm:text-base [&_svg]:h-3.5 [&_svg]:w-3.5 sm:[&_svg]:h-5 sm:[&_svg]:w-5"
             />
           </div>
           <div>
@@ -110,7 +111,7 @@ export default async function PropertyPage({ params }: Props) {
               </span>
             </a>
             {priceLine && (
-              <p className="mt-3 text-xl font-extrabold tracking-tight text-[var(--navy)] tabular-nums sm:mt-4 sm:text-2xl md:text-3xl">
+              <p className="mt-3 text-2xl font-extrabold tracking-tight text-[var(--navy)] tabular-nums sm:mt-4 sm:text-2xl md:text-3xl">
                 {priceLine}
               </p>
             )}
@@ -124,10 +125,11 @@ export default async function PropertyPage({ params }: Props) {
             {specs.length > 0 && (
               <div className="rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-4 shadow-sm sm:p-5 md:p-6">
                 <div className="grid grid-cols-3 gap-x-2 gap-y-3 sm:gap-x-4 sm:gap-y-4">
-                  {specs.map(({ label, value }) => (
+                  {specs.map(({ label, value, nnnChargesInfo }) => (
                     <div key={label} className="flex min-w-0 flex-col gap-1">
-                      <span className="text-[11px] font-bold uppercase leading-tight tracking-wide text-[var(--charcoal-light)] sm:text-xs">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold uppercase leading-tight tracking-wide text-[var(--charcoal-light)] sm:text-xs">
                         {label}
+                        {nnnChargesInfo ? <NnnChargesInfoTag /> : null}
                       </span>
                       <span
                         className={`text-base font-extrabold tabular-nums leading-tight sm:text-xl md:text-2xl ${label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"}`}

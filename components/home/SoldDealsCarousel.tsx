@@ -34,7 +34,7 @@ function SoldDealCard({ listing }: { listing: Listing }) {
       href={`/deals/${listing.slug}`}
       className="group flex flex-col overflow-hidden rounded-sm bg-[var(--surface)] shadow-xl transition-all duration-500 hover:-translate-y-2 xl:flex-row"
     >
-      <div className="relative h-72 w-full shrink-0 overflow-hidden xl:h-auto xl:w-[350px]">
+      <div className="relative aspect-[2.2/1] w-full shrink-0 overflow-hidden sm:aspect-auto sm:h-72 xl:h-auto xl:w-[350px]">
         {showRealImage ? (
           <Image
             src={listing.heroImage}
@@ -61,11 +61,13 @@ function SoldDealCard({ listing }: { listing: Listing }) {
           {listing.description?.slice(0, 180) || `${listing.address}, ${listing.city}`}
           {listing.description && listing.description.length > 180 ? "…" : ""}
         </p>
-        <div className="flex flex-wrap gap-8 text-xs font-bold uppercase tracking-tight text-[var(--charcoal-light)]">
+        <div className="flex flex-wrap gap-8 text-xs font-bold uppercase tracking-tight text-[var(--charcoal-light)] max-sm:gap-6">
           {priceDisplay && (
             <div className="flex flex-col gap-0.5">
               <span className="text-[var(--navy)]">Value</span>
-              <span>{priceDisplay}</span>
+              <span className="text-base font-extrabold normal-case tracking-normal text-[var(--charcoal)] tabular-nums sm:text-xs sm:font-bold sm:uppercase sm:tracking-tight sm:text-[var(--charcoal-light)]">
+                {priceDisplay}
+              </span>
             </div>
           )}
           <div className="flex flex-col gap-0.5">

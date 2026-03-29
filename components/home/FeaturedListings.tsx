@@ -43,6 +43,8 @@ export default function FeaturedListings({ listings }: FeaturedListingsProps) {
               priority={i < 3}
               showApplyButton={false}
               showSizeBadges={false}
+              showPrice
+              emphasizePriceOnMobile
             />
           ))}
         </div>

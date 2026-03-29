@@ -1,6 +1,11 @@
 import type { Listing } from "@/types/listing";
 
-export type ListingSpecTrioItem = { label: string; value: string };
+export type ListingSpecTrioItem = {
+  label: string;
+  value: string;
+  /** Renders legal disclaimer control next to label (NNN charges). */
+  nnnChargesInfo?: boolean;
+};
 
 /** Pull a human zoning value from free-form feature bullets (e.g. "Zoning: C-3"). */
 export function getZoningFromFeatures(features: string[]): string | null {
@@ -79,7 +84,7 @@ export function getListingSpecTrio(listing: Listing): ListingSpecTrioItem[] {
     specs = [
       { label: "Acres", value: formatAcres(listing) },
       { label: "Zoning", value: zoningValue(listing) },
-      { label: "Land subcategory", value: sub },
+      { label: "Type", value: sub },
     ];
     return specs;
   }
@@ -89,7 +94,7 @@ export function getListingSpecTrio(listing: Listing): ListingSpecTrioItem[] {
       [
         { label: "Sq Ft", value: formatSqFt(listing) },
         { label: "Occupancy", value: dash(listing.occupancy) },
-        { label: "NNN charges", value: formatNnn(listing) },
+        { label: "NNN charges", value: formatNnn(listing), nnnChargesInfo: true },
       ],
       listing,
     );

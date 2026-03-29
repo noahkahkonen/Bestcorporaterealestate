@@ -12,7 +12,19 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 type Props = {
-  searchParams: Promise<{ sector?: string; listingType?: string; city?: string }>;
+  searchParams: Promise<{
+    sector?: string;
+    listingType?: string;
+    city?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    minRent?: string;
+    maxRent?: string;
+    minSqFt?: string;
+    maxSqFt?: string;
+    minAcres?: string;
+    maxAcres?: string;
+  }>;
 };
 
 export default async function MapPage({ searchParams }: Props) {
@@ -35,6 +47,14 @@ export default async function MapPage({ searchParams }: Props) {
         initialSector={initialSector}
         initialListingType={initialListingType}
         initialCity={initialCity}
+        initialMinPrice={params.minPrice ?? ""}
+        initialMaxPrice={params.maxPrice ?? ""}
+        initialMinRent={params.minRent ?? ""}
+        initialMaxRent={params.maxRent ?? ""}
+        initialMinSqFt={params.minSqFt ?? ""}
+        initialMaxSqFt={params.maxSqFt ?? ""}
+        initialMinAcres={params.minAcres ?? ""}
+        initialMaxAcres={params.maxAcres ?? ""}
       />
     </Suspense>
   );

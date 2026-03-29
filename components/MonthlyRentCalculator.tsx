@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { NnnChargesLabelWithInfo } from "@/components/NnnChargesInfoTag";
 
 const inputClass =
   "w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]";
@@ -60,7 +61,9 @@ export default function MonthlyRentCalculator({
           </div>
         </div>
         <div>
-          <label className="block text-xs font-medium text-[var(--charcoal)]">NNN charges</label>
+          <label className="block text-xs font-medium text-[var(--charcoal)]">
+            <NnnChargesLabelWithInfo labelClassName="font-medium normal-case tracking-normal" />
+          </label>
           <div className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--charcoal)]">
             ${camPerSf.toFixed(2)}
           </div>

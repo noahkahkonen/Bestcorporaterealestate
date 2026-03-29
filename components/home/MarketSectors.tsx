@@ -31,6 +31,7 @@ const SECTOR_COPY: Record<
     tagline:
       "Strip centers, outparcels, and high-visibility locations built for traffic, tenancy, and durable cash flow.",
     imageSrc: "/images/market-sectors/retail.png",
+    overlayClassName: LIGHT_OVERLAY,
   },
   Industrial: {
     tagline: "Flex, warehouse, and logistics facilities aligned with how goods and services move today.",
@@ -182,7 +183,7 @@ export default function MarketSectors() {
                 ref={(el) => {
                   mobileCardRefs.current[index] = el;
                 }}
-                className="relative snap-center snap-always aspect-[3/4] w-[min(100%,calc(100vw-4.5rem))] max-w-[360px] shrink-0 overflow-hidden rounded-2xl border border-[var(--border)] shadow-lg sm:aspect-[10/13]"
+                className="relative snap-center snap-always aspect-[2.2/1] w-[min(100%,calc(100vw-4.5rem))] max-w-[400px] shrink-0 overflow-hidden rounded-2xl border border-[var(--border)] shadow-lg sm:aspect-[10/13]"
               >
                 <Link
                   href={listingsHref}

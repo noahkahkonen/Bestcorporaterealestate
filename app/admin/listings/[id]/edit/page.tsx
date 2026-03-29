@@ -10,6 +10,7 @@ import {
   formatNumberWithCommas,
   parseFormattedNumber,
 } from "@/lib/format-admin-inputs";
+import { NnnChargesLabelWithInfo } from "@/components/NnnChargesInfoTag";
 
 const LISTING_TYPES = ["For Sale", "For Lease", "Sale/Lease"];
 const OCCUPANCY_OPTIONS = ["Owner User", "Investment", "Owner User/Investment"];
@@ -327,7 +328,7 @@ export default function EditListingPage() {
             </div>
             {form.propertyType === "Land" && (
               <div>
-                <label className="block text-sm font-medium">Land Subcategory</label>
+                <label className="block text-sm font-medium">Type</label>
                 <select value={form.landSubcategory} onChange={(e) => setForm((f) => ({ ...f!, landSubcategory: e.target.value }))} className="mt-1 w-full rounded-lg border px-3 py-2">
                   <option value="">—</option>
                   {LAND_SUBCATEGORIES.map((c) => (
@@ -714,7 +715,9 @@ export default function EditListingPage() {
                 )}
                 {form.leaseType === "NNN" && (
                   <div>
-                    <label className="block text-sm font-medium">NNN charges</label>
+                    <label className="block text-sm font-medium">
+                      <NnnChargesLabelWithInfo />
+                    </label>
                     <input
                       type="number"
                       step="0.01"
@@ -835,7 +838,9 @@ export default function EditListingPage() {
                   )}
                   {form.leaseType === "NNN" && (
                     <div>
-                      <label className="block text-sm font-medium">NNN charges</label>
+                      <label className="block text-sm font-medium">
+                      <NnnChargesLabelWithInfo />
+                    </label>
                       <input
                         type="number"
                         step="0.01"

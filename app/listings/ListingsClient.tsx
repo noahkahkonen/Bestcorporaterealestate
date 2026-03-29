@@ -28,13 +28,43 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     const propertyType = searchParams.get("propertyType") ?? "";
     const listingType = searchParams.get("listingType") ?? "";
     const city = searchParams.get("city") ?? "";
+    const minPrice = searchParams.get("minPrice") ?? "";
+    const maxPrice = searchParams.get("maxPrice") ?? "";
+    const minRent = searchParams.get("minRent") ?? "";
+    const maxRent = searchParams.get("maxRent") ?? "";
+    const minSqFt = searchParams.get("minSqFt") ?? "";
+    const maxSqFt = searchParams.get("maxSqFt") ?? "";
+    const minAcres = searchParams.get("minAcres") ?? "";
+    const maxAcres = searchParams.get("maxAcres") ?? "";
     setFilters((prev) => {
-      if (prev.propertyType === propertyType && prev.listingType === listingType && prev.city === city) return prev;
+      if (
+        prev.propertyType === propertyType &&
+        prev.listingType === listingType &&
+        prev.city === city &&
+        prev.minPrice === minPrice &&
+        prev.maxPrice === maxPrice &&
+        prev.minRent === minRent &&
+        prev.maxRent === maxRent &&
+        prev.minSqFt === minSqFt &&
+        prev.maxSqFt === maxSqFt &&
+        prev.minAcres === minAcres &&
+        prev.maxAcres === maxAcres
+      ) {
+        return prev;
+      }
       return {
         ...prev,
         propertyType,
         listingType,
         city,
+        minPrice,
+        maxPrice,
+        minRent,
+        maxRent,
+        minSqFt,
+        maxSqFt,
+        minAcres,
+        maxAcres,
         ...(propertyType || listingType ? { features: [] } : {}),
       };
     });
@@ -51,6 +81,14 @@ export default function ListingsClient({ listings, initialFilters }: ListingsCli
     if (next.propertyType) params.set("propertyType", next.propertyType);
     if (next.listingType) params.set("listingType", next.listingType);
     if (next.city) params.set("city", next.city);
+    if (next.minPrice.trim()) params.set("minPrice", next.minPrice.trim());
+    if (next.maxPrice.trim()) params.set("maxPrice", next.maxPrice.trim());
+    if (next.minRent.trim()) params.set("minRent", next.minRent.trim());
+    if (next.maxRent.trim()) params.set("maxRent", next.maxRent.trim());
+    if (next.minSqFt.trim()) params.set("minSqFt", next.minSqFt.trim());
+    if (next.maxSqFt.trim()) params.set("maxSqFt", next.maxSqFt.trim());
+    if (next.minAcres.trim()) params.set("minAcres", next.minAcres.trim());
+    if (next.maxAcres.trim()) params.set("maxAcres", next.maxAcres.trim());
     const query = params.toString();
     router.replace(query ? `/listings?${query}` : "/listings", { scroll: false });
   }

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { SitePlanUnit } from "@/types/site-plan";
+import NnnChargesInfoTag from "@/components/NnnChargesInfoTag";
 
 // Actual image dimensions (verified via sips)
 const IMAGE_WIDTH = 1024;
@@ -223,7 +224,10 @@ export default function SitePlanPhoto({ units, imageSrc }: SitePlanPhotoProps) {
                   <dd className="text-[var(--charcoal)]">{selectedUnit.sizeSf.toLocaleString()} SF</dd>
                 </div>
                 <div>
-                  <dt className="text-[var(--muted)]">Rent PSF NNN</dt>
+                  <dt className="flex items-center gap-1 text-[var(--muted)]">
+                    Rent PSF NNN
+                    <NnnChargesInfoTag size="compact" />
+                  </dt>
                   <dd className="text-[var(--charcoal)]">{selectedUnit.rentPsfNnn}</dd>
                 </div>
                 <div>

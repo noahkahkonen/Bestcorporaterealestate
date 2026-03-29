@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { Listing } from "@/types/listing";
 import PropertyTypeTag from "@/components/PropertyTypeTag";
 import { getSoldLeasedLabel } from "@/lib/listings";
+import { formatListingDisplayPrice } from "@/lib/format-listing-display-price";
 
 interface ListingCardProps {
   listing: Listing;
@@ -13,6 +14,10 @@ interface ListingCardProps {
   showApplyButton?: boolean;
   /** When false, hides SF / acreage badges (e.g. homepage Featured Listings). */
   showSizeBadges?: boolean;
+  /** Show list / lease price in card body (e.g. homepage featured). */
+  showPrice?: boolean;
+  /** Larger price typography on small screens only. */
+  emphasizePriceOnMobile?: boolean;
 }
 
 export default function ListingCard({
@@ -20,8 +25,11 @@ export default function ListingCard({
   priority,
   showApplyButton = true,
   showSizeBadges = true,
+  showPrice = false,
+  emphasizePriceOnMobile = false,
 }: ListingCardProps) {
   const [imgError, setImgError] = useState(false);
+  const priceLine = formatListingDisplayPrice(listing);
   const stats = [
     listing.squareFeet && `${(listing.squareFeet / 1000).toFixed(1)}K SF`,
     listing.acreage && `${listing.acreage} Acreage`,
@@ -32,7 +40,7 @@ export default function ListingCard({
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/listings/${listing.slug}`} className="flex flex-1 flex-col">
-        <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-[var(--surface-muted)]">
+        <div className="relative aspect-[2.35/1] max-sm:min-h-0 shrink-0 overflow-hidden bg-[var(--surface-muted)] sm:aspect-[4/3]">
           {showRealImage ? (
             <Image
               src={listing.heroImage}
@@ -102,6 +110,17 @@ export default function ListingCard({
                 </span>
               ))}
             </div>
+          )}
+          {showPrice && priceLine && (
+            <p
+              className={`mt-3 font-extrabold tabular-nums text-[var(--navy)] ${
+                emphasizePriceOnMobile
+                  ? "text-2xl sm:text-lg lg:text-xl"
+                  : "text-lg sm:text-xl"
+              }`}
+            >
+              {priceLine}
+            </p>
           )}
           {listing.features.length > 0 && (
             <p className="mt-2 text-xs text-[var(--muted)]">
