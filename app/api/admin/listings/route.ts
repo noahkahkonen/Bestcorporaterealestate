@@ -15,11 +15,17 @@ export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const listings = await prisma.listing.findMany({
-    include: { brokers: { include: { agent: true } } },
-    orderBy: [{ status: "asc" }, { createdAt: "desc" }],
-  });
-  return NextResponse.json(listings);
+  try {
+    const listings = await prisma.listing.findMany({
+      include: { brokers: { include: { agent: true } } },
+      orderBy: [{ status: "asc" }, { createdAt: "desc" }],
+    });
+    return NextResponse.json(listings);
+  } catch (err) {
+    console.error("GET /api/admin/listings:", err);
+    const msg = err instanceof Error ? err.message : "Database error";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
