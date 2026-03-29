@@ -86,30 +86,30 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
   const displayListings = listings.slice(0, 4);
 
   return (
-    <section className="relative overflow-hidden border-y border-[var(--border)] bg-[var(--surface-muted)] py-20 sm:py-28">
+    <section className="relative overflow-hidden border-y border-[var(--border)] bg-[var(--surface-muted)] py-12 sm:py-16">
       <div className="absolute right-0 top-0 h-96 w-96 opacity-10" style={{ backgroundImage: "radial-gradient(circle, #004733 1px, transparent 1px)", backgroundSize: "30px 30px" }} />
-      <div className="relative z-10 mx-auto max-w-[1600px] px-6 sm:px-8">
-        <div className="mb-16 flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <div className="relative z-10 mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+        <div className="mb-8 flex flex-col justify-between gap-5 sm:mb-10 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
-            <span className="mb-4 block text-xs font-black uppercase tracking-[0.4em] text-[var(--navy)]">
+            <span className="mb-2 block text-xs font-black uppercase tracking-[0.4em] text-[var(--navy)]">
               Proven Results
             </span>
             <h2 className="font-display text-4xl font-bold tracking-tight text-[var(--charcoal)] sm:text-5xl md:text-6xl">
-              Recent Transactions
+              Recent Deals
             </h2>
-            <div className="mt-6 h-1 w-24 bg-[var(--accent)]" />
+            <div className="mt-4 h-1 w-24 bg-[var(--accent)]" />
           </div>
           <Link
             href="/deals"
             className="hidden shrink-0 border-b-2 border-[var(--accent)] pb-2 text-xs font-black uppercase tracking-widest text-[var(--navy)] transition-colors hover:text-[var(--navy)]/80 lg:block"
           >
-            View Portfolio
+            View Transactions
           </Link>
         </div>
 
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-8">
           {hasDeals ? (
-            <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {displayListings.map((listing) => (
                 <SoldDealCard key={listing.id} listing={listing} />
               ))}
@@ -122,8 +122,8 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
             </div>
           )}
 
-          <div className="mt-4 pt-16">
-            <h3 className="mb-6 text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
+          <div className="mt-2 pt-10">
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-[var(--muted)]">
               What Clients Say
             </h3>
             <div className="grid gap-8 md:grid-cols-2">
@@ -153,12 +153,12 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
         </div>
 
         {hasDeals && (
-          <div className="mt-12 text-center lg:hidden">
+          <div className="mt-8 text-center lg:hidden">
             <Link
               href="/deals"
               className="inline-block border-b-2 border-[var(--accent)] pb-2 text-sm font-black uppercase tracking-widest text-[var(--navy)] hover:underline"
             >
-              View Portfolio
+              View Transactions
             </Link>
           </div>
         )}

@@ -13,17 +13,17 @@ interface NewsPreviewProps {
 
 export default function NewsPreview({ articles }: NewsPreviewProps) {
   return (
-    <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface-muted)] py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+    <section className="relative z-10 border-b border-[var(--border)] bg-[var(--surface-muted)] py-12 sm:py-16">
+      <div className="mx-auto max-w-6xl px-4 sm:px-5 lg:px-6">
+        <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <span className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+            <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
               Latest from Best CRE
             </span>
             <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--charcoal)] sm:text-4xl">
               News & Insights
             </h2>
-            <p className="mt-4 max-w-xl text-[var(--charcoal-light)]">
+            <p className="mt-3 max-w-xl text-[var(--charcoal-light)]">
               Market updates and thought leadership from our team.
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function NewsPreview({ articles }: NewsPreviewProps) {
           </Link>
         </div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {articles.length === 0 ? (
             <div className="col-span-full rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-12 text-center">
               <p className="text-[var(--charcoal-light)]">No news stories yet. Check back soon.</p>

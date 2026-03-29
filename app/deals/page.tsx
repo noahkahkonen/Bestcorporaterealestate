@@ -15,20 +15,20 @@ export default async function DealsPage() {
 
   return (
     <div className="min-h-screen bg-[var(--surface-muted)]">
-      <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-20 sm:py-28">
-        <div className="mx-auto max-w-[1600px] px-6 sm:px-8">
-          <div className="mb-16">
-            <span className="mb-4 block text-xs font-black uppercase tracking-[0.4em] text-[var(--navy)]">
+      <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-12 sm:py-16">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 sm:mb-10">
+            <span className="mb-2 block text-xs font-black uppercase tracking-[0.4em] text-[var(--navy)]">
               Proven Results
             </span>
             <h1 className="font-display text-4xl font-bold tracking-tight text-[var(--charcoal)] sm:text-5xl md:text-6xl">
-              Recent Transactions
+              Recent Deals
             </h1>
-            <div className="mt-6 h-1 w-24 bg-[var(--accent)]" />
+            <div className="mt-4 h-1 w-24 bg-[var(--accent)]" />
           </div>
 
           {listings.length > 0 ? (
-            <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {listings.map((listing) => {
                 const isLeased = getSoldLeasedLabel(listing) === "Leased";
                 const priceDisplay =

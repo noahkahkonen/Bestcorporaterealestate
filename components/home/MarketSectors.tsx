@@ -1,9 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { PROPERTY_TYPES } from "@/types/listing";
+
+/** Max content width for sector heroes (px). Sides stay black on ultra-wide; use source images ≥ this width to avoid upscaling. */
+const SECTOR_HERO_MAX_WIDTH_PX = 2100;
 
 type SectorName = (typeof PROPERTY_TYPES)[number];
 
@@ -98,14 +100,22 @@ export default function MarketSectors() {
               className={`absolute inset-0 transition-opacity duration-500 ease-out ${isActive ? "z-[1] opacity-100" : "z-0 opacity-0 pointer-events-none"}`}
             >
               {imageSrc ? (
-                <Image
-                  src={imageSrc}
-                  alt=""
-                  fill
-                  className="object-cover object-center"
-                  sizes="100vw"
-                  priority={name === "Retail"}
-                />
+                <div className="pointer-events-none absolute inset-0 bg-black" aria-hidden>
+                  <div
+                    className="mx-auto h-full min-h-[min(88vh,900px)] w-full"
+                    style={{ maxWidth: `${SECTOR_HERO_MAX_WIDTH_PX}px` }}
+                  >
+                    {/* Native img: original file from /public only—no Next optimizer, no build-time formats. */}
+                    <img
+                      src={imageSrc}
+                      alt=""
+                      loading={name === "Retail" ? "eager" : "lazy"}
+                      {...(name === "Retail" ? { fetchPriority: "high" as const } : {})}
+                      decoding="async"
+                      className="block h-full min-h-[min(70vh,560px)] w-full object-cover object-center"
+                    />
+                  </div>
+                </div>
               ) : (
                 <div
                   className="absolute inset-0 bg-gradient-to-br from-[#1a2332] via-[#243047] to-[#121820]"
