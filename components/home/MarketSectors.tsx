@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { PROPERTY_TYPES } from "@/types/listing";
 
 /** Max content width for sector heroes (px). Sides stay black on ultra-wide; use source images ≥ this width to avoid upscaling. */
 const SECTOR_HERO_MAX_WIDTH_PX = 2100;
+
+const AUTO_ADVANCE_INTERVAL_MS = 8500;
+/** After a tab click/focus, wait this long with no new tab interaction before auto-advance resumes. */
+const TAB_INTERACTION_COOLDOWN_MS = 12000;
 
 type SectorName = (typeof PROPERTY_TYPES)[number];
 
@@ -74,6 +78,25 @@ const ADVISOR_CHAT_CTA: Record<SectorName, string> = {
 
 export default function MarketSectors() {
   const [active, setActive] = useState<SectorName>("Retail");
+  const hoveringAdvisorRef = useRef(false);
+  const tabCooldownUntilRef = useRef(0);
+
+  const bumpTabCooldown = useCallback(() => {
+    tabCooldownUntilRef.current = Date.now() + TAB_INTERACTION_COOLDOWN_MS;
+  }, []);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (hoveringAdvisorRef.current) return;
+      if (Date.now() < tabCooldownUntilRef.current) return;
+      setActive((current) => {
+        const i = PROPERTY_TYPES.indexOf(current);
+        const next = (i + 1) % PROPERTY_TYPES.length;
+        return PROPERTY_TYPES[next]!;
+      });
+    }, AUTO_ADVANCE_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, []);
 
   return (
     <section aria-labelledby="market-sectors-heading" className="relative z-10 border-b border-[var(--border)] bg-black">
@@ -148,6 +171,18 @@ export default function MarketSectors() {
                   </Link>
                   <Link
                     href={contactAdvisorHref}
+                    onMouseEnter={() => {
+                      hoveringAdvisorRef.current = true;
+                    }}
+                    onMouseLeave={() => {
+                      hoveringAdvisorRef.current = false;
+                    }}
+                    onFocus={() => {
+                      hoveringAdvisorRef.current = true;
+                    }}
+                    onBlur={() => {
+                      hoveringAdvisorRef.current = false;
+                    }}
                     className="inline-flex w-fit items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
                   >
                     {advisorCta}
@@ -176,7 +211,21 @@ export default function MarketSectors() {
                     aria-selected={selected}
                     aria-controls={`sector-panel-${name}`}
                     tabIndex={selected ? 0 : -1}
-                    onClick={() => setActive(name)}
+                    onClick={() => {
+                      setActive(name);
+                      bumpTabCooldown();
+                    }}
+                    onPointerDown={() => {
+                      bumpTabCooldown();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        bumpTabCooldown();
+                      }
+                    }}
+                    onFocus={() => {
+                      bumpTabCooldown();
+                    }}
                     className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors sm:text-[13px] ${
                       selected
                         ? "bg-white text-[var(--charcoal)]"

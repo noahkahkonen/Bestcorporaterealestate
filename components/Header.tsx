@@ -3,21 +3,44 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { PROPERTY_TYPES, LISTING_TYPES } from "@/types/listing";
-import { propertyTypeToMapSector } from "@/lib/property-type-to-map-sector";
+import { useEffect, useRef, useState } from "react";
 
-/** Nav dropdown omits Sale/Lease; map/admin still support the full type. */
-const LISTING_TYPES_NAV = LISTING_TYPES.filter((t) => t !== "Sale/Lease");
+const SERVICES_MENU_CLOSE_DELAY_MS = 280;
+import HeaderServicesFlyout from "@/components/services/HeaderServicesFlyout";
+import { SERVICE_GROUPS } from "@/lib/service-groups";
+import { getServiceBySlug } from "@/lib/services";
 
 export default function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [mobileListingsOpen, setMobileListingsOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const servicesMenuCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearServicesMenuCloseTimer = () => {
+    if (servicesMenuCloseTimerRef.current) {
+      clearTimeout(servicesMenuCloseTimerRef.current);
+      servicesMenuCloseTimerRef.current = null;
+    }
+  };
+
+  const openServicesMenu = () => {
+    clearServicesMenuCloseTimer();
+    setOpenDropdown("services");
+  };
+
+  const scheduleServicesMenuClose = () => {
+    clearServicesMenuCloseTimer();
+    servicesMenuCloseTimerRef.current = setTimeout(() => {
+      setOpenDropdown(null);
+      servicesMenuCloseTimerRef.current = null;
+    }, SERVICES_MENU_CLOSE_DELAY_MS);
+  };
+
+  useEffect(() => () => clearServicesMenuCloseTimer(), []);
 
   const isListings = pathname === "/listings" || pathname === "/map";
-  const isServices = pathname === "/services";
+  const isServices = pathname === "/services" || pathname.startsWith("/services/");
   const isTeam = pathname === "/team";
   const isNews = pathname === "/news";
 
@@ -47,94 +70,28 @@ export default function Header() {
             Home
           </Link>
 
-          {/* Listings dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenDropdown("listings")}
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
+          <Link href="/map" className={`px-2 py-2 ${linkClass(isListings)}`}>
+            Listings
+          </Link>
+
+          <div className="relative" onMouseEnter={openServicesMenu} onMouseLeave={scheduleServicesMenuClose}>
             <Link
-              href="/map"
-              className={`flex items-center gap-0.5 px-2 py-2 ${linkClass(isListings)}`}
-              aria-expanded={openDropdown === "listings"}
+              href="/services"
+              className={`flex items-center gap-0.5 px-2 py-2 ${linkClass(isServices)}`}
+              aria-expanded={openDropdown === "services"}
               aria-haspopup="true"
             >
-              Listings
+              Services
               <svg className="ml-0.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </Link>
-            {openDropdown === "listings" && (
-              <div className="absolute left-0 top-full pt-3">
-                <div className="min-w-[420px] overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-2xl shadow-[var(--navy)]/10">
-                  {/* Header */}
-                  <div className="border-b border-[var(--border)] bg-[var(--surface-muted)]/60 px-4 py-2.5">
-                    <Link
-                      href="/map"
-                      className="group flex w-full items-center justify-end gap-1.5 text-xs font-bold uppercase tracking-widest text-[var(--accent)] transition-colors hover:text-[var(--navy)]"
-                    >
-                      View all
-                      <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                  </div>
-
-                  {/* Columns */}
-                  <div className="grid grid-cols-2 gap-0">
-                    {/* Listing type */}
-                    <div className="border-r border-[var(--border)] p-4">
-                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
-                        Listing Type
-                      </p>
-                      <ul className="space-y-0.5">
-                        {LISTING_TYPES_NAV.map((type) => (
-                          <li key={type}>
-                            <Link
-                              href={`/map?listingType=${encodeURIComponent(type)}`}
-                              className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
-                            >
-                              {type}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Asset type */}
-                    <div className="p-4">
-                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--charcoal-light)]">
-                        Asset Type
-                      </p>
-                      <ul className="space-y-0.5">
-                        {PROPERTY_TYPES.map((type) => {
-                          const sector = propertyTypeToMapSector(type);
-                          const href = sector ? `/map?sector=${sector}` : "/map";
-                          return (
-                            <li key={type}>
-                              <Link
-                                href={href}
-                                className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-[var(--navy)]/5 hover:text-[var(--navy)]"
-                              >
-                                {type}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-
-                  {/* Footer accent */}
-                  <div className="h-1 w-full bg-gradient-to-r from-[var(--navy)] via-[var(--accent)] to-[var(--navy)]" />
-                </div>
+            {openDropdown === "services" && (
+              <div className="fixed inset-x-0 top-[calc(4.25rem+1px)] z-[60] hidden pt-5 -mt-5 lg:block">
+                <HeaderServicesFlyout />
               </div>
             )}
           </div>
-
-          <Link href="/services" className={`px-2 py-2 ${linkClass(isServices)}`}>
-            Services
-          </Link>
 
           <Link href="/team" className={`px-2 py-2 ${linkClass(isTeam)}`}>
             Team
@@ -183,17 +140,24 @@ export default function Header() {
               Home
             </Link>
 
-            {/* Listings - expandable */}
+            <Link
+              href="/map"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
+              onClick={() => setMobileOpen(false)}
+            >
+              Listings
+            </Link>
+
             <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white shadow-lg">
               <button
                 type="button"
                 className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-bold text-[var(--navy)]"
-                onClick={() => setMobileListingsOpen((o) => !o)}
-                aria-expanded={mobileListingsOpen}
+                onClick={() => setMobileServicesOpen((o) => !o)}
+                aria-expanded={mobileServicesOpen}
               >
-                <span className="uppercase tracking-wider">Browse Listings</span>
+                <span className="uppercase tracking-wider">Services</span>
                 <svg
-                  className={`h-4 w-4 text-[var(--accent)] transition-transform ${mobileListingsOpen ? "rotate-180" : ""}`}
+                  className={`h-4 w-4 text-[var(--accent)] transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -201,67 +165,59 @@ export default function Header() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {mobileListingsOpen && (
-                <div className="border-t border-[var(--border)] bg-[var(--surface-muted)]/40 p-4 space-y-4">
+              {mobileServicesOpen && (
+                <div className="border-t border-[var(--border)] bg-[var(--surface-muted)]/40 p-4 space-y-5">
                   <Link
-                    href="/map"
+                    href="/services"
                     className="flex items-center gap-3 rounded-lg bg-[var(--navy)] px-4 py-3 text-sm font-semibold text-white"
-                    onClick={() => setMobileOpen(false)}
+                    onClick={() => {
+                      setMobileOpen(false);
+                      setMobileServicesOpen(false);
+                    }}
                   >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
-                    View all listings
+                    Services overview
                   </Link>
-                  <div>
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">
-                      Listing Type
-                    </p>
-                    <div className="space-y-0.5">
-                      {LISTING_TYPES_NAV.map((type) => (
-                        <Link
-                          key={type}
-                          href={`/map?listingType=${encodeURIComponent(type)}`}
-                          className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          {type}
-                        </Link>
-                      ))}
+                  {SERVICE_GROUPS.map((g) => (
+                    <div key={g.id}>
+                      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">
+                        {g.label}
+                      </p>
+                      <div className="space-y-2">
+                        {g.items.map((item) => {
+                          const svc = getServiceBySlug(item.slug);
+                          if (!svc) return null;
+                          return (
+                            <Link
+                              key={item.slug}
+                              href={`/services/${item.slug}`}
+                              className="flex gap-3 rounded-lg border border-[var(--border)] bg-white p-3 transition-colors hover:bg-[var(--surface-muted)]"
+                              onClick={() => {
+                                setMobileOpen(false);
+                                setMobileServicesOpen(false);
+                              }}
+                            >
+                              <div className="relative h-14 w-16 shrink-0 overflow-hidden rounded-md">
+                                <Image
+                                  src={item.image}
+                                  alt=""
+                                  fill
+                                  className="object-cover"
+                                  sizes="64px"
+                                />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-semibold text-[var(--charcoal)]">{svc.title}</p>
+                                <p className="mt-0.5 text-xs text-[var(--charcoal-light)] line-clamp-2">{item.cardSummary}</p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--charcoal-light)]">
-                      Asset Type
-                    </p>
-                    <div className="space-y-0.5">
-                      {PROPERTY_TYPES.map((type) => {
-                        const sector = propertyTypeToMapSector(type);
-                        const href = sector ? `/map?sector=${sector}` : "/map";
-                        return (
-                          <Link
-                            key={type}
-                            href={href}
-                            className="block rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] transition-colors hover:bg-white hover:text-[var(--navy)]"
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {type}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               )}
             </div>
-
-            <Link
-              href="/services"
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
-              onClick={() => setMobileOpen(false)}
-            >
-              Services
-            </Link>
             <Link
               href="/team"
               className="rounded-lg px-3 py-2.5 text-sm font-medium text-[var(--charcoal)] hover:bg-[var(--surface-hover)]"
