@@ -79,9 +79,15 @@ export default function HeaderServicesFlyout() {
                         <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-[var(--charcoal-light)] sm:text-[13px]">
                           {item.cardSummary}
                         </p>
-                        <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent)] transition-all group-hover:gap-1.5">
+                        <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent)]">
                           Learn more
-                          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg
+                            className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            aria-hidden
+                          >
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                           </svg>
                         </span>

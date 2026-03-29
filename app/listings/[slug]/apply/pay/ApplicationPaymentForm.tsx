@@ -113,8 +113,11 @@ export default function ApplicationPaymentForm({ applicationId, amount, listingS
         <p className="text-red-800 dark:text-red-200">{err}</p>
         <Link
           href={`/listings/${listingSlug}/apply`}
-          className="mt-4 inline-block text-sm font-medium text-[var(--navy)] hover:underline"
+          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--navy)]"
         >
+          <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1" aria-hidden>
+            ←
+          </span>
           Back to application
         </Link>
       </div>

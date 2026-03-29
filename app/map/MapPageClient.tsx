@@ -11,6 +11,12 @@ import { getListingEstimatedMonthlyRent } from "@/lib/listing-estimated-monthly-
 import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 import type { Listing } from "@/types/listing";
 import NnnChargesInfoTag from "@/components/NnnChargesInfoTag";
+import {
+  currencyInputToParam,
+  displayUsdFromParam,
+  formatUsdFilterDisplay,
+  parseCurrencyInput,
+} from "@/lib/filter-currency";
 
 const LISTING_KIND_FILTERS = [
   { value: "", label: "All" },
@@ -115,10 +121,10 @@ export default function MapPageClient({
   const filtersPopoverRef = useRef<HTMLDivElement>(null);
   const sidebarScrollRef = useRef<HTMLDivElement>(null);
 
-  const [priceMinInput, setPriceMinInput] = useState(initialMinPrice);
-  const [priceMaxInput, setPriceMaxInput] = useState(initialMaxPrice);
-  const [rentMinInput, setRentMinInput] = useState(initialMinRent);
-  const [rentMaxInput, setRentMaxInput] = useState(initialMaxRent);
+  const [priceMinInput, setPriceMinInput] = useState(() => displayUsdFromParam(initialMinPrice));
+  const [priceMaxInput, setPriceMaxInput] = useState(() => displayUsdFromParam(initialMaxPrice));
+  const [rentMinInput, setRentMinInput] = useState(() => displayUsdFromParam(initialMinRent));
+  const [rentMaxInput, setRentMaxInput] = useState(() => displayUsdFromParam(initialMaxRent));
   const [sqFtMinInput, setSqFtMinInput] = useState(initialMinSqFt);
   const [sqFtMaxInput, setSqFtMaxInput] = useState(initialMaxSqFt);
   const [acresMinInput, setAcresMinInput] = useState(initialMinAcres);
@@ -129,10 +135,10 @@ export default function MapPageClient({
     setCurrentSector(sector);
     setListingTypeFilter(searchParams.get("listingType") ?? "");
     setCityFilter(searchParams.get("city") ?? "");
-    setPriceMinInput(searchParams.get("minPrice") ?? "");
-    setPriceMaxInput(searchParams.get("maxPrice") ?? "");
-    setRentMinInput(searchParams.get("minRent") ?? "");
-    setRentMaxInput(searchParams.get("maxRent") ?? "");
+    setPriceMinInput(displayUsdFromParam(searchParams.get("minPrice")));
+    setPriceMaxInput(displayUsdFromParam(searchParams.get("maxPrice")));
+    setRentMinInput(displayUsdFromParam(searchParams.get("minRent")));
+    setRentMaxInput(displayUsdFromParam(searchParams.get("maxRent")));
     setSqFtMinInput(searchParams.get("minSqFt") ?? "");
     setSqFtMaxInput(searchParams.get("maxSqFt") ?? "");
     setAcresMinInput(searchParams.get("minAcres") ?? "");
@@ -141,23 +147,62 @@ export default function MapPageClient({
 
   const cityOptions = useMemo(() => citiesByFrequency(listings), [listings]);
 
-  const commitNumericFiltersToUrl = () => {
+  type NumericUrlPatch = Partial<{
+    minPrice: string;
+    maxPrice: string;
+    minRent: string;
+    maxRent: string;
+    minSqFt: string;
+    maxSqFt: string;
+    minAcres: string;
+    maxAcres: string;
+  }>;
+
+  const commitNumericFiltersToUrl = (patch?: NumericUrlPatch) => {
     const p = new URLSearchParams(searchParams.toString());
     const setOrDel = (key: string, raw: string) => {
       const t = raw.trim();
       if (!t) p.delete(key);
       else p.set(key, t);
     };
-    setOrDel("minPrice", priceMinInput);
-    setOrDel("maxPrice", priceMaxInput);
-    setOrDel("minRent", rentMinInput);
-    setOrDel("maxRent", rentMaxInput);
-    setOrDel("minSqFt", sqFtMinInput);
-    setOrDel("maxSqFt", sqFtMaxInput);
-    setOrDel("minAcres", acresMinInput);
-    setOrDel("maxAcres", acresMaxInput);
+    const minP = patch?.minPrice ?? priceMinInput;
+    const maxP = patch?.maxPrice ?? priceMaxInput;
+    const minR = patch?.minRent ?? rentMinInput;
+    const maxR = patch?.maxRent ?? rentMaxInput;
+    setOrDel("minPrice", currencyInputToParam(minP));
+    setOrDel("maxPrice", currencyInputToParam(maxP));
+    setOrDel("minRent", currencyInputToParam(minR));
+    setOrDel("maxRent", currencyInputToParam(maxR));
+    setOrDel("minSqFt", patch?.minSqFt ?? sqFtMinInput);
+    setOrDel("maxSqFt", patch?.maxSqFt ?? sqFtMaxInput);
+    setOrDel("minAcres", patch?.minAcres ?? acresMinInput);
+    setOrDel("maxAcres", patch?.maxAcres ?? acresMaxInput);
     const path = p.toString() ? `/map?${p.toString()}` : "/map";
     router.replace(path, { scroll: false });
+  };
+
+  const focusCurrencyField = (value: string, set: (v: string) => void) => {
+    const n = parseCurrencyInput(value);
+    set(n != null ? String(n) : "");
+  };
+
+  const blurCurrencyField = (
+    value: string,
+    set: (v: string) => void,
+    key: "minPrice" | "maxPrice" | "minRent" | "maxRent"
+  ) => {
+    const n = parseCurrencyInput(value);
+    const next = n != null ? formatUsdFilterDisplay(n) : "";
+    set(next);
+    commitNumericFiltersToUrl(
+      key === "minPrice"
+        ? { minPrice: next }
+        : key === "maxPrice"
+          ? { maxPrice: next }
+          : key === "minRent"
+            ? { minRent: next }
+            : { maxRent: next }
+    );
   };
 
   const filtered = useMemo(() => {
@@ -296,13 +341,21 @@ export default function MapPageClient({
     "[-moz-appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
   const numInputClass =
     `min-h-[34px] rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs tabular-nums text-[var(--charcoal)] placeholder:text-[var(--charcoal-light)]/45 focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)] ${noSpin}`;
-  const numInputInline = `${numInputClass} w-[4.5rem] shrink-0 sm:w-[5.25rem]`;
-  const numInputSize = `${numInputClass} min-w-[4.5rem] flex-1 sm:max-w-[7rem]`;
+  const currencyInputClass =
+    `${numInputClass} min-w-0 w-full tabular-nums tracking-tight sm:min-w-[6.5rem]`;
   const filterMetaClass =
     "text-[9px] font-bold uppercase tracking-[0.15em] text-[var(--charcoal-light)]";
-  const sizeRowLabelClass = "w-[3.25rem] shrink-0 text-[10px] font-medium text-[var(--charcoal-light)]";
+  const sizeRowLabelClass =
+    "text-[10px] font-semibold text-[var(--charcoal)] max-sm:col-span-2 sm:w-auto sm:shrink-0";
+  const filterRowGrid = "grid grid-cols-2 gap-2 sm:grid-cols-[5rem_1fr_1fr] sm:items-center";
   const selectClass =
-    "w-full min-h-[34px] rounded-lg border border-[var(--border)] bg-[var(--surface)] py-1.5 pl-2 pr-8 text-xs text-[var(--charcoal)] focus:border-[var(--navy)] focus:outline-none focus:ring-1 focus:ring-[var(--navy)]";
+    "w-full min-h-[40px] appearance-none rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/55 py-2.5 pl-3.5 pr-10 text-[13px] font-medium text-[var(--charcoal)] shadow-[inset_0_1px_2px_rgba(0,42,74,0.06)] transition-[border-color,box-shadow] focus:border-[var(--navy)] focus:outline-none focus:ring-2 focus:ring-[var(--navy)]/20 [&>option]:bg-[var(--surface)] [&>option]:py-2 [&>option]:text-[var(--charcoal)] [&>option]:font-medium";
+  const selectChevronStyle = {
+    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 24 24' stroke='%23004733' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+    backgroundPosition: "right 0.65rem center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "1rem",
+  } as const;
 
   return (
     <div className="relative flex h-[calc(100vh-9rem)] w-full max-h-[820px] flex-col overflow-hidden sm:h-[calc(100vh-8rem)] md:max-h-[760px]">
@@ -397,151 +450,155 @@ export default function MapPageClient({
                     id="map-detail-filters-panel"
                     role="region"
                     aria-label="Price, rent, size, and city filters"
-                    className="absolute left-0 right-0 top-full z-30 mt-2 max-h-[min(70vh,32rem)] space-y-3 overflow-y-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.2)] [-webkit-overflow-scrolling:touch] sm:left-auto sm:right-0 sm:w-[min(100%,20rem)]"
+                    className="absolute left-0 right-0 top-full z-30 mt-2 max-h-[min(70vh,32rem)] space-y-4 overflow-y-auto overscroll-contain rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3.5 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.2)] [-webkit-overflow-scrolling:touch] sm:left-auto sm:right-0 sm:w-[min(100%,22rem)]"
                   >
-                  <div
-                    className="flex flex-wrap items-center gap-x-1.5 gap-y-1"
-                    title="List price ($)"
-                  >
-                    <span className={`${filterMetaClass} whitespace-nowrap`}>Price</span>
-                    <input
-                      id="map-min-price"
-                      type="number"
-                      min={0}
-                      inputMode="decimal"
-                      placeholder="Min"
-                      value={priceMinInput}
-                      onChange={(e) => setPriceMinInput(e.target.value)}
-                      onBlur={commitNumericFiltersToUrl}
-                      className={numInputInline}
-                      aria-label="Minimum list price"
-                    />
-                    <input
-                      id="map-max-price"
-                      type="number"
-                      min={0}
-                      inputMode="decimal"
-                      placeholder="Max"
-                      value={priceMaxInput}
-                      onChange={(e) => setPriceMaxInput(e.target.value)}
-                      onBlur={commitNumericFiltersToUrl}
-                      className={numInputInline}
-                      aria-label="Maximum list price"
-                    />
-                  </div>
+                    <div className={filterRowGrid} title="List price (USD)">
+                      <span className={`${filterMetaClass} max-sm:col-span-2 sm:pt-0`}>Price</span>
+                      <input
+                        id="map-min-price"
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        placeholder="Min"
+                        value={priceMinInput}
+                        onChange={(e) => setPriceMinInput(e.target.value)}
+                        onFocus={() => focusCurrencyField(priceMinInput, setPriceMinInput)}
+                        onBlur={() => blurCurrencyField(priceMinInput, setPriceMinInput, "minPrice")}
+                        className={currencyInputClass}
+                        aria-label="Minimum list price"
+                      />
+                      <input
+                        id="map-max-price"
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        placeholder="Max"
+                        value={priceMaxInput}
+                        onChange={(e) => setPriceMaxInput(e.target.value)}
+                        onFocus={() => focusCurrencyField(priceMaxInput, setPriceMaxInput)}
+                        onBlur={() => blurCurrencyField(priceMaxInput, setPriceMaxInput, "maxPrice")}
+                        className={currencyInputClass}
+                        aria-label="Maximum list price"
+                      />
+                    </div>
 
-                  <div
-                    className="flex flex-wrap items-center gap-x-1.5 gap-y-1"
-                    title="Estimated monthly rent: (lease $/SF/yr + NNN when applicable) × SF ÷ 12"
-                  >
-                    <span className={`${filterMetaClass} whitespace-nowrap`}>Rent/mo</span>
-                    <input
-                      id="map-min-rent"
-                      type="number"
-                      min={0}
-                      inputMode="decimal"
-                      placeholder="Min"
-                      value={rentMinInput}
-                      onChange={(e) => setRentMinInput(e.target.value)}
-                      onBlur={commitNumericFiltersToUrl}
-                      className={numInputInline}
-                      aria-label="Minimum estimated monthly rent"
-                    />
-                    <input
-                      id="map-max-rent"
-                      type="number"
-                      min={0}
-                      inputMode="decimal"
-                      placeholder="Max"
-                      value={rentMaxInput}
-                      onChange={(e) => setRentMaxInput(e.target.value)}
-                      onBlur={commitNumericFiltersToUrl}
-                      className={numInputInline}
-                      aria-label="Maximum estimated monthly rent"
-                    />
-                  </div>
+                    <div
+                      className={filterRowGrid}
+                      title="Estimated monthly rent: (lease $/SF/yr + NNN when applicable) × SF ÷ 12"
+                    >
+                      <span className={`${filterMetaClass} max-sm:col-span-2 sm:pt-0`}>Rent/mo</span>
+                      <input
+                        id="map-min-rent"
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        placeholder="Min"
+                        value={rentMinInput}
+                        onChange={(e) => setRentMinInput(e.target.value)}
+                        onFocus={() => focusCurrencyField(rentMinInput, setRentMinInput)}
+                        onBlur={() => blurCurrencyField(rentMinInput, setRentMinInput, "minRent")}
+                        className={currencyInputClass}
+                        aria-label="Minimum estimated monthly rent"
+                      />
+                      <input
+                        id="map-max-rent"
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        placeholder="Max"
+                        value={rentMaxInput}
+                        onChange={(e) => setRentMaxInput(e.target.value)}
+                        onFocus={() => focusCurrencyField(rentMaxInput, setRentMaxInput)}
+                        onBlur={() => blurCurrencyField(rentMaxInput, setRentMaxInput, "maxRent")}
+                        className={currencyInputClass}
+                        aria-label="Maximum estimated monthly rent"
+                      />
+                    </div>
 
-                  <div className="space-y-2">
-                    <p className={`${filterMetaClass} tracking-[0.18em]`}>Size</p>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:max-w-none">
-                        <span className={sizeRowLabelClass}>Sq ft</span>
-                        <input
-                          id="map-min-sqft"
-                          type="number"
-                          min={0}
-                          inputMode="numeric"
-                          placeholder="Min"
-                          value={sqFtMinInput}
-                          onChange={(e) => setSqFtMinInput(e.target.value)}
-                          onBlur={commitNumericFiltersToUrl}
-                          className={numInputSize}
-                          aria-label="Minimum square feet"
-                        />
-                        <input
-                          id="map-max-sqft"
-                          type="number"
-                          min={0}
-                          inputMode="numeric"
-                          placeholder="Max"
-                          value={sqFtMaxInput}
-                          onChange={(e) => setSqFtMaxInput(e.target.value)}
-                          onBlur={commitNumericFiltersToUrl}
-                          className={numInputSize}
-                          aria-label="Maximum square feet"
-                        />
-                      </div>
-                      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:max-w-none">
-                        <span className={sizeRowLabelClass}>Acres</span>
-                        <input
-                          id="map-min-acres"
-                          type="number"
-                          min={0}
-                          step="any"
-                          inputMode="decimal"
-                          placeholder="Min"
-                          value={acresMinInput}
-                          onChange={(e) => setAcresMinInput(e.target.value)}
-                          onBlur={commitNumericFiltersToUrl}
-                          className={numInputSize}
-                          aria-label="Minimum acres"
-                        />
-                        <input
-                          id="map-max-acres"
-                          type="number"
-                          min={0}
-                          step="any"
-                          inputMode="decimal"
-                          placeholder="Max"
-                          value={acresMaxInput}
-                          onChange={(e) => setAcresMaxInput(e.target.value)}
-                          onBlur={commitNumericFiltersToUrl}
-                          className={numInputSize}
-                          aria-label="Maximum acres"
-                        />
+                    <div className="space-y-2">
+                      <p className={`${filterMetaClass} tracking-[0.18em]`}>Size</p>
+                      <div className="space-y-2.5">
+                        <div className={filterRowGrid}>
+                          <span className={sizeRowLabelClass}>Sq ft</span>
+                          <input
+                            id="map-min-sqft"
+                            type="number"
+                            min={0}
+                            inputMode="numeric"
+                            placeholder="Min"
+                            value={sqFtMinInput}
+                            onChange={(e) => setSqFtMinInput(e.target.value)}
+                            onBlur={() => commitNumericFiltersToUrl()}
+                            className={currencyInputClass}
+                            aria-label="Minimum square feet"
+                          />
+                          <input
+                            id="map-max-sqft"
+                            type="number"
+                            min={0}
+                            inputMode="numeric"
+                            placeholder="Max"
+                            value={sqFtMaxInput}
+                            onChange={(e) => setSqFtMaxInput(e.target.value)}
+                            onBlur={() => commitNumericFiltersToUrl()}
+                            className={currencyInputClass}
+                            aria-label="Maximum square feet"
+                          />
+                        </div>
+                        <div className={filterRowGrid}>
+                          <span className={sizeRowLabelClass}>Acres</span>
+                          <input
+                            id="map-min-acres"
+                            type="number"
+                            min={0}
+                            step="any"
+                            inputMode="decimal"
+                            placeholder="Min"
+                            value={acresMinInput}
+                            onChange={(e) => setAcresMinInput(e.target.value)}
+                            onBlur={() => commitNumericFiltersToUrl()}
+                            className={currencyInputClass}
+                            aria-label="Minimum acres"
+                          />
+                          <input
+                            id="map-max-acres"
+                            type="number"
+                            min={0}
+                            step="any"
+                            inputMode="decimal"
+                            placeholder="Max"
+                            value={acresMaxInput}
+                            onChange={(e) => setAcresMaxInput(e.target.value)}
+                            onBlur={() => commitNumericFiltersToUrl()}
+                            className={currencyInputClass}
+                            aria-label="Maximum acres"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="border-t border-[var(--border)] pt-3">
-                    <label htmlFor="map-filter-city" className={`mb-1 block ${filterMetaClass} tracking-[0.18em]`}>
-                      City
-                    </label>
-                    <select
-                      id="map-filter-city"
-                      value={cityFilter}
-                      onChange={(e) => handleCityChange(e.target.value)}
-                      className={selectClass}
-                    >
-                      <option value="">All cities</option>
-                      {cityOptions.map(({ city, count }) => (
-                        <option key={city} value={city}>
-                          {city} ({count})
+                    <div className="border-t border-[var(--border)] pt-3.5">
+                      <label htmlFor="map-filter-city" className={`mb-2 block ${filterMetaClass} tracking-[0.18em]`}>
+                        City
+                      </label>
+                      <select
+                        id="map-filter-city"
+                        value={cityFilter}
+                        onChange={(e) => handleCityChange(e.target.value)}
+                        className={selectClass}
+                        style={selectChevronStyle}
+                      >
+                        <option value="" className="text-[var(--charcoal-light)]">
+                          All cities
                         </option>
-                      ))}
-                    </select>
+                        {cityOptions.map(({ city, count }) => (
+                          <option key={city} value={city}>
+                            {city} · {count} listing{count === 1 ? "" : "s"}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
-                </div>
                 ) : null}
               </div>
             </div>

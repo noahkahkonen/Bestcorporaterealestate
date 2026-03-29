@@ -31,8 +31,11 @@ export default async function NewsArticlePage({ params }: Props) {
   return (
     <div className="pb-16">
       <article className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
-        <Link href="/news" className="text-sm text-[var(--navy)] hover:underline">
-          ← Back to News
+        <Link href="/news" className="group inline-flex items-center gap-1.5 text-sm text-[var(--navy)]">
+          <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1" aria-hidden>
+            ←
+          </span>
+          Back to News
         </Link>
         <p className="mt-4 text-sm font-medium text-[var(--muted)]">
           {formatDate(article.publishedAt || article.createdAt)}
@@ -72,9 +75,12 @@ export default async function NewsArticlePage({ params }: Props) {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[var(--navy)] hover:underline"
+                    className="group inline-flex items-center gap-1.5 text-[var(--navy)]"
                   >
-                    {link.label} →
+                    {link.label}
+                    <span className="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
+                      →
+                    </span>
                   </a>
                 </li>
               ))}

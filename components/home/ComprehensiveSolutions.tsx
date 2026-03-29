@@ -80,9 +80,15 @@ export default function ComprehensiveSolutions() {
                 <p className="mb-10 text-lg leading-relaxed text-slate-300 opacity-0 transition-opacity duration-700 group-hover:opacity-100">
                   {item.description}
                 </p>
-                <span className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)] transition-all group-hover:gap-5">
+                <span className="inline-flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-[var(--accent)]">
                   {item.cta}
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </span>

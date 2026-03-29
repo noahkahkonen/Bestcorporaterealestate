@@ -65,11 +65,11 @@ export default async function SoldDealPage({ params }: Props) {
   return (
     <div className="pb-16">
       <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-[var(--navy)] hover:underline"
-        >
-          ← Back to Home
+        <Link href="/" className="group mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--navy)]">
+          <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1" aria-hidden>
+            ←
+          </span>
+          Back to Home
         </Link>
 
         <PropertyGallery images={listing.galleryImages} title={listing.title} />

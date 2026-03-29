@@ -158,9 +158,18 @@ export default function SoldDealsCarousel({ listings }: SoldDealsCarouselProps) 
           <div className="mt-8 text-center lg:hidden">
             <Link
               href="/deals"
-              className="inline-block border-b-2 border-[var(--accent)] pb-2 text-sm font-black uppercase tracking-widest text-[var(--navy)] hover:underline"
+              className="group inline-flex items-center gap-2 border-b-2 border-[var(--accent)] pb-2 text-sm font-black uppercase tracking-widest text-[var(--navy)]"
             >
               View Transactions
+              <svg
+                className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </Link>
           </div>
         )}

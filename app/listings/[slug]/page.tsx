@@ -105,7 +105,7 @@ export default async function PropertyPage({ params }: Props) {
               >
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
               </svg>
-              <span className="min-w-0 text-base leading-snug underline decoration-transparent underline-offset-2 transition-[text-decoration-color] group-hover:decoration-[var(--navy)] sm:text-lg">
+              <span className="min-w-0 text-base leading-snug sm:text-lg">
                 {listing_.address}, {listing_.city}, {listing_.state}
                 {listing_.zipCode && ` ${listing_.zipCode}`}
               </span>
@@ -361,10 +361,16 @@ export default async function PropertyPage({ params }: Props) {
               </div>
               <Link
                 href="/listings"
-                className="flex items-center gap-2 font-bold text-[var(--navy)] hover:underline"
+                className="group flex items-center gap-2 font-bold text-[var(--navy)]"
               >
                 View all listings
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </Link>

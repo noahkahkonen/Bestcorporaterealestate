@@ -27,11 +27,11 @@ export default function NewsPreview({ articles }: NewsPreviewProps) {
               Market updates and thought leadership from our team.
             </p>
           </div>
-          <Link
-            href="/news"
-            className="text-sm font-semibold text-[var(--navy)] hover:underline"
-          >
-            View all news →
+          <Link href="/news" className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--navy)]">
+            View all news
+            <span className="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
+              →
+            </span>
           </Link>
         </div>
 

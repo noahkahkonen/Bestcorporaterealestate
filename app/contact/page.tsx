@@ -66,9 +66,12 @@ export default async function ContactPage({ searchParams }: Props) {
               </dl>
               <Link
                 href="/listings"
-                className="mt-8 inline-block text-sm font-semibold text-[var(--navy)] hover:underline"
+                className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[var(--navy)]"
               >
-                View listings →
+                View listings
+                <span className="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
+                  →
+                </span>
               </Link>
             </div>
           </aside>

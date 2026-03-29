@@ -109,9 +109,12 @@ export default async function DealsPage() {
               </p>
               <Link
                 href="/listings"
-                className="mt-6 inline-block text-sm font-semibold text-[var(--navy)] hover:underline"
+                className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--navy)]"
               >
-                View active listings →
+                View active listings
+                <span className="inline-block transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
+                  →
+                </span>
               </Link>
             </div>
           )}

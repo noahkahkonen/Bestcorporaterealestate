@@ -95,9 +95,12 @@ export default async function ApplicationPaymentPage({ params, searchParams }: P
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
       <Link
         href={`/listings/${slug}/apply`}
-        className="mb-6 inline-block text-sm font-medium text-[var(--navy)] hover:underline"
+        className="group mb-6 inline-flex items-center gap-1.5 text-sm font-medium text-[var(--navy)]"
       >
-        ← Back to application
+        <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1" aria-hidden>
+          ←
+        </span>
+        Back to application
       </Link>
       <h1 className="text-2xl font-bold tracking-tight text-[var(--charcoal)] sm:text-3xl">
         Application Fee

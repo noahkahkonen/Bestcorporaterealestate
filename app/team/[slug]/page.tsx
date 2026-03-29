@@ -49,8 +49,11 @@ export default async function AgentPage({ params }: Props) {
     <div className="pb-16">
       <div className="border-b border-[var(--border)] bg-[var(--surface)] py-16">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <Link href="/team" className="text-sm text-[var(--navy)] hover:underline">
-            ← Our Team
+          <Link href="/team" className="group inline-flex items-center gap-1.5 text-sm text-[var(--navy)]">
+            <span className="inline-block transition-transform duration-200 group-hover:-translate-x-1" aria-hidden>
+              ←
+            </span>
+            Our Team
           </Link>
           <div className="mt-8 flex flex-col gap-8 sm:flex-row sm:items-start">
             <div className="relative aspect-square w-64 shrink-0 overflow-hidden rounded-lg bg-[var(--surface-muted)] sm:w-80">

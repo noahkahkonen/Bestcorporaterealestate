@@ -1,5 +1,6 @@
 import type { Listing } from "@/types/listing";
 import type { FilterState } from "@/components/listings/ListingsFilters";
+import { parseCurrencyInput } from "@/lib/filter-currency";
 import { getListingEstimatedMonthlyRent } from "@/lib/listing-estimated-monthly-rent";
 
 function normalize(s: string): string {
@@ -24,10 +25,10 @@ export function filterListings(listings: Listing[], filters: FilterState): Listi
   const propertyType = normalize(filters.propertyType);
   const listingType = normalize(filters.listingType);
   const city = normalize(filters.city);
-  const minPrice = parseNonNegNumber(filters.minPrice);
-  const maxPrice = parseNonNegNumber(filters.maxPrice);
-  const minRent = parseNonNegNumber(filters.minRent);
-  const maxRent = parseNonNegNumber(filters.maxRent);
+  const minPrice = parseCurrencyInput(filters.minPrice);
+  const maxPrice = parseCurrencyInput(filters.maxPrice);
+  const minRent = parseCurrencyInput(filters.minRent);
+  const maxRent = parseCurrencyInput(filters.maxRent);
   const minSqFt = parseNonNegInt(filters.minSqFt);
   const maxSqFt = parseNonNegInt(filters.maxSqFt);
   const minAcres = parseNonNegNumber(filters.minAcres);

@@ -183,7 +183,7 @@ export default function MarketSectors() {
                 ref={(el) => {
                   mobileCardRefs.current[index] = el;
                 }}
-                className="relative snap-center snap-always aspect-[2.2/1] w-[min(100%,calc(100vw-4.5rem))] max-w-[400px] shrink-0 overflow-hidden rounded-2xl border border-[var(--border)] shadow-lg sm:aspect-[10/13]"
+                className="group relative snap-center snap-always aspect-[3/4] w-[min(100%,calc(100vw-4.5rem))] max-w-[360px] shrink-0 overflow-hidden rounded-2xl border border-[var(--border)] shadow-lg sm:aspect-[10/13]"
               >
                 <Link
                   href={listingsHref}
@@ -213,8 +213,14 @@ export default function MarketSectors() {
                   <div className="mt-auto space-y-3">
                     <div>
                       <h3 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">{name}</h3>
-                      <p className="mt-2 inline-block border-b border-white/70 pb-px text-sm font-semibold text-white/95">
+                      <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-white/95">
                         Explore listings
+                        <span
+                          className="inline-block transition-transform duration-200 group-hover:translate-x-1"
+                          aria-hidden
+                        >
+                          →
+                        </span>
                       </p>
                     </div>
                     <p className="line-clamp-4 text-xs leading-relaxed text-white/75">{tagline}</p>
@@ -270,7 +276,7 @@ export default function MarketSectors() {
               id={`sector-panel-${name}`}
               aria-labelledby={`sector-tab-${name}`}
               aria-hidden={!isActive}
-              className={`absolute inset-0 transition-opacity duration-500 ease-out ${isActive ? "z-[1] opacity-100" : "z-0 opacity-0 pointer-events-none"}`}
+              className={`group absolute inset-0 transition-opacity duration-500 ease-out ${isActive ? "z-[1] opacity-100" : "z-0 opacity-0 pointer-events-none"}`}
             >
               <Link
                 href={listingsHref}
@@ -312,9 +318,9 @@ export default function MarketSectors() {
                 </h3>
                 <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">{tagline}</p>
                 <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
-                  <span className="group inline-flex w-fit items-center gap-2 text-sm font-semibold text-white underline-offset-4">
+                  <span className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-white">
                     Explore listings
-                    <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>
+                    <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
                       →
                     </span>
                   </span>

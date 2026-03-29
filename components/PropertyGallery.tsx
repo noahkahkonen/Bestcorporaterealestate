@@ -187,45 +187,53 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
       document.body,
     );
 
-  const viewAllTile = (
-    <button
-      type="button"
-      onClick={openLightboxFirst}
-      className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]"
-      aria-label="View all photos"
-    >
-      {tile4Bg && isRealImage(tile4Bg) ? (
-        <Image
-          src={tile4Bg}
-          alt=""
-          fill
-          className="object-cover object-center"
-          sizes="200px"
-          quality={85}
-        />
-      ) : (
-        <PlaceholderTile />
-      )}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-white/75 px-2 backdrop-blur-[2px]">
-        <span className="text-center text-sm font-extrabold uppercase tracking-wider text-[var(--charcoal)] sm:text-base">
-          View all
-        </span>
-        {hasRealImages && realIndices.length > 1 && (
-          <span className="text-xs font-medium text-[var(--charcoal-light)]">
-            {realIndices.length} photos
-          </span>
+  function renderViewAllTile(aspectClass: string, labelSize: "sm" | "md") {
+    return (
+      <button
+        type="button"
+        onClick={openLightboxFirst}
+        className={`relative ${aspectClass} overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]`}
+        aria-label="View all photos"
+      >
+        {tile4Bg && isRealImage(tile4Bg) ? (
+          <Image
+            src={tile4Bg}
+            alt=""
+            fill
+            className="object-cover object-center"
+            sizes="200px"
+            quality={85}
+          />
+        ) : (
+          <PlaceholderTile />
         )}
-      </div>
-    </button>
-  );
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-white/75 px-2 backdrop-blur-[2px] md:gap-1">
+          <span
+            className={`text-center font-extrabold uppercase tracking-wider text-[var(--charcoal)] ${
+              labelSize === "sm" ? "text-xs" : "text-sm sm:text-base"
+            }`}
+          >
+            View all
+          </span>
+          {hasRealImages && realIndices.length > 1 && (
+            <span
+              className={`font-medium text-[var(--charcoal-light)] ${labelSize === "sm" ? "text-[10px]" : "text-xs"}`}
+            >
+              {realIndices.length} photos
+            </span>
+          )}
+        </div>
+      </button>
+    );
+  }
 
-  const squareTile = (src: string | undefined, displayIdx: number) => (
+  const squareTile = (src: string | undefined, displayIdx: number, aspectClass = "aspect-square") => (
     <button
       key={displayIdx}
       type="button"
       onClick={() => openLightboxAtDisplayIndex(displayIdx)}
       disabled={!src || !isRealImage(src)}
-      className="relative aspect-square overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] disabled:pointer-events-none disabled:opacity-50"
+      className={`relative ${aspectClass} overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] disabled:pointer-events-none disabled:opacity-50`}
       aria-label={src && isRealImage(src) ? `Open gallery, photo ${displayIdx + 1}` : undefined}
     >
       {src && isRealImage(src) ? (
@@ -250,7 +258,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           type="button"
           onClick={() => openLightboxAtDisplayIndex(0)}
           disabled={!hasRealImages || !isRealImage(heroSrc)}
-          className="relative aspect-[21/9] min-h-[180px] w-full flex-1 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] text-left md:aspect-auto md:min-h-0 md:min-w-0 disabled:cursor-default disabled:opacity-80"
+          className="relative aspect-[4/3] min-h-[240px] w-full max-w-full flex-1 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] text-left max-md:min-h-[280px] md:aspect-auto md:min-h-0 md:min-w-0 disabled:cursor-default disabled:opacity-80"
           aria-label={isRealImage(heroSrc) ? "Open gallery, main photo" : undefined}
         >
           {isRealImage(heroSrc) ? (
@@ -272,10 +280,10 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
           )}
         </button>
 
-        {/* Mobile: one square + view all */}
-        <div className="grid w-full grid-cols-2 gap-3 md:hidden">
-          {squareTile(tile1, 1)}
-          {viewAllTile}
+        {/* Mobile: shorter landscape thumb + view all */}
+        <div className="grid w-full grid-cols-2 gap-2 md:hidden">
+          {squareTile(tile1, 1, "aspect-[2.35/1]")}
+          {renderViewAllTile("aspect-[2.35/1]", "sm")}
         </div>
 
         {/* Tablet/desktop: 2×2 thumbs */}
@@ -285,7 +293,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             { src: tile2, displayIdx: 2 },
             { src: tile3, displayIdx: 3 },
           ].map(({ src, displayIdx }) => squareTile(src, displayIdx))}
-          {viewAllTile}
+          {renderViewAllTile("aspect-square", "md")}
         </div>
       </div>
 
