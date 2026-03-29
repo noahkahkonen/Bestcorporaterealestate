@@ -18,6 +18,7 @@ import ListingCard from "@/components/ListingCard";
 import ShareListingButton from "@/components/ShareListingButton";
 import { formatPhone } from "@/lib/format-phone";
 import { SAWMILL_SITE_PLAN_UNITS } from "@/data/sawmill-site-plan-units";
+import { formatListingDisplayPrice } from "@/lib/format-listing-display-price";
 import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -51,6 +52,7 @@ export default async function PropertyPage({ params }: Props) {
   const listing_ = listing;
 
   const specs = getListingSpecTrio(listing_);
+  const priceLine = formatListingDisplayPrice(listing_);
 
   return (
     <div className="pb-16">
@@ -86,6 +88,11 @@ export default async function PropertyPage({ params }: Props) {
                 {listing_.zipCode && ` ${listing_.zipCode}`}
               </p>
             </div>
+            {priceLine && (
+              <p className="mt-4 text-2xl font-extrabold tracking-tight text-[var(--navy)] sm:text-3xl tabular-nums">
+                {priceLine}
+              </p>
+            )}
           </div>
           <div className="flex shrink-0 justify-end">
             <ShareListingButton slug={slug} />

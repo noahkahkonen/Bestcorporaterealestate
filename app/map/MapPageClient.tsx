@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import ListingsMap from "@/components/listings/ListingsMap";
+import { formatListingDisplayPrice } from "@/lib/format-listing-display-price";
 import { getListingSpecTrio } from "@/lib/listing-spec-trio";
 import type { Listing } from "@/types/listing";
 
@@ -51,18 +52,6 @@ function scrollNodeToTopWithin(container: HTMLElement, node: HTMLElement): void 
     container.getBoundingClientRect().top +
     container.scrollTop;
   container.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
-}
-
-function formatPrice(listing: Listing): string {
-  const isForLease =
-    listing.listingType === "For Lease" || listing.listingType === "Sale/Lease";
-  if (isForLease && listing.leasePricePerSf != null && listing.leaseType) {
-    return `$${Number(listing.leasePricePerSf).toLocaleString()}/SF ${listing.leaseType}`;
-  }
-  if (listing.price != null) return `$${listing.price.toLocaleString()}`;
-  if (listing.investmentMetrics?.price != null)
-    return `$${listing.investmentMetrics.price.toLocaleString()}`;
-  return "—";
 }
 
 export default function MapPageClient({
@@ -250,7 +239,7 @@ export default function MapPageClient({
                         <div className="placeholder-img h-full w-full" />
                       )}
                       <span className="absolute bottom-3 right-3 z-10 rounded-md bg-[var(--navy)]/90 px-3 py-1.5 text-xs font-bold text-white sm:text-sm">
-                        {formatPrice(listing)}
+                        {formatListingDisplayPrice(listing) ?? "—"}
                       </span>
                     </div>
                     <div className="p-4">
