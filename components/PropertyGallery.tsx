@@ -20,8 +20,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
 
   return (
     <div className="w-full space-y-3">
-      {/* 16:9 + cover fills the frame (no letterboxing); typical for listing heroes */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-[var(--surface-muted)]">
+      {/* ~8:3 is ~67% the height of 16:9 at the same width; max-height keeps more page content above the fold */}
+      <div className="relative aspect-[8/3] w-full max-h-[min(44vh,560px)] overflow-hidden rounded-lg bg-[var(--surface-muted)]">
         {hasRealImages ? (
           <div
             className="flex h-full transition-transform duration-300 ease-out"
