@@ -50,7 +50,7 @@ export default function HomeHero() {
       <div className="absolute inset-0 bg-gradient-to-t from-[#065f46]/90 via-[#065f46]/30 to-transparent" />
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pb-6 pt-8 sm:px-6 sm:pb-14 sm:pt-24 lg:px-8 lg:pb-16 lg:pt-28">
         <p
-          className={`text-xs font-medium uppercase tracking-widest text-white/80 sm:text-base lg:text-lg ${reveal} ${
+          className={`text-[11px] font-medium uppercase tracking-widest text-white/80 sm:text-sm lg:text-base ${reveal} ${
             inView ? `${visible} translate-x-0` : `${hidden} -translate-x-8`
           }`}
           style={{
@@ -61,7 +61,7 @@ export default function HomeHero() {
           Columbus, Ohio
         </p>
         <h1
-          className={`mt-1.5 max-w-3xl text-2xl font-bold leading-tight tracking-tight sm:mt-2 sm:text-6xl sm:leading-none lg:text-7xl ${reveal} ${
+          className={`mt-1.5 max-w-3xl text-xl font-bold leading-tight tracking-tight sm:mt-2 sm:text-5xl sm:leading-none md:max-w-none md:whitespace-nowrap lg:text-6xl ${reveal} ${
             inView ? `${visible} translate-y-0` : `${hidden} translate-y-8`
           }`}
           style={{
@@ -72,7 +72,7 @@ export default function HomeHero() {
           Best Corporate Real{"\u00A0"}Estate
         </h1>
         <p
-          className={`mt-2 max-w-xl text-sm text-white/90 sm:mt-5 sm:text-base lg:text-lg ${reveal} ${
+          className={`mt-2 max-w-xl text-xs text-white/90 sm:mt-5 sm:text-sm lg:text-base ${reveal} ${
             inView ? `${visible} translate-y-0` : `${hidden} translate-y-6`
           }`}
           style={{
