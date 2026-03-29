@@ -194,61 +194,67 @@ export default function MapPageClient({
                 No listings match these filters. Try adjusting your selection.
               </p>
             ) : (
-              filtered.map((listing) => (
-                <Link
-                  key={listing.id}
-                  href={`/listings/${listing.slug}`}
-                  data-map-listing={listing.id}
-                  className="group block scroll-mt-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
-                  onClick={() => setSelectedListing(listing)}
-                >
-                  <div className="relative aspect-[4/3] w-full min-h-[12rem] overflow-hidden">
-                    <span className="absolute left-3 top-3 z-10 rounded px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
-                      {listing.propertyType}
-                    </span>
-                    {listing.heroImage.startsWith("http") ||
-                    listing.heroImage.startsWith("/") ? (
-                      <Image
-                        src={listing.heroImage}
-                        alt={listing.title}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                        sizes="480px"
-                      />
-                    ) : (
-                      <div className="placeholder-img h-full w-full" />
-                    )}
-                    <span className="absolute bottom-3 right-3 z-10 rounded-md bg-[var(--navy)]/90 px-3 py-1.5 text-xs font-bold text-white sm:text-sm">
-                      {formatPrice(listing)}
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="text-base font-bold text-[var(--charcoal)]">
-                      {listing.title}
-                    </h4>
-                    <p className="mt-1 text-xs text-[var(--charcoal-light)]">
-                      {listing.address}, {listing.city}, {listing.state}
-                    </p>
-                    <div className="mt-3 grid grid-cols-3 gap-2 border-y border-[var(--border)] py-3">
-                      {getListingSpecTrio(listing).map(({ label, value, valueColor }) => (
-                        <div key={label} className="text-center">
-                          <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
-                            {label}
-                          </p>
-                          <p
-                            className={`text-sm font-bold ${
-                              valueColor ? "" : label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"
-                            }`}
-                            style={valueColor ? { color: valueColor } : undefined}
-                          >
-                            {value}
-                          </p>
-                        </div>
-                      ))}
+              filtered.map((listing) => {
+                const specs = getListingSpecTrio(listing);
+                return (
+                  <Link
+                    key={listing.id}
+                    href={`/listings/${listing.slug}`}
+                    data-map-listing={listing.id}
+                    className="group block scroll-mt-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)]/30 transition-colors hover:border-[var(--navy)]/30"
+                    onClick={() => setSelectedListing(listing)}
+                  >
+                    <div className="relative aspect-[4/3] w-full min-h-[12rem] overflow-hidden">
+                      <span className="absolute left-3 top-3 z-10 rounded px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white">
+                        {listing.propertyType}
+                      </span>
+                      {listing.heroImage.startsWith("http") ||
+                      listing.heroImage.startsWith("/") ? (
+                        <Image
+                          src={listing.heroImage}
+                          alt={listing.title}
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105"
+                          sizes="480px"
+                        />
+                      ) : (
+                        <div className="placeholder-img h-full w-full" />
+                      )}
+                      <span className="absolute bottom-3 right-3 z-10 rounded-md bg-[var(--navy)]/90 px-3 py-1.5 text-xs font-bold text-white sm:text-sm">
+                        {formatPrice(listing)}
+                      </span>
                     </div>
-                  </div>
-                </Link>
-              ))
+                    <div className="p-4">
+                      <h4 className="text-base font-bold text-[var(--charcoal)]">
+                        {listing.title}
+                      </h4>
+                      <p className="mt-1 text-xs text-[var(--charcoal-light)]">
+                        {listing.address}, {listing.city}, {listing.state}
+                      </p>
+                      <div
+                        className={`mt-3 grid gap-2 border-y border-[var(--border)] py-3 ${
+                          specs.length > 3 ? "grid-cols-2" : "grid-cols-3"
+                        }`}
+                      >
+                        {specs.map(({ label, value }) => (
+                          <div key={label} className="text-center">
+                            <p className="text-[10px] uppercase text-[var(--charcoal-light)]">
+                              {label}
+                            </p>
+                            <p
+                              className={`text-sm font-bold ${
+                                label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"
+                              }`}
+                            >
+                              {value}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })
             )}
           </div>
         </aside>

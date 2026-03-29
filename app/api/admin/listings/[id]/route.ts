@@ -3,12 +3,10 @@ import { getServerSession } from "next-auth";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { sanitizeListingTextColor } from "@/lib/sanitize-listing-color";
-
 const LISTING_UPDATE_KEYS = [
   "title", "slug", "nickname", "address", "city", "state", "zipCode",
   "latitude", "longitude", "listingType", "propertyType", "landSubcategory",
-  "zoning", "zoningColor",
+  "zoning",
   "squareFeet", "acreage", "isMultiTenant", "unitCount", "unitsJson",
   "description", "featuresJson", "heroImage", "galleryImagesJson",
   "floorPlan", "sitePlan", "brochure", "financialDocPath", "youtubeLink",
@@ -112,10 +110,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     if ("zoning" in body) {
       const v = body.zoning;
       data.zoning = v != null && String(v).trim() ? String(v).trim() : null;
-    }
-    if ("zoningColor" in body) {
-      const sanitized = sanitizeListingTextColor(body.zoningColor);
-      data.zoningColor = sanitized;
     }
 
     if ("squareFeet" in body) {

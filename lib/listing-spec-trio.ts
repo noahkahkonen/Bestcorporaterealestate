@@ -1,7 +1,6 @@
 import type { Listing } from "@/types/listing";
-import { sanitizeListingTextColor } from "@/lib/sanitize-listing-color";
 
-export type ListingSpecTrioItem = { label: string; value: string; valueColor?: string };
+export type ListingSpecTrioItem = { label: string; value: string };
 
 /** Pull a human zoning value from free-form feature bullets (e.g. "Zoning: C-3"). */
 export function getZoningFromFeatures(features: string[]): string | null {
@@ -50,11 +49,18 @@ function formatNnn(listing: Listing): string {
   return "—";
 }
 
-function zoningValue(listing: Listing): Pick<ListingSpecTrioItem, "value" | "valueColor"> {
+function zoningValue(listing: Listing): string {
   const z = listing.zoning?.trim() || getZoningFromFeatures(listing.features);
-  const color = sanitizeListingTextColor(listing.zoningColor);
-  if (!z) return { value: "—" };
-  return color ? { value: z, valueColor: color } : { value: z };
+  if (!z) return "—";
+  return z;
+}
+
+/** Adds a Zoning column when admin/DB (or features) has a value but the trio above omitted it (e.g. lease, investment). */
+function appendZoningIfMissing(specs: ListingSpecTrioItem[], listing: Listing): ListingSpecTrioItem[] {
+  const z = zoningValue(listing);
+  if (z === "—") return specs;
+  if (specs.some((s) => s.label === "Zoning")) return specs;
+  return [...specs, { label: "Zoning", value: z }];
 }
 
 /**
@@ -66,55 +72,66 @@ export function getListingSpecTrio(listing: Listing): ListingSpecTrioItem[] {
   const isForLeaseOnly = listing.listingType === "For Lease";
   const isForSale = listing.listingType === "For Sale" || listing.listingType === "Sale/Lease";
 
+  let specs: ListingSpecTrioItem[];
+
   if (isLand) {
     const sub = listing.landSubcategory?.trim() || "—";
-    return [
+    specs = [
       { label: "Acres", value: formatAcres(listing) },
-      { label: "Zoning", ...zoningValue(listing) },
+      { label: "Zoning", value: zoningValue(listing) },
       { label: "Land subcategory", value: sub },
     ];
+    return specs;
   }
 
   if (isForLeaseOnly) {
-    return [
-      { label: "Sq Ft", value: formatSqFt(listing) },
-      { label: "Occupancy", value: dash(listing.occupancy) },
-      { label: "NNN charges", value: formatNnn(listing) },
-    ];
+    return appendZoningIfMissing(
+      [
+        { label: "Sq Ft", value: formatSqFt(listing) },
+        { label: "Occupancy", value: dash(listing.occupancy) },
+        { label: "NNN charges", value: formatNnn(listing) },
+      ],
+      listing,
+    );
   }
 
   if (isForSale) {
     if (occ === "Owner User") {
-      return [
+      specs = [
         { label: "Sq Ft", value: formatSqFt(listing) },
         { label: "Acres", value: formatAcres(listing) },
-        { label: "Zoning", ...zoningValue(listing) },
+        { label: "Zoning", value: zoningValue(listing) },
       ];
+      return specs;
     }
     if (occ === "Investment" || occ === "Owner User/Investment") {
-      return [
+      specs = [
         { label: "Cap Rate", value: formatCapRate(listing) },
         { label: "Sq Ft", value: formatSqFt(listing) },
         { label: "Acres", value: formatAcres(listing) },
       ];
+      return appendZoningIfMissing(specs, listing);
     }
     if (capRateDecimal(listing) != null) {
-      return [
+      specs = [
         { label: "Cap Rate", value: formatCapRate(listing) },
         { label: "Sq Ft", value: formatSqFt(listing) },
         { label: "Acres", value: formatAcres(listing) },
       ];
+      return appendZoningIfMissing(specs, listing);
     }
-    return [
+    specs = [
       { label: "Sq Ft", value: formatSqFt(listing) },
       { label: "Acres", value: formatAcres(listing) },
-      { label: "Zoning", ...zoningValue(listing) },
+      { label: "Zoning", value: zoningValue(listing) },
     ];
+    return specs;
   }
 
-  return [
+  specs = [
     { label: "Sq Ft", value: formatSqFt(listing) },
     { label: "Acres", value: formatAcres(listing) },
     { label: "Occupancy", value: dash(listing.occupancy) },
   ];
+  return appendZoningIfMissing(specs, listing);
 }

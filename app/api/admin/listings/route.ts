@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
-import { sanitizeListingTextColor } from "@/lib/sanitize-listing-color";
-
 function slugify(s: string) {
   return s
     .toLowerCase()
@@ -46,7 +44,6 @@ export async function POST(request: NextRequest) {
       propertyType,
       landSubcategory,
       zoning,
-      zoningColor,
       squareFeet,
       acreage,
       isMultiTenant,
@@ -88,7 +85,6 @@ export async function POST(request: NextRequest) {
         propertyType: propertyType || "Retail",
         landSubcategory: landSubcategory || null,
         zoning: zoning != null && String(zoning).trim() ? String(zoning).trim() : null,
-        zoningColor: sanitizeListingTextColor(zoningColor),
         squareFeet: squareFeet ? parseInt(squareFeet, 10) : null,
         acreage: acreage ? parseFloat(acreage) : null,
         isMultiTenant: !!isMultiTenant,

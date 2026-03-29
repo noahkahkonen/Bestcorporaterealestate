@@ -43,7 +43,6 @@ export default function EditListingPage() {
     propertyType: string;
     landSubcategory: string;
     zoning: string;
-    zoningColor: string;
     squareFeet: string;
     acreage: string;
     description: string;
@@ -111,7 +110,6 @@ export default function EditListingPage() {
         propertyType: l.propertyType || "Retail",
         landSubcategory: l.landSubcategory || "",
         zoning: l.zoning || "",
-        zoningColor: l.zoningColor || "",
         squareFeet: l.squareFeet != null ? formatNumberWithCommas(String(l.squareFeet)) : "",
         acreage: l.acreage != null ? String(l.acreage) : "",
         description: l.description || "",
@@ -209,7 +207,6 @@ export default function EditListingPage() {
           propertyType: form.propertyType,
           landSubcategory: form.propertyType === "Land" && form.landSubcategory ? form.landSubcategory : null,
           zoning: form.zoning.trim() || null,
-          zoningColor: form.zoningColor.trim() || null,
           squareFeet: form.squareFeet ? parseFormattedNumber(form.squareFeet) || null : null,
           acreage: form.acreage ? parseFloat(form.acreage) : null,
           description: form.description,
@@ -362,35 +359,6 @@ export default function EditListingPage() {
                 placeholder="e.g. C-3, M-1"
                 className="mt-1 w-full rounded-lg border px-3 py-2"
               />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium">Zoning text color (optional)</label>
-              <p className="mt-0.5 text-xs text-[var(--charcoal-light)]">
-                Hex only (#RGB or #RRGGBB). Shown on the public listing specs next to Zoning.
-              </p>
-              <div className="mt-1 flex flex-wrap items-center gap-3">
-                <input
-                  type="color"
-                  aria-label="Pick zoning text color"
-                  className="h-10 w-14 cursor-pointer rounded border border-[var(--border)] bg-[var(--surface)] p-1"
-                  value={/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(form.zoningColor) ? form.zoningColor : "#004733"}
-                  onChange={(e) => setForm((f) => ({ ...f!, zoningColor: e.target.value }))}
-                />
-                <input
-                  type="text"
-                  value={form.zoningColor}
-                  onChange={(e) => setForm((f) => ({ ...f!, zoningColor: e.target.value }))}
-                  placeholder="#B8860B"
-                  className="w-40 rounded-lg border px-3 py-2 font-mono text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => setForm((f) => ({ ...f!, zoningColor: "" }))}
-                  className="text-sm font-medium text-[var(--navy)] hover:underline"
-                >
-                  Clear color
-                </button>
-              </div>
             </div>
           </div>
         </div>

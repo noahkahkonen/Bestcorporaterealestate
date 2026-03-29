@@ -20,7 +20,8 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
 
   return (
     <div className="w-full space-y-3">
-      <div className="relative aspect-[2/1] w-full overflow-hidden rounded-lg bg-[#065f46]">
+      {/* 16:9 + cover fills the frame (no letterboxing); typical for listing heroes */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-[var(--surface-muted)]">
         {hasRealImages ? (
           <div
             className="flex h-full transition-transform duration-300 ease-out"
@@ -33,7 +34,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                     src={src}
                     alt={`${title} – image ${i + 1}`}
                     fill
-                    className="object-contain object-center"
+                    className="object-cover object-center"
                     sizes="(max-width: 1440px) 100vw, 1440px"
                     quality={90}
                     priority={i === 0}
@@ -45,7 +46,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
             )}
           </div>
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-white/60">
+          <div className="absolute inset-0 flex items-center justify-center text-sm font-medium text-[var(--charcoal-light)]">
             Property image gallery
           </div>
         )}
@@ -91,7 +92,7 @@ export default function PropertyGallery({ images, title }: PropertyGalleryProps)
                   src={src}
                   alt=""
                   fill
-                  className="object-contain object-center"
+                  className="object-cover object-center"
                   sizes="80px"
                   quality={75}
                 />

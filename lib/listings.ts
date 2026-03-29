@@ -111,7 +111,6 @@ function dbToListing(row: {
   propertyType: string;
   landSubcategory?: string | null;
   zoning?: string | null;
-  zoningColor?: string | null;
   squareFeet: number | null;
   acreage: number | null;
   description: string;
@@ -184,7 +183,6 @@ function dbToListing(row: {
     propertyType: row.propertyType,
     landSubcategory: row.landSubcategory ?? undefined,
     zoning: row.zoning ?? undefined,
-    zoningColor: row.zoningColor ?? undefined,
     listingType: row.listingType,
     price: row.price ?? undefined,
     priceNegotiable: row.priceNegotiable,

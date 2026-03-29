@@ -97,15 +97,18 @@ export default async function PropertyPage({ params }: Props) {
           <div className="space-y-12 lg:col-span-2">
             {/* Specs Grid – Stitch style */}
             {specs.length > 0 && (
-              <div className="grid grid-cols-1 gap-6 rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-8 shadow-sm sm:grid-cols-3">
-                {specs.map(({ label, value, valueColor }) => (
+              <div
+                className={`grid grid-cols-1 gap-6 rounded-xl border border-[var(--navy)]/10 bg-[var(--surface-muted)] p-8 shadow-sm ${
+                  specs.length > 3 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"
+                }`}
+              >
+                {specs.map(({ label, value }) => (
                   <div key={label} className="flex flex-col">
                     <span className="mb-1 text-xs font-bold uppercase tracking-wider text-[var(--charcoal-light)]">
                       {label}
                     </span>
                     <span
-                      className={`text-2xl font-extrabold ${valueColor ? "" : label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"}`}
-                      style={valueColor ? { color: valueColor } : undefined}
+                      className={`text-2xl font-extrabold ${label === "Cap Rate" ? "text-[var(--navy)]" : "text-[var(--charcoal)]"}`}
                     >
                       {value}
                     </span>
