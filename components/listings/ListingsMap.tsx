@@ -6,10 +6,11 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useMapStyles } from "@/lib/use-map-styles";
 import type { Listing } from "@/types/listing";
 
-const DEFAULT_CENTER = { lat: 39.9612, lng: -83.0007 };
+/** Columbus city center — Ohio Statehouse / downtown (not southern outskirts). */
+const DEFAULT_CENTER = { lat: 39.9622, lng: -82.9989 };
 /** Baseline zoom and floor for any programmatic fit — never auto zoom out beyond this; user can zoom out manually. */
-const DEFAULT_ZOOM = 12;
-const SINGLE_LISTING_ZOOM = 16;
+const DEFAULT_ZOOM = 11;
+const SINGLE_LISTING_ZOOM = 15;
 const MAP_CONTAINER_STYLE = { width: "100%", height: "100%" };
 
 function getMarkerIcon() {
@@ -79,6 +80,7 @@ function MapMarkers({
       map.setCenter({ lat: validListings[0].latitude, lng: validListings[0].longitude });
       map.setZoom(SINGLE_LISTING_ZOOM);
     } else if (validListings.length > 1) {
+      bounds.extend(DEFAULT_CENTER);
       map.fitBounds(bounds, { top: 48, right: 48, bottom: 48, left: 48 });
       google.maps.event.addListenerOnce(map, "idle", () => {
         const z = map.getZoom();

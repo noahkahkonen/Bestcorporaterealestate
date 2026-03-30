@@ -40,7 +40,7 @@ export default function ListingCard({
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface)] shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/listings/${listing.slug}`} className="flex flex-1 flex-col">
-        <div className="relative aspect-[2.35/1] max-sm:min-h-0 shrink-0 overflow-hidden bg-[var(--surface-muted)] sm:aspect-[4/3]">
+        <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-[var(--surface-muted)] sm:min-h-0">
           {showRealImage ? (
             <Image
               src={listing.heroImage}
@@ -130,12 +130,20 @@ export default function ListingCard({
           >
             {showPrice && priceLine ? (
               <div className="flex items-start justify-between gap-3">
-                <h2 className="min-w-0 flex-1 text-lg font-semibold leading-snug text-[var(--charcoal)] group-hover:text-[var(--navy)] lg:text-xl">
+                <h2
+                  className={`min-w-0 flex-1 font-semibold leading-snug text-[var(--charcoal)] group-hover:text-[var(--navy)] ${
+                    emphasizePriceOnMobile
+                      ? "text-base sm:text-lg lg:text-lg"
+                      : "text-lg lg:text-xl"
+                  }`}
+                >
                   {listing.title}
                 </h2>
                 <p
                   className={`shrink-0 pl-2 text-right font-extrabold tabular-nums leading-snug text-[var(--navy)] ${
-                    emphasizePriceOnMobile ? "text-xl sm:text-2xl lg:text-3xl" : "text-base sm:text-lg lg:text-xl"
+                    emphasizePriceOnMobile
+                      ? "text-lg sm:text-xl lg:text-xl"
+                      : "text-base sm:text-lg lg:text-xl"
                   }`}
                 >
                   {priceLine}
