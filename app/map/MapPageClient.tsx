@@ -357,8 +357,11 @@ export default function MapPageClient({
     backgroundSize: "1rem",
   } as const;
 
+  /** Header is h-[4.25rem]; remainder fills viewport with a thin strip of footer (green) visible below. */
+  const mapShellH = "h-[calc(100dvh-4.25rem-12px)] min-h-[320px]";
+
   return (
-    <div className="relative flex h-[calc(100vh-9rem)] w-full max-h-[820px] flex-col overflow-hidden sm:h-[calc(100vh-8rem)] md:max-h-[760px]">
+    <div className={`relative flex w-full flex-col overflow-hidden ${mapShellH}`}>
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Map */}
         <div className="relative min-w-0 flex-1">

@@ -223,11 +223,11 @@ export default function MarketSectors() {
                         </span>
                       </p>
                     </div>
-                    <p className="line-clamp-4 text-xs leading-relaxed text-white/75">{tagline}</p>
-                    <div className="pointer-events-auto flex justify-center pt-1">
+                    <p className="hidden line-clamp-4 text-xs leading-relaxed text-white/75 sm:block">{tagline}</p>
+                    <div className="pointer-events-auto flex justify-end pt-1 sm:justify-center">
                       <Link
                         href={contactAdvisorHref}
-                        className="relative z-20 inline-flex w-fit items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
+                        className="relative z-20 inline-flex w-fit max-w-[min(100%,14rem)] items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-3 py-2 text-right text-[11px] font-semibold leading-tight text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20 sm:max-w-none sm:px-4 sm:py-2.5 sm:text-center sm:text-sm"
                       >
                         {advisorCta}
                       </Link>
@@ -382,10 +382,10 @@ export default function MarketSectors() {
                     onFocus={() => {
                       bumpTabCooldown();
                     }}
-                    className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors sm:text-[13px] ${
+                    className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-bold uppercase tracking-wider backdrop-blur-md backdrop-saturate-150 transition-colors sm:text-[13px] ${
                       selected
-                        ? "bg-white text-[var(--charcoal)]"
-                        : "bg-white/10 text-white hover:bg-white/20"
+                        ? "border-white/50 bg-white/85 text-[var(--charcoal)] shadow-sm"
+                        : "border-white/15 bg-white/15 text-white hover:border-white/25 hover:bg-white/25"
                     }`}
                   >
                     {name}

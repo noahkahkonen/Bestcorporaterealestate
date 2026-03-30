@@ -6,8 +6,8 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useMapStyles } from "@/lib/use-map-styles";
 import type { Listing } from "@/types/listing";
 
-/** Columbus city center — Ohio Statehouse / downtown (not southern outskirts). */
-const DEFAULT_CENTER = { lat: 39.9622, lng: -82.9989 };
+/** Columbus — slightly north of downtown toward Short North / Arena for a friendlier default frame. */
+const DEFAULT_CENTER = { lat: 39.976, lng: -82.9989 };
 /** Baseline zoom and floor for any programmatic fit — never auto zoom out beyond this; user can zoom out manually. */
 const DEFAULT_ZOOM = 11;
 const SINGLE_LISTING_ZOOM = 15;
@@ -113,7 +113,7 @@ function MapWithMarkers({
   const styles = useMapStyles();
 
   return (
-    <div className="relative h-full min-h-[400px] w-full">
+    <div className="relative h-full min-h-0 w-full">
       <GoogleMap
         mapContainerStyle={MAP_CONTAINER_STYLE}
         center={DEFAULT_CENTER}

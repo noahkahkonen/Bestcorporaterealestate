@@ -53,7 +53,7 @@ export default function HeaderServicesFlyout() {
         </div>
 
           <div className="p-4 sm:p-5">
-            <ul className="grid gap-3">
+            <ul className="grid grid-cols-2 gap-3">
               {activeGroup.items.map((item) => {
                 const svc = getServiceBySlug(item.slug);
                 if (!svc) return null;

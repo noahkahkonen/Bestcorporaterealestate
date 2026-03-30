@@ -22,14 +22,69 @@ export default function Header() {
     setOpenDropdown(null);
   }, [pathname]);
 
+  const servicesMenuOpen = openDropdown === "services";
+
   useEffect(() => {
-    if (openDropdown !== "services") return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (!servicesMenuOpen) return;
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = body.style.overflow;
+    const prevHtmlOverscroll = html.style.overscrollBehavior;
+    const prevBodyOverscroll = body.style.overscrollBehavior;
+    const prevBodyPaddingTop = body.style.paddingTop;
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    html.style.overscrollBehavior = "none";
+    body.style.overscrollBehavior = "none";
+    // Offset layout when header becomes fixed (same height as header bar).
+    body.style.paddingTop = "4.25rem";
     return () => {
-      document.body.style.overflow = prev;
+      html.style.overflow = prevHtmlOverflow;
+      body.style.overflow = prevBodyOverflow;
+      html.style.overscrollBehavior = prevHtmlOverscroll;
+      body.style.overscrollBehavior = prevBodyOverscroll;
+      body.style.paddingTop = prevBodyPaddingTop;
     };
-  }, [openDropdown]);
+  }, [servicesMenuOpen]);
+
+  useEffect(() => {
+    if (!servicesMenuOpen) return;
+    const close = () => setOpenDropdown(null);
+
+    const isInsideServicesUi = (target: EventTarget | null) => {
+      if (!(target instanceof Node)) return false;
+      const wrap = document.querySelector("[data-services-dropdown]");
+      return wrap?.contains(target) ?? false;
+    };
+
+    const onPointerDown = (e: MouseEvent | TouchEvent) => {
+      if (isInsideServicesUi(e.target)) return;
+      close();
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (isInsideServicesUi(e.target)) return;
+      close();
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown, { passive: true });
+    document.addEventListener("wheel", onWheel, { passive: true });
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+      document.removeEventListener("wheel", onWheel);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [servicesMenuOpen]);
+
+  const closeServicesMenu = () => setOpenDropdown(null);
 
   const isListings = pathname === "/listings" || pathname === "/map";
   const isServices = pathname.startsWith("/services/");
@@ -42,10 +97,16 @@ export default function Header() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[var(--navy)]/10 bg-white">
+    <header
+      className={`w-full border-b border-[var(--navy)]/10 bg-white ${
+        servicesMenuOpen
+          ? "fixed inset-x-0 top-0 z-[70] shadow-[0_4px_20px_rgba(0,42,74,0.07)]"
+          : "sticky top-0 z-50"
+      }`}
+    >
       <div className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between px-4 sm:px-5 lg:px-6">
         <div className="flex min-w-0 items-center gap-8 lg:gap-10">
-          <Link href="/" className="flex shrink-0 items-center gap-2">
+          <Link href="/" className="flex shrink-0 items-center gap-2" onClick={closeServicesMenu}>
             <Image
               src="/images/best-logo.png"
               alt="Best Corporate Real Estate"
@@ -58,15 +119,15 @@ export default function Header() {
           </Link>
 
         <nav className="hidden min-w-0 lg:flex lg:items-center lg:gap-6">
-          <Link href="/" className={`px-2 py-2 ${linkClass(pathname === "/")}`}>
+          <Link href="/" className={`px-2 py-2 ${linkClass(pathname === "/")}`} onClick={closeServicesMenu}>
             Home
           </Link>
 
-          <Link href="/map" className={`px-2 py-2 ${linkClass(isListings)}`}>
+          <Link href="/map" className={`px-2 py-2 ${linkClass(isListings)}`} onClick={closeServicesMenu}>
             Listings
           </Link>
 
-          <div className="relative">
+          <div className="relative" data-services-dropdown>
             <button
               type="button"
               onClick={toggleServicesMenu}
@@ -90,11 +151,11 @@ export default function Header() {
             )}
           </div>
 
-          <Link href="/team" className={`px-2 py-2 ${linkClass(isTeam)}`}>
+          <Link href="/team" className={`px-2 py-2 ${linkClass(isTeam)}`} onClick={closeServicesMenu}>
             Team
           </Link>
 
-          <Link href="/news" className={`px-2 py-2 ${linkClass(isNews)}`}>
+          <Link href="/news" className={`px-2 py-2 ${linkClass(isNews)}`} onClick={closeServicesMenu}>
             News
           </Link>
         </nav>
@@ -104,6 +165,7 @@ export default function Header() {
           <Link
             href="/contact"
             className="hidden bg-[var(--navy)] px-5 py-2.5 font-bold text-[11px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--navy-light)] lg:inline-block"
+            onClick={closeServicesMenu}
           >
             Contact Us
           </Link>
