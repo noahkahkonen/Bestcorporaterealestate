@@ -66,10 +66,13 @@ export async function POST(request: NextRequest) {
       capRate,
       capRatePricingCall,
       brokerIds,
+      published: publishedBody,
     } = body;
 
     const title = body.title || nickname || address || "New Listing";
     const slug = body.slug || slugify(title);
+    /** Omitting `published` defaults to live (matches Prisma schema). Set `published: false` for drafts. */
+    const published = typeof publishedBody === "boolean" ? publishedBody : true;
 
     const listing = await prisma.listing.create({
       data: {
@@ -107,7 +110,7 @@ export async function POST(request: NextRequest) {
         leaseNnnCharges: leaseNnnCharges ? parseFloat(leaseNnnCharges) : null,
         capRate: capRatePricingCall ? null : capRate ? parseFloat(capRate) : null,
         capRatePricingCall: !!capRatePricingCall,
-        published: false,
+        published,
         featured: false,
       },
     });
