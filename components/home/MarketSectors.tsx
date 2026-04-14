@@ -69,22 +69,10 @@ const SECTOR_COPY: Record<
   },
 };
 
-const ADVISOR_CHAT_CTA: Record<SectorName, string> = {
-  Retail: "Chat with a Retail Advisor",
-  Industrial: "Chat with an Industrial Advisor",
-  Office: "Chat with an Office Advisor",
-  Multifamily: "Chat with a Multifamily Advisor",
-  Land: "Chat with a Land Advisor",
-  Specialty: "Chat with a Specialist",
-  Business: "Chat with a Business Advisor",
-  Residential: "Chat with a Realtor®",
-};
-
 export default function MarketSectors() {
   const [active, setActive] = useState<SectorName>("Retail");
   const [mobileSlideIndex, setMobileSlideIndex] = useState(0);
   const [desktopAutoAdvance, setDesktopAutoAdvance] = useState(false);
-  const hoveringAdvisorRef = useRef(false);
   const tabCooldownUntilRef = useRef(0);
   const mobileScrollRef = useRef<HTMLDivElement | null>(null);
   const mobileCardRefs = useRef<(HTMLElement | null)[]>([]);
@@ -105,7 +93,6 @@ export default function MarketSectors() {
   useEffect(() => {
     const id = window.setInterval(() => {
       if (!desktopAutoAdvance) return;
-      if (hoveringAdvisorRef.current) return;
       if (Date.now() < tabCooldownUntilRef.current) return;
       setActive((current) => {
         const i = PROPERTY_TYPES.indexOf(current);
@@ -176,9 +163,6 @@ export default function MarketSectors() {
           {PROPERTY_TYPES.map((name, index) => {
             const { tagline, imageSrc, overlayClassName } = SECTOR_COPY[name];
             const listingsHref = `/listings?propertyType=${encodeURIComponent(name)}`;
-            const advisorSlug = name.toLowerCase();
-            const advisorCta = ADVISOR_CHAT_CTA[name];
-            const contactAdvisorHref = `/contact?advisor=${encodeURIComponent(advisorSlug)}`;
 
             return (
               <article
@@ -191,7 +175,7 @@ export default function MarketSectors() {
                 <Link
                   href={listingsHref}
                   className="absolute inset-0 z-[5]"
-                  aria-label={`View ${name} listings`}
+                  aria-label={`Explore ${name} listings`}
                 />
                 {imageSrc ? (
                   <img
@@ -214,27 +198,18 @@ export default function MarketSectors() {
                 />
                 <div className="pointer-events-none relative z-10 flex h-full flex-col p-4">
                   <div className="mt-auto space-y-3">
-                    <div>
-                      <h3 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">{name}</h3>
-                      <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-white/95">
-                        Explore listings
-                        <span
-                          className="inline-block transition-transform duration-200 group-hover:translate-x-1"
-                          aria-hidden
-                        >
-                          →
-                        </span>
-                      </p>
-                    </div>
-                    <p className="hidden line-clamp-4 text-xs leading-relaxed text-white/75 sm:block">{tagline}</p>
-                    <div className="pointer-events-auto flex justify-end pt-1 sm:justify-center">
+                    <div className="pointer-events-auto flex items-end justify-between gap-3">
+                      <h3 className="min-w-0 flex-1 font-display text-3xl font-bold leading-[1.05] tracking-tight text-white sm:text-4xl">
+                        {name}
+                      </h3>
                       <Link
-                        href={contactAdvisorHref}
-                        className="relative z-20 inline-flex w-fit max-w-[min(100%,14rem)] items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-3 py-2 text-right text-[11px] font-semibold leading-tight text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20 sm:max-w-none sm:px-4 sm:py-2.5 sm:text-center sm:text-sm"
+                        href={listingsHref}
+                        className="relative z-20 inline-flex shrink-0 items-center justify-center rounded-md border border-white/90 bg-white/10 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20 sm:text-sm"
                       >
-                        {advisorCta}
+                        Explore
                       </Link>
                     </div>
+                    <p className="hidden line-clamp-4 text-xs leading-relaxed text-white/75 sm:block">{tagline}</p>
                   </div>
                 </div>
               </article>
@@ -268,9 +243,6 @@ export default function MarketSectors() {
           const { tagline, imageSrc, overlayClassName } = SECTOR_COPY[name];
           const isActive = active === name;
           const listingsHref = `/listings?propertyType=${encodeURIComponent(name)}`;
-          const advisorSlug = name.toLowerCase();
-          const advisorCta = ADVISOR_CHAT_CTA[name];
-          const contactAdvisorHref = `/contact?advisor=${encodeURIComponent(advisorSlug)}`;
 
           return (
             <div
@@ -284,7 +256,7 @@ export default function MarketSectors() {
               <Link
                 href={listingsHref}
                 className="absolute inset-0 z-[5]"
-                aria-label={`View ${name} listings`}
+                aria-label={`Explore ${name} listings`}
                 tabIndex={-1}
               />
               {imageSrc ? (
@@ -316,37 +288,19 @@ export default function MarketSectors() {
               />
               <div className="pointer-events-none relative z-10 flex min-h-[min(88vh,900px)] flex-col justify-end px-5 pb-14 pt-36 sm:px-10 sm:pb-20 lg:px-16 lg:pb-24">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70">Market sectors</p>
-                <h3 className="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-                  {name}
-                </h3>
-                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">{tagline}</p>
-                <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
-                  <span className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-white">
-                    Explore listings
-                    <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden>
-                      →
-                    </span>
-                  </span>
+                <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+                  <h3 className="min-w-0 flex-1 font-display text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl lg:min-w-[12rem] lg:flex-none lg:text-6xl xl:text-7xl">
+                    {name}
+                  </h3>
                   <Link
-                    href={contactAdvisorHref}
+                    href={listingsHref}
                     tabIndex={isActive ? 0 : -1}
-                    onMouseEnter={() => {
-                      hoveringAdvisorRef.current = true;
-                    }}
-                    onMouseLeave={() => {
-                      hoveringAdvisorRef.current = false;
-                    }}
-                    onFocus={() => {
-                      hoveringAdvisorRef.current = true;
-                    }}
-                    onBlur={() => {
-                      hoveringAdvisorRef.current = false;
-                    }}
-                    className="pointer-events-auto relative z-20 inline-flex w-fit items-center justify-center rounded-md border-2 border-white/90 bg-white/10 px-4 py-2.5 text-center text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
+                    className="pointer-events-auto relative z-20 inline-flex shrink-0 items-center justify-center rounded-md border border-white/90 bg-white/10 px-3 py-1.5 text-center text-sm font-semibold text-white shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
                   >
-                    {advisorCta}
+                    Explore
                   </Link>
                 </div>
+                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">{tagline}</p>
               </div>
             </div>
           );
