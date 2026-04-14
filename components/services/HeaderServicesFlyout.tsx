@@ -58,28 +58,28 @@ export default function HeaderServicesFlyout() {
                 const svc = getServiceBySlug(item.slug);
                 if (!svc) return null;
                 return (
-                  <li key={item.slug}>
+                  <li key={item.slug} className="min-w-0">
                     <Link
                       href={`/services/${item.slug}`}
-                      className="group flex gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface)] p-2.5 transition-all hover:border-[var(--navy)]/20 hover:shadow-md sm:gap-3.5 sm:p-3"
+                      className="group flex h-[5.25rem] w-full min-w-0 items-stretch gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2 pt-2 pb-1 transition-all hover:border-[var(--navy)]/20 hover:shadow-md sm:h-24 sm:gap-2.5 sm:px-2.5 sm:pt-2 sm:pb-1.5"
                     >
-                      <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-md sm:h-[5.5rem] sm:w-28">
+                      <div className="relative h-16 w-20 shrink-0 self-start overflow-hidden rounded-md sm:h-[4.25rem] sm:w-24">
                         <Image
                           src={item.image}
                           alt={item.imageAlt}
                           fill
                           className="object-cover transition duration-500 group-hover:scale-105"
-                          sizes="112px"
+                          sizes="96px"
                         />
                       </div>
-                      <div className="flex min-w-0 flex-1 flex-col justify-center">
-                        <h3 className="font-display text-sm font-bold text-[var(--charcoal)] group-hover:text-[var(--navy)] sm:text-base">
+                      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-start gap-0 overflow-hidden">
+                        <h3 className="line-clamp-2 font-display text-xs font-bold leading-tight text-[var(--charcoal)] group-hover:text-[var(--navy)] sm:text-[13px]">
                           {svc.title}
                         </h3>
-                        <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-[var(--charcoal-light)] sm:text-[13px]">
+                        <p className="mt-0.5 line-clamp-2 text-[11px] leading-tight text-[var(--charcoal-light)] sm:text-xs">
                           {item.cardSummary}
                         </p>
-                        <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent)]">
+                        <span className="mt-1 inline-flex shrink-0 items-center justify-end gap-1 self-end text-[9px] font-bold uppercase tracking-wider text-[var(--accent)] sm:mt-1.5 sm:text-[10px]">
                           Learn more
                           <svg
                             className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5"
