@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { PROPERTY_TYPES } from "@/types/listing";
 
-/** Max content width for sector heroes (px). Sides stay black on ultra-wide; use source images ≥ this width to avoid upscaling. */
+/**
+ * Max content width for sector heroes (px). Sides stay black on ultra-wide.
+ * Use source images at least this wide (ideally 2× for retina, e.g. 4200px+) or photos will look pixelated when scaled up.
+ */
 const SECTOR_HERO_MAX_WIDTH_PX = 2100;
 
 const AUTO_ADVANCE_INTERVAL_MS = 8500;
@@ -30,7 +33,7 @@ const SECTOR_COPY: Record<
   Retail: {
     tagline:
       "Strip centers, outparcels, and high-visibility locations built for traffic, tenancy, and durable cash flow.",
-    imageSrc: "/images/market-sectors/retail.png",
+    imageSrc: "/images/market-sectors/retail.jpg",
     overlayClassName: LIGHT_OVERLAY,
   },
   Industrial: {
